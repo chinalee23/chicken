@@ -17,4 +17,3 @@ end
 LuaInterface = CS.LuaInterface
 
 require 'restrict_global'
-log.info('init done...')

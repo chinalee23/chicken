@@ -1,10 +1,5 @@
 local _M = module()
 
-function start( ... )
-	local game = require 'game'
-	game.start()
-end
-
 function update( ... )
 	events.update()
 end

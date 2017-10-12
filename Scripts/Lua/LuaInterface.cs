@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using XLua;
 
 public class LuaInterface {
@@ -38,5 +39,29 @@ public class LuaInterface {
 
     public static void SetLocalPosition(GameObject go, float x, float y, float z) {
         go.transform.localPosition = new Vector3(x, y, z);
+    }
+
+    public static void SetLocalScale(GameObject go, float x, float y, float z) {
+        go.transform.localScale = new Vector3(x, y, z);
+    }
+
+    public static void DestroyGameObject(GameObject go) {
+        MonoBehaviour.Destroy(go);
+    }
+
+    public static void AddClick(GameObject go, LuaFunction cb) {
+        Button btn = go.GetComponent<Button>();
+        btn.onClick.AddListener(delegate () {
+            cb.Call(go);
+        });
+    }
+
+    public static GameObject Find(GameObject root, string path) {
+        Transform trans = root.transform.Find(path);
+        if (trans == null) {
+            return null;
+        } else {
+            return trans.gameObject;
+        }
     }
 }

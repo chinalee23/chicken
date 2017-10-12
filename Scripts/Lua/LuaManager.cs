@@ -32,8 +32,7 @@ public class LuaManager : Singleton<LuaManager> {
             return;
         }
         LuaTable lt = rst[0] as LuaTable;
-        
-        lt.Get("start", out lfStart);
+                
         lt.Get("update", out lfUpdate);
         lt.Get("fixedUpdate", out lfFixedUpdate);
     }
