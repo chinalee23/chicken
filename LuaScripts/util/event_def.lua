@@ -1,0 +1,4 @@
+return {
+	'update',
+	'fixedUpdate',
+}
