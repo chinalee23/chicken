@@ -12,7 +12,9 @@ function prepare(data)
 end
 
 function go( ... )
-	-- body
+	for _, c in pairs(characters) do
+		c:calc()
+	end
 end
 
 return _M

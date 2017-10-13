@@ -11,12 +11,12 @@ local function startOffline( ... )
 		{id = 1, pos = {0, 0}, size = 20},
 		{id = 2, pos = {200, 200}, size = 20},
 	}
-	local battle = require 'battle.battle'
+	local battle = require 'battle.battle_offline'
 	battle.start(data)
 end
 
 local function startOnline( ... )
-	-- body
+	local battle = require 'battle.battle_online'
 end
 
 function start( ... )

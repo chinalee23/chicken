@@ -1,31 +1,34 @@
-local _M = {}
+local _M = module()
 
-local battleLogic = require 'battle.logic.battle_logic'
+local game = require 'game'
+local driver = require 'battle.logic.driver'
+local input = require 'battle.input'
 
-local input = CS.UnityEngine.Input
-local KeyCode = CS.UnityEngine.KeyCode
+local started = false
 
-local battleStarted = false
+local function fixedUpdate( ... )
+	if not started then return end
 
-local function updateInput( ... )
-	if input.GetKey(KeyCode.W) then
-	end
+	local command = input.getCommand()
+	driver.characters[game.myid]:setCommand(command)
+
+	driver.go()
 end
 
-function _M.start(data)
-	_M.battleData = data
+local function update( ... )
+	if not started then return end
 
-	battleLogic.start(data)
-	LuaInterface.LoadScene('main')
+	input.update()
 end
 
-function _M.update( ... )
-	if not battleStarted then return end
-	updateInput()
+function start(data)
+	driver.prepare(data)
+	LuaInterface.LoadPrefab('Prefab/battle')
+
+	started = true
 end
 
-function _M.fixedUpdate( ... )
-	if not battleStarted then return end
-end
+events.update.add_listener(update)
+events.fixedUpdate.add_listener(fixedUpdate)
 
 return _M
