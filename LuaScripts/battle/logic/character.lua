@@ -7,21 +7,28 @@ function _M:ctor(data)
 	self.id = data.id
 	self.position = Vector2(data.pos[1], data.pos[2])
 	self.size = data.size
+	self.command = nil
 end
 
 function _M:setCommand(command)
+	self.command = command
+end
+
+function _M:calc( ... )
+	if not self.command then return end
+	
 	local x = 0
 	local y = 0
 
-	if command[1] and not command[2] then
+	if self.command[1] and not self.command[2] then
 		y = speed
-	elseif command[2] and not command[1] then
+	elseif self.command[2] and not self.command[1] then
 		y = -speed
 	end
 
-	if command[3] and not command[4] then
+	if self.command[3] and not self.command[4] then
 		x = -speed
-	elseif command[4] and not command[3] then
+	elseif self.command[4] and not self.command[3] then
 		x = speed
 	end
 
