@@ -1,6 +1,7 @@
 package network
 
 import (
+	"fmt"
 	"net"
 )
 
@@ -40,6 +41,9 @@ func unpack(c *connection, data []byte) {
 	tmp = append(tmp, data...)
 
 	for {
+		if len(tmp) == 0 {
+			break
+		}
 		sz := int(tmp[0])
 		if sz+1 > len(tmp) {
 			c.buffer = tmp
@@ -61,6 +65,12 @@ func unpack(c *connection, data []byte) {
 	}
 }
 
+func pack(data []byte) []byte {
+	tmp := make([]byte, 1)
+	tmp[0] = byte(len(data))
+	return append(tmp, data...)
+}
+
 func Start() {
 	connections = make([]*connection, 0)
 
@@ -69,12 +79,15 @@ func Start() {
 
 	go startTcp()
 	go recv()
+
+	fmt.Println("network start...")
 }
 
 func Send(id int, data []byte) {
 	if id >= len(connections) {
 		return
 	}
+	data = pack(data)
 	select {
 	case connections[id].chsend <- data:
 		return
