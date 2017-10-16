@@ -3,8 +3,6 @@
 -- % 只支持两个整数运算
 -- ^ 第二个参数必须为整数
 
-require 'ut_string'
-
 local fraction = {}
 setmetatable(fraction, fraction)
 fraction.__index = fraction
@@ -33,7 +31,7 @@ local function to_integer(x)
 	end
 end
 
-function max_common_divisor(a, b)
+local function max_common_divisor(a, b)
 	assert(a ~= 0 and b ~= 0)
 	local c = a % b
 	while c ~= 0 do

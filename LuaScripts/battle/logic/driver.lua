@@ -2,7 +2,11 @@ local _M = module()
 
 local CHARACTER = require 'battle.logic.character'
 
+local sysMove = require 'battle.logic.sys_move'
+local sysFood = require 'battle.logic.sys_food'
+
 characters = {}
+foods = {}
 
 function prepare(data)
 	for _, v in ipairs(data) do
@@ -12,9 +16,8 @@ function prepare(data)
 end
 
 function go( ... )
-	for _, c in pairs(characters) do
-		c:calc()
-	end
+	sysMove.calc(characters)
+	sysFood.calc(characters)
 end
 
 return _M

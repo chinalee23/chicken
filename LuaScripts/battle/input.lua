@@ -24,6 +24,15 @@ function update( ... )
 end
 
 function getCommand( ... )
+	if up and down then
+		up = false
+		down = false
+	end
+	if left and right then
+		left = false
+		right = false
+	end
+
 	local rst = {up, down, left, right}
 	up = false
 	down = false

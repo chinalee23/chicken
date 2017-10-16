@@ -10,7 +10,7 @@ end
 
 function _M:update()
 	local lc = driver.characters[self.id]
-	LuaInterface.SetLocalPosition(self.gameObject, lc.position.x, lc.position.y, 0)
+	LuaInterface.SetLocalPosition(self.gameObject, lc.position.x-569, lc.position.y-321, 0)
 	LuaInterface.SetLocalScale(self.gameObject, lc.size, lc.size, 1)
 end
 

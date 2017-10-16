@@ -1,6 +1,6 @@
 -- 伪随机运算
 
-local fraction = require 'fraction'
+local fraction = require 'util.fraction'
 
 local k = 16807
 local m = 2147483647 -- 2^32 - 1
@@ -18,14 +18,14 @@ local function rand( ... )
 end
 
 -- 左右闭包含，不带参数为 [0, 1], 返回 fraction
-local function random(low, high)
+local function range(low, high)
 	rand()
 	if not low and not high then
 		return fraction.new(seed, m - 1)
 	end
 	low = low or 0
 	high = high or m - 1
-	return fraction.new(seed % (high - low + 1) + low)
+	return fraction.new(seed % (high - low + 1) + low, 1)
 end
 
 -- set seed
@@ -34,6 +34,6 @@ local function srand(x)
 end
 
 return {
-	random = random,
+	range = range,
 	srand = srand,
 }

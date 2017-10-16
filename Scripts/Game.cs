@@ -13,7 +13,10 @@ public class Game : MonoBehaviour {
         instance = this;
         DontDestroyOnLoad(this);
 
+        Application.runInBackground = true;
+
         LuaManager.Instance().Init();
+        NetSystem.Instance().Init();
 
         GameObject goCamera = LuaInterface.LoadPrefab("Prefab/UICamera");
         UICamera = goCamera.GetComponent<Camera>();
@@ -29,10 +32,16 @@ public class Game : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        NetSystem.Instance().Update();
         LuaManager.Instance().Update();
 	}
 
     void FixedUpdate() {
         LuaManager.Instance().FixedUpdate();
+    }
+
+    void OnApplicationQuit() {
+        Debug.Log("quit game");
+        NetSystem.Instance().Dispose();
     }
 }

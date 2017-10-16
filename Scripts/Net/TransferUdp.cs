@@ -34,7 +34,8 @@ namespace Net {
             }
         }
 
-        public override void Connect(IPEndPoint remote) {
+        public override void AsyncConnect(IPEndPoint remote, Common.ConnectCallback cb) {
+            cbConnect = cb;
             try {
                 rep = remote;
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -43,8 +44,10 @@ namespace Net {
                 thRead.Start();
 
                 Connected = true;
+                cbConnect(true);
             } catch (Exception e) {
                 error(e);
+                cbConnect(false);
             }
         }
 

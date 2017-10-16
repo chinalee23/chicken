@@ -15,8 +15,8 @@ namespace Net {
             U = new Rudp();
         }
 
-        public void Connect(System.Net.IPEndPoint remote) {
-            transfer.Connect(remote);
+        public void AsyncConnect(System.Net.IPEndPoint remote, Common.ConnectCallback cb) {
+            transfer.AsyncConnect(remote, cb);
         }
 
         public void Update() {

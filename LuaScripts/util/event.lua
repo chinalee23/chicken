@@ -1,33 +1,33 @@
 local function event( ... )
-	local self = {
-		handlers = {},
-		rmlist = {},
-		locked = false,
-	}
+	local self = {}
 
-	function self.add_listener(handler)
+	local handlers = {}
+	local rmlist = {}
+	local locked = false
+
+	function self.addListener(handler)
 		assert(handler and type(handler) == 'function', 'handler is not valid, check it')
-		self.handlers[handler] = true
+		handlers[handler] = true
 	end
 
-	function self.remove_listener(handler)
-		if self.locked then
-			self.handlers[handler] = nil
+	function self.removeListener(handler)
+		if locked then
+			handlers[handler] = nil
 		else
-			table.insert(self.rmlist, handler)
+			table.insert(rmlist, handler)
 		end
 	end
 
 	local function broadcast(self, ...)
-		self.locked = true
-		for k, _ in pairs(self.handlers) do
+		locked = true
+		for k, _ in pairs(handlers) do
 			k(...)
 		end
-		for _, k in ipairs(self.rmlist) do
-			self.handlers[k] = nil
+		for _, k in ipairs(rmlist) do
+			handlers[k] = nil
 		end
-		self.rmlist = {}
-		self.locked = false
+		rmlist = {}
+		locked = false
 	end
 
 	setmetatable(self, {__call = broadcast})

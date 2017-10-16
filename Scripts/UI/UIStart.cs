@@ -17,6 +17,6 @@ public class UIStart : MonoBehaviour {
 	}
 
     void onStart() {
-        LuaManager.Instance().Start();
+        
     }
 }

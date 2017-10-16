@@ -28,7 +28,7 @@ function start(data)
 	started = true
 end
 
-events.update.add_listener(update)
-events.fixedUpdate.add_listener(fixedUpdate)
+events.update.addListener(update)
+events.fixedUpdate.addListener(fixedUpdate)
 
 return _M

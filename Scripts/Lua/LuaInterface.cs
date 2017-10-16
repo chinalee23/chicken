@@ -5,10 +5,6 @@ using UnityEngine.UI;
 using XLua;
 
 public class LuaInterface {
-    public static void Connect() {
-
-    }
-
     public static void LoadScene(string name, System.Action cb) {
         Game.Instance().StartCoroutine(loadScene(name, cb));
     }
@@ -64,4 +60,17 @@ public class LuaInterface {
             return trans.gameObject;
         }
     }
+
+    #region net
+    public static void Connect(string ip, int port, LuaFunction cb) {
+        NetSystem.Instance().Connect(ip, port, delegate (bool status) {
+            cb.Call(status);
+        });
+    }
+
+    public static void Send(string msg) {
+        byte[] data = System.Text.Encoding.UTF8.GetBytes(msg);
+        NetSystem.Instance().Send(data);
+    }
+    #endregion
 }

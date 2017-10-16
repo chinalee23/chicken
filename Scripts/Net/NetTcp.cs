@@ -57,15 +57,20 @@ namespace Net {
             return true;
         }
 
-        public void Connect(System.Net.IPEndPoint remote) {
-            transfer.Connect(remote);
+        public void AsyncConnect(System.Net.IPEndPoint remote, Common.ConnectCallback cb) {
+            transfer.AsyncConnect(remote, cb);
         }
 
         public void Update() {
             lock(buffer) {
                 int offset = 0;
-                while (unpack(ref offset)) {}
+                while (offset < buffer.len) {
+                    if (!unpack(ref offset)) {
+                        break;
+                    }
+                }
                 Array.Copy(buffer.bt, offset, buffer.bt, 0, buffer.len - offset);
+                buffer.len -= offset;
             }
         }
 

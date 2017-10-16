@@ -1,9 +1,11 @@
 ﻿namespace Net {
 
-    class Common {
+    public class Common {
         public static int BUFFER_SIZE = 1024;
 
         public static System.Action<string> Print;
+
+        public delegate void ConnectCallback(bool status);
     }
 
     class Buffer {
@@ -16,7 +18,7 @@
     }
 
     interface INet {
-        void Connect(System.Net.IPEndPoint remote);
+        void AsyncConnect(System.Net.IPEndPoint remote, Common.ConnectCallback cb);
         void Update();
         void Send(byte[] data);
         byte[] Recv();

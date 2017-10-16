@@ -1,4 +1,6 @@
 return {
 	'update',
 	'fixedUpdate',
+
+	'battleMonoPrepared',
 }

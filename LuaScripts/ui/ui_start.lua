@@ -5,12 +5,21 @@ local gameObject
 function awake(go)
 	gameObject = go
 
-	local btn = LuaInterface.Find(go, 'BtnStart')
-	LuaInterface.AddClick(btn, function ( ... )
+	local btnOnline = LuaInterface.Find(go, 'BtnOnline')
+	local btnOffline = LuaInterface.Find(go, 'BtnOffline')
+	local cb = function (btn)
 		LuaInterface.DestroyGameObject(go)
 		local game = require 'game'
-		game.start()
-	end)
+		if btn == btnOnline then
+			game.start(true)
+		else
+			game.start(false)
+		end
+	end
+	LuaInterface.AddClick(btnOnline, cb)
+	LuaInterface.AddClick(btnOffline, cb)
+
+	local btn
 end
 
 function start( ... )

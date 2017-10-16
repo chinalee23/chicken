@@ -11,6 +11,8 @@ namespace Net {
         protected Buffer socketBuffer;
         protected Buffer dataBuffer;
 
+        protected Common.ConnectCallback cbConnect;
+
         public bool Connected {
             get;
             protected set;
@@ -30,10 +32,6 @@ namespace Net {
             if (socket != null) {
                 socket.Close();
             }
-        }
-
-        void copyBuffer(Buffer socketBuffer, Buffer dataBuffer) {
-            
         }
 
         protected void copyToDataBuffer() {
@@ -78,7 +76,7 @@ namespace Net {
             Connected = false;
         }
 
-        public virtual void Connect(IPEndPoint remote) { }
+        public virtual void AsyncConnect(IPEndPoint remote, Common.ConnectCallback cb) { }
         public virtual void Send(byte[] data, int len) { }
         public virtual void Update(float delta) { }
     }

@@ -8,14 +8,16 @@ namespace Net {
         public TransferTcp(Buffer buffer) : base(buffer) {
         }
 
-        void cbConnect(IAsyncResult ar) {
+        void asyncConnect(IAsyncResult ar) {
             try {
                 socket.EndConnect(ar);
                 thRead = new Thread(new ThreadStart(read));
                 thRead.Start();
 
                 Connected = true;
+                cbConnect(true);
             } catch (Exception e) {
+                cbConnect(false);
                 error(e);
                 return;
             }
@@ -34,11 +36,13 @@ namespace Net {
             }
         }
 
-        public override void Connect(IPEndPoint remote) {
+        public override void AsyncConnect(IPEndPoint remote, Common.ConnectCallback cb) {
+            cbConnect = cb;
             try {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                socket.BeginConnect(remote, cbConnect, null);
+                socket.BeginConnect(remote, asyncConnect, null);
             } catch (Exception e) {
+                cbConnect(false);
                 error(e);
             }
         }

@@ -6,10 +6,10 @@ using System.IO;
 
 public class LuaManager : Singleton<LuaManager> {
     public LuaEnv luaEnv;
-
-    private LuaFunction lfStart;
+    
     private LuaFunction lfUpdate;
     private LuaFunction lfFixedUpdate;
+    private LuaFunction lfProcessMsg;
 
     byte[] load(ref string filepath) {
         filepath = filepath.Replace('.', '/');
@@ -35,6 +35,7 @@ public class LuaManager : Singleton<LuaManager> {
                 
         lt.Get("update", out lfUpdate);
         lt.Get("fixedUpdate", out lfFixedUpdate);
+        lt.Get("processMsg", out lfProcessMsg);
     }
 
     public object[] DoLua(string name, string chunk = "chunk", LuaTable env = null) {
@@ -62,9 +63,23 @@ public class LuaManager : Singleton<LuaManager> {
         }
     }
 
-    public void Start() {
-        if (lfStart != null) {
-            lfStart.Call();
+    public void Dispose() {
+        if (lfUpdate != null) {
+            lfUpdate.Dispose();
         }
+        if (lfFixedUpdate != null) {
+            lfFixedUpdate.Dispose();
+        }
+        if (luaEnv!= null) {
+            luaEnv.Dispose();
+        }
+    }
+
+    public void ProcessMsg(byte[] data) {
+        if (lfProcessMsg == null) {
+            return;
+        }
+        string msg = System.Text.Encoding.UTF8.GetString(data);
+        lfProcessMsg.Call(msg);
     }
 }
