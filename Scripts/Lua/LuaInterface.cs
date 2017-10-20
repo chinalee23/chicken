@@ -2,6 +2,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using XLua;
 
 public class LuaInterface {
@@ -45,32 +47,62 @@ public class LuaInterface {
         MonoBehaviour.Destroy(go);
     }
 
-    public static void AddClick(GameObject go, LuaFunction cb) {
-        Button btn = go.GetComponent<Button>();
-        btn.onClick.AddListener(delegate () {
-            cb.Call(go);
+    public static void AddClick(GameObject gameObject, LuaFunction cb) {
+        EventTrigger trigger = gameObject.GetComponent<EventTrigger>();
+        if (trigger == null) {
+            trigger = gameObject.AddComponent<EventTrigger>();
+        }
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerClick;
+        entry.callback.AddListener(delegate (BaseEventData data) {
+            cb.Call(gameObject);
         });
+        trigger.triggers.Add(entry);
     }
 
-    public static GameObject Find(GameObject root, string path) {
+    public static void AddEvent(GameObject go, EventTriggerType type, LuaFunction cb) {
+        EventTrigger trigger = go.GetComponent<EventTrigger>();
+        if (trigger == null) {
+            trigger = go.AddComponent<EventTrigger>();
+        }
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = type;
+        entry.callback.AddListener(delegate (BaseEventData data) {
+            cb.Call(go);
+        });
+        trigger.triggers.Add(entry);
+    }
+
+    public static object Find(GameObject root, string path, string component = null) {
         Transform trans = root.transform.Find(path);
         if (trans == null) {
             return null;
         } else {
-            return trans.gameObject;
+            if (component == null) {
+                return trans.gameObject;
+            } else {
+                object o = trans.GetComponent(component);
+                return o;
+            }
         }
     }
 
     #region net
     public static void Connect(string ip, int port, LuaFunction cb) {
-        NetSystem.Instance().Connect(ip, port, delegate (bool status) {
-            cb.Call(status);
-        });
+        NetSystem.Instance().Connect(ip, port, cb);
     }
 
-    public static void Send(string msg) {
+    public static void Send(int msgType, string msg) {
         byte[] data = System.Text.Encoding.UTF8.GetBytes(msg);
-        NetSystem.Instance().Send(data);
+        NetSystem.Instance().Send(msgType, data);
     }
     #endregion
+
+    public static void LuaError(string s) {
+        Debug.LogError(s);
+    }
+
+    public static void SetText(Text text, string s) {
+        text.text += s + "\n";
+    }
 }

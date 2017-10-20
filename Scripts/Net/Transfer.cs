@@ -6,28 +6,26 @@ using System.Threading;
 namespace Net {
     class Transfer {
         protected Socket socket;
-        protected Thread thRead;
+        protected Thread threadRead;
 
         protected Buffer socketBuffer;
         protected Buffer dataBuffer;
-
-        protected Common.ConnectCallback cbConnect;
 
         public bool Connected {
             get;
             protected set;
         }
 
-        public Transfer(Buffer buffer) {
+        public Transfer() {
             socketBuffer = new Buffer();
-            dataBuffer = buffer;
+            dataBuffer = new Buffer();
 
             Connected = false;
         }
 
         ~Transfer() {
-            if (thRead != null) {
-                thRead.Abort();
+            if (threadRead != null) {
+                threadRead.Abort();
             }
             if (socket != null) {
                 socket.Close();
@@ -36,7 +34,7 @@ namespace Net {
 
         protected void copyToDataBuffer() {
             lock (dataBuffer) {
-                int copyLen = Common.BUFFER_SIZE - dataBuffer.len;
+                int copyLen = Definition.BUFFER_SIZE - dataBuffer.len;
                 if (copyLen > socketBuffer.len) {
                     copyLen = socketBuffer.len;
                 }
@@ -56,16 +54,13 @@ namespace Net {
         }
 
         protected void error(Exception e) {
-            if (Common.Print != null) {
-                Common.Print(e.ToString());
-            }
-            
             Disconnect();
+            throw e;
         }
 
         public void Disconnect() {
-            if (thRead != null) {
-                thRead.Abort();
+            if (threadRead != null) {
+                threadRead.Abort();
             }
             if (socket != null) {
                 socket.Close();
@@ -76,8 +71,9 @@ namespace Net {
             Connected = false;
         }
 
-        public virtual void AsyncConnect(IPEndPoint remote, Common.ConnectCallback cb) { }
-        public virtual void Send(byte[] data, int len) { }
-        public virtual void Update(float delta) { }
+        public virtual void Connect(IPEndPoint remote, Action cb) { }
+        public virtual void Send(int msgType, byte[] msg) { }
+        public virtual void Update() { }
+        public virtual Message Recv() { return null; }
     }
 }

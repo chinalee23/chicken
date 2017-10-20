@@ -75,11 +75,11 @@ public class LuaManager : Singleton<LuaManager> {
         }
     }
 
-    public void ProcessMsg(byte[] data) {
+    public void ProcessMsg(int msgType, byte[] msg) {
         if (lfProcessMsg == null) {
             return;
         }
-        string msg = System.Text.Encoding.UTF8.GetString(data);
-        lfProcessMsg.Call(msg);
+        string jd = System.Text.Encoding.UTF8.GetString(msg);
+        lfProcessMsg.Call(jd);
     }
 }

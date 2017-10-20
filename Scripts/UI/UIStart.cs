@@ -4,14 +4,25 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UIStart : MonoBehaviour {
+    public Text textLog;
+    public Button btnTest;
 
-	// Use this for initialization
-	void Start () {
-        Button btn = GetComponentInChildren<Button>();
-        btn.onClick.AddListener(onStart);
-	}
+    void onConnect(bool status) {
+        if (status) {
+            textLog.text += "connect success\n";
+        } else {
+            textLog.text += "connect fail\n";
+        }
+    }
+
+    void onBtnTest() {
+        textLog.text += "click test\n";
+    }
 	
-	// Update is called once per frame
+	void Start () {
+        btnTest.onClick.AddListener(onBtnTest);
+	}
+		
 	void Update () {
 		
 	}
