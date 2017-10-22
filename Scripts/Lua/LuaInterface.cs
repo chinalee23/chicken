@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -33,6 +34,10 @@ public class LuaInterface {
             go.transform.localScale = Vector3.one;
         }
         return go;
+    }
+
+    public static void SetParent(GameObject go, GameObject parent) {
+        go.transform.parent = parent.transform;
     }
 
     public static void SetLocalPosition(GameObject go, float x, float y, float z) {
@@ -85,6 +90,23 @@ public class LuaInterface {
                 return o;
             }
         }
+    }
+
+    public static LuaTable GetAllChild(GameObject parent) {
+        Transform trans = parent.transform;
+        LuaTable lt = LuaManager.Instance().luaEnv.NewTable();
+        for (int i = 0; i < trans.childCount; ++i) {
+            lt.Set(i + 1, trans.GetChild(i).gameObject);
+        }
+        return lt;
+    }
+
+    public static LuaTable GetLocalPosition(GameObject go) {
+        LuaTable lt = LuaManager.Instance().luaEnv.NewTable();
+        lt.Set(1, go.transform.localPosition.x);
+        lt.Set(2, go.transform.localPosition.y);
+        lt.Set(3, go.transform.localPosition.z);
+        return lt;
     }
 
     #region net
