@@ -1,13 +1,16 @@
 local _M = module()
 
+local random = require 'util.random'
+
 local SPEED = 5
-local SCOPE = 40
-local GAP = 25
+local SCOPE = 60
+local GAP = 35
 local sqrt = math.sqrt(0.5)
 
 
 local gameObject
 local rootRetinue
+local camera
 
 local major = {
 	holes = {},
@@ -19,21 +22,25 @@ local input = CS.UnityEngine.Input
 local keyCode = CS.UnityEngine.KeyCode
 
 local function init( ... )
-	major.go = LuaInterface.Find(gameObject, 'major')
-	local pos = LuaInterface.GetLocalPosition(major.go)
-	major.pos = Vector3(pos[1], pos[2], pos[3])
+	major.go = LuaInterface.LoadPrefab('Prefab/Major', gameObject)
+	major.pos = Vector2(0, 0)
+	LuaInterface.SetLocalPosition(major.go, major.pos.x, major.pos.y, 0)
 
 	local rootNpc = LuaInterface.Find(gameObject, 'npcs')
-	local goNpcs = LuaInterface.GetAllChild(rootNpc)
-	for i = 1, #goNpcs do
-		local pos = LuaInterface.GetLocalPosition(goNpcs[i])
+	for i = 1, 20 do
+		local go = LuaInterface.LoadPrefab('Prefab/Npc', rootNpc)
+		local x = random.range(-1000, 1000):tonumber()
+		local y = random.range(-1000, 1000):tonumber()
+		LuaInterface.SetLocalPosition(go, x, y, 0)
 		table.insert(npcs, {
-				go = goNpcs[i],
-				pos = Vector3(pos[1], pos[2], pos[3]),
+				go = go,
+				pos = Vector2(x, y),
 			})
 	end
 
 	rootRetinue = LuaInterface.Find(gameObject, 'retinues')
+
+	camera = LuaInterface.Find(gameObject, 'Camera')
 end
 
 local function addRetinue(retinue)
@@ -42,17 +49,16 @@ local function addRetinue(retinue)
 	local sz = layer*2+1
 	for i = 1, max do
 		if not major.holes[i] then
-			log.info('add to ', i)
 			local offset
 			if i >= 1 and i <= sz then
-				offset = Vector3(GAP*(i-1-layer), GAP*layer, 0)
+				offset = Vector2(GAP*(i-1-layer), GAP*layer)
 			elseif i <= max and i > max-sz then
 				local j = i-(max-sz)
-				offset = Vector3(GAP*(j-1-layer), -GAP*layer, 0)
+				offset = Vector2(GAP*(j-1-layer), -GAP*layer)
 			else
 				local row = math.floor((i-sz-1)/2)+1
 				local col = i%2 == 0 and -1 or 1
-				offset = Vector3(col*GAP*layer, (layer-row)*GAP, 0)
+				offset = Vector2(col*GAP*layer, (layer-row)*GAP)
 			end
 			major.holes[i] = true
 			retinue.offset = offset
@@ -87,7 +93,7 @@ local function updateMajor( ... )
 		y = y * sqrt
 	end
 
-	local newPos = major.pos + Vector3(x, y, 0)*SPEED
+	local newPos = major.pos + Vector2(x, y)*SPEED
 	newPos.x = math.min(1136/2-10, newPos.x)
 	newPos.x = math.max(-1136/2+10, newPos.x)
 	newPos.y = math.min(640/2-10, newPos.y)
@@ -95,14 +101,14 @@ local function updateMajor( ... )
 
 	if major.pos ~= newPos then
 		major.pos = newPos
-		LuaInterface.SetLocalPosition(major.go, newPos.x, newPos.y, newPos.z)
+		LuaInterface.SetLocalPosition(major.go, newPos.x, newPos.y, 0)
 	end
 end
 
 local function updateRetinue( ... )
 	for _, v in ipairs(retinues) do
 		local newpos = major.pos + v.offset
-		LuaInterface.SetLocalPosition(v.go, newpos.x, newpos.y, newpos.z)
+		LuaInterface.SetLocalPosition(v.go, newpos.x, newpos.y, 0)
 	end
 end
 
@@ -123,6 +129,10 @@ local function updateNpc( ... )
 			i = i + 1
 		end
 	end
+end
+
+local function updateCamera( ... )
+	-- body
 end
 
 
