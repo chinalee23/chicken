@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using XLua;
 
+[LuaCallCSharp]
 public class LuaInterface {
     public static void LoadScene(string name, System.Action cb) {
         Game.Instance().StartCoroutine(loadScene(name, cb));

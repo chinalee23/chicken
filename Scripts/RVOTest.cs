@@ -186,14 +186,24 @@ public class RVOTest : MonoBehaviour {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                RVO.Vector2 v = new RVO.Vector2(-200f + j * 60f, 200f - i * 60f);
+                RVO.Vector2 v = new RVO.Vector2(-300f + j * 70f, 300f - i * 70f);
                 Simulator.Instance.addAgent(v);
                 //goals.Add(new RVO.Vector2(200f, -200f));
                 goals.Add(-v);
             }
         }
 
-        addObstacle_xx();
+        //addObstacle_xx();
+    }
+
+    void setupScenario_Simple() {
+        Simulator.Instance.setTimeStep(timeStep);
+        Simulator.Instance.setAgentDefaults(neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed, new RVO.Vector2(2f, 2f));
+
+        Simulator.Instance.addAgent(new RVO.Vector2(-50, 0));
+        goals.Add(new RVO.Vector2(100, 0));
+        Simulator.Instance.addAgent(new RVO.Vector2(50, 0));
+        goals.Add(new RVO.Vector2(-100, 0));
     }
     
     void setPreferredVelocities() {
@@ -208,7 +218,7 @@ public class RVOTest : MonoBehaviour {
                 goalVector = RVOMath.normalize(goalVector);
             }
 
-            Simulator.Instance.setAgentPrefVelocity(i, 3 * goalVector);
+            Simulator.Instance.setAgentPrefVelocity(i, 4 * goalVector);
 
             /* Perturb a little to avoid deadlocks due to perfect symmetry. */
             float angle = (float)random.NextDouble() * 2.0f * (float)Math.PI;
@@ -297,7 +307,7 @@ public class RVOTest : MonoBehaviour {
 
     IEnumerator move() {
         yield return new WaitForSeconds(1);
-        float start = Time.realtimeSinceStartup;
+        float start = Time.time;
         Debug.Log("start at " + start);
         do {
             //yield return new WaitForSeconds(timeStep);
@@ -306,32 +316,32 @@ public class RVOTest : MonoBehaviour {
             setPreferredVelocities();
             Simulator.Instance.doStep();
 
-            if (Simulator.Instance.getNumAgents() > 1) {
-                if ((Time.realtimeSinceStartup - start) > 1.5f) {
-                    start = Time.realtimeSinceStartup;
+            //if (Simulator.Instance.getNumAgents() > 1) {
+            //    if ((Time.time - start) > 1.5f) {
+            //        start = Time.time;
 
-                    updateVisualization(true);
-                    
-                    int index = Simulator.Instance.getNumAgents() - 1;
-                    IList<RVO.Vector2> obstacle = new List<RVO.Vector2>();
-                    RVO.Vector2 v = Simulator.Instance.getAgentPosition(index);
-                    obstacle.Add(new RVO.Vector2(v.x() - 20, v.y() + 20));
-                    obstacle.Add(new RVO.Vector2(v.x() - 20, v.y() - 20));
-                    obstacle.Add(new RVO.Vector2(v.x() + 20, v.y() - 20));
-                    obstacle.Add(new RVO.Vector2(v.x() + 20, v.y() + 20));
-                    Simulator.Instance.addObstacle(obstacle);
-                    Simulator.Instance.processObstacles();
+            //        updateVisualization(true);
 
-                    Simulator.Instance.removeAgent(index);
-                    gos.RemoveAt(index);
-                    goals.RemoveAt(index);
-                } else {
-                    updateVisualization(false);
-                }
-            } else {
-                updateVisualization(false);
-            }
-            //updateVisualization(false);
+            //        int index = Simulator.Instance.getNumAgents() - 1;
+            //        IList<RVO.Vector2> obstacle = new List<RVO.Vector2>();
+            //        RVO.Vector2 v = Simulator.Instance.getAgentPosition(index);
+            //        obstacle.Add(new RVO.Vector2(v.x() - 20, v.y() + 20));
+            //        obstacle.Add(new RVO.Vector2(v.x() - 20, v.y() - 20));
+            //        obstacle.Add(new RVO.Vector2(v.x() + 20, v.y() - 20));
+            //        obstacle.Add(new RVO.Vector2(v.x() + 20, v.y() + 20));
+            //        Simulator.Instance.addObstacle(obstacle);
+            //        Simulator.Instance.processObstacles();
+
+            //        Simulator.Instance.removeAgent(index);
+            //        gos.RemoveAt(index);
+            //        goals.RemoveAt(index);
+            //    } else {
+            //        updateVisualization(false);
+            //    }
+            //} else {
+            //    updateVisualization(false);
+            //}
+            updateVisualization(false);
 
             //if ((Time.realtimeSinceStartup - start) > 1) {
             //    start = Time.realtimeSinceStartup;
@@ -339,7 +349,7 @@ public class RVOTest : MonoBehaviour {
             //    Obstacle.SetActive(true);
             //}
         } while (!reachedGoal());
-        Debug.Log("end at " + Time.realtimeSinceStartup);
+        Debug.Log("end at " + Time.time);
     }
 
     void Start () {
@@ -347,7 +357,8 @@ public class RVOTest : MonoBehaviour {
 
         //setupScenario_Circle();
         //setupScenario_Block();
-        setupScenario_Fight();
+        //setupScenario_Fight();
+        setupScenario_Simple();
         clone();
         StartCoroutine(move());
     }

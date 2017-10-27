@@ -18,31 +18,15 @@ public class UIEventListener : UnityEngine.EventSystems.EventTrigger {
         return listener;
     }
 
-    public override void OnPointerClick(PointerEventData eventData) {
-        if (onClick != null) {
-            onClick(gameObject);
-        }
-    }
-
-    public override void OnPointerDown(PointerEventData eventData) {
-        if (onDown != null) {
-            onDown(gameObject);
-        }
-    }
-
-    private void callback(BaseEventData data) {
-        Debug.Log(data);
-    }
-
-    public void AddEvent(GameObject go, EventTriggerType type) {
-        EventTrigger trigger = go.GetComponent<EventTrigger>();
+    public void AddEvent(EventTriggerType type, UnityAction<BaseEventData> cb) {
+        EventTrigger trigger = gameObject.GetComponent<EventTrigger>();
         if (trigger == null) {
-            trigger = go.AddComponent<EventTrigger>();
+            trigger = gameObject.AddComponent<EventTrigger>();
         }
 
         Entry entry = new Entry();
         entry.eventID = type;
-        entry.callback.AddListener(callback);
+        entry.callback.AddListener(cb);
         trigger.triggers.Add(entry);
     }
 }

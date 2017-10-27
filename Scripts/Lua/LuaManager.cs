@@ -13,12 +13,21 @@ public class LuaManager : Singleton<LuaManager> {
 
     byte[] load(ref string filepath) {
         filepath = filepath.Replace('.', '/');
+#if UNITY_EDITOR
         string realPath = Path.Combine(Application.dataPath, "LuaScripts/" + filepath + ".lua");
         if (File.Exists(realPath)) {
             return File.ReadAllBytes(realPath);
         } else {
             return null;
         }
+#else
+        TextAsset asset = Resources.Load("LuaScripts/" + filepath) as TextAsset;
+        if (asset == null) {
+            return null;
+        } else {
+            return asset.bytes;
+        }
+#endif
     }
 
     public void Init() {

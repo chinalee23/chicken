@@ -57,11 +57,14 @@ namespace RVO
              * <param name="end">End.</param>
              * <param name="doneEvent">Done event.</param>
              */
-            internal Worker(int start, int end, ManualResetEvent doneEvent)
+            internal Worker(ManualResetEvent doneEvent)
             {
+                doneEvent_ = doneEvent;
+            }
+
+            internal void set(int start, int end) {
                 start_ = start;
                 end_ = end;
-                doneEvent_ = doneEvent;
             }
 
             /**
@@ -296,39 +299,47 @@ namespace RVO
                 for (int block = 0; block < workers_.Length; ++block)
                 {
                     doneEvents_[block] = new ManualResetEvent(false);
-                    workers_[block] = new Worker(block * getNumAgents() / workers_.Length, (block + 1) * getNumAgents() / workers_.Length, doneEvents_[block]);
+                    workers_[block] = new Worker(doneEvents_[block]);
                 }
+            }
+
+            for (int block = 0; block < workers_.Length; block++) {
+                workers_[block].set(block * getNumAgents() / workers_.Length, (block + 1) * getNumAgents() / workers_.Length);
             }
 
             kdTree_.buildAgentTree();
 
-            for (int i = 0; i < agents_.Count; i++) {
-                agents_[i].computeNeighbors();
-                agents_[i].computeNewVelocity();
-            }
-            for (int i = 0; i < agents_.Count; i++) {
-                agents_[i].update();
-            }
-
-            //for (int block = 0; block < workers_.Length; ++block)
-            //{
-            //    doneEvents_[block].Reset();
-            //    ThreadPool.QueueUserWorkItem(workers_[block].step);
+            //for (int i = 0; i < agents_.Count; i++) {
+            //    agents_[i].computeNeighbors();
+            //    agents_[i].computeNewVelocity();
+            //}
+            //for (int i = 0; i < agents_.Count; i++) {
+            //    agents_[i].update();
             //}
 
-            //WaitHandle.WaitAll(doneEvents_);
+            for (int block = 0; block < workers_.Length; ++block) {
+                doneEvents_[block].Reset();
+                ThreadPool.QueueUserWorkItem(workers_[block].step);
+            }
 
-            //for (int block = 0; block < workers_.Length; ++block)
-            //{
-            //    doneEvents_[block].Reset();
-            //    ThreadPool.QueueUserWorkItem(workers_[block].update);
-            //}
+            WaitHandle.WaitAll(doneEvents_);
 
-            //WaitHandle.WaitAll(doneEvents_);
+            for (int block = 0; block < workers_.Length; ++block) {
+                doneEvents_[block].Reset();
+                ThreadPool.QueueUserWorkItem(workers_[block].update);
+            }
+
+            WaitHandle.WaitAll(doneEvents_);
 
             globalTime_ += timeStep_;
 
             return globalTime_;
+        }
+
+        public void onlyupdate() {
+            for (int i = 0; i < agents_.Count; i++) {
+                agents_[i].update();
+            }
         }
 
         /**
@@ -876,6 +887,13 @@ namespace RVO
         public void setTimeStep(float timeStep)
         {
             timeStep_ = timeStep;
+        }
+
+        public void removeObstacle(int index) {
+            if (index >= obstacles_.Count) {
+                return;
+            }
+            obstacles_.RemoveAt(index);
         }
 
         /**
