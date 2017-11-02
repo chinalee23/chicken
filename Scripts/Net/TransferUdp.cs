@@ -39,7 +39,7 @@ namespace Net {
 
         void send(byte[] data, int len) {
             try {
-                socket.SendTo(data, data.Length, SocketFlags.None, rep);
+                socket.SendTo(data, len, SocketFlags.None, rep);
                 if (!binded) {
                     binded = true;
                 }

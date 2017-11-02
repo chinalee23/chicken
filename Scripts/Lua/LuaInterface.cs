@@ -125,7 +125,33 @@ public class LuaInterface {
         Debug.LogError(s);
     }
 
-    public static void SetText(Text text, string s) {
-        text.text += s + "\n";
+    #region rvo
+    public static int RvoAddObstacle(LuaTable lt) {
+        IList<RVO.Vector2> obstacle = new List<RVO.Vector2>();
+        for (int i = 1; i <= lt.Length; i++) {
+            RVO.Vector2 v;
+            lt.Get(i, out v);
+            obstacle.Add(v);
+        }
+        return RVO.Simulator.Instance.addObstacle(obstacle);
     }
+    #endregion
+
+    #region animation
+    public static void PlayAnimation(GameObject go, string animName) {
+        Animation anim = go.GetComponent<Animation>();
+        if (anim != null) {
+            anim.Play(animName);
+        }
+    }
+    #endregion
+}
+
+public static class LuaCallUnity {
+    [LuaCallCSharp]
+    public static List<System.Type> list = new List<System.Type>() {
+        typeof(GameObject),
+        typeof(Transform),
+        typeof(Vector3),
+    };
 }

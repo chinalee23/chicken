@@ -33,8 +33,12 @@ public class LuaBehaviour : MonoBehaviour {
     private LuaFunction lfStart;
     private LuaFunction lfUpdate;
     private LuaFunction lfOndestroy;
+    private LuaFunction lfFixedupdate;
 
     void Awake() {
+        if (Game.Instance() == null) {
+            LuaManager.Instance().Init();
+        }
         luaEnv = LuaManager.Instance().GetEnv();
 
         object[] rst = LuaManager.Instance().DoLua(luaScript);
@@ -52,6 +56,7 @@ public class LuaBehaviour : MonoBehaviour {
         ltScript.Get("start", out lfStart);
         ltScript.Get("update", out lfUpdate);
         ltScript.Get("ondestroy", out lfOndestroy);
+        ltScript.Get("fixedupdate", out lfFixedupdate);
     }
 
     // Use this for initialization
@@ -69,6 +74,12 @@ public class LuaBehaviour : MonoBehaviour {
         if (Time.time - LuaBehaviour.lastGCTime > GCInterval) {
             luaEnv.Tick();
             LuaBehaviour.lastGCTime = Time.time;
+        }
+    }
+
+    void FixedUpdate() {
+        if (lfFixedupdate != null) {
+            lfFixedupdate.Call();
         }
     }
 

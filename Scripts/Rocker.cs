@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using XLua;
 
+[LuaCallCSharp]
 public class Rocker : MonoBehaviour {
     public float maxOffset;
-    
-    public Vector3 direction {
+
+    public Vector2 direction {
         get;
         private set;
+    }
+
+    public bool inorigin {
+        get {
+            return direction == Vector2.zero;
+        }
     }
 
     Transform btn;
@@ -27,8 +35,8 @@ public class Rocker : MonoBehaviour {
     }
 
     void onPointerUp(BaseEventData data) {
-        direction = Vector3.zero;
-        image.transform.localPosition = Vector3.zero;
+        direction = Vector2.zero;
+        image.transform.localPosition = Vector2.zero;
         btn.gameObject.SetActive(false);
     }
 
@@ -36,17 +44,18 @@ public class Rocker : MonoBehaviour {
         PointerEventData pd = (PointerEventData)data;
 
         Vector2 pos = pd.position;
-        Vector3 offset = pd.position - dragStartPos;
+        Vector2 offset = pd.position - dragStartPos;
         if (offset.magnitude > maxOffset) {
             direction = offset.normalized;
             offset = maxOffset * direction;
         } else {
-            direction = Vector3.zero;
+            direction = Vector2.zero;
         }
 
         image.transform.localPosition = offset;
     }
 
+    public static float frameTime = 0f;
     void Start() {
         UIEventListener.Get(gameObject).AddEvent(EventTriggerType.PointerUp, onPointerUp);
         UIEventListener.Get(gameObject).AddEvent(EventTriggerType.Drag, onDrag);
@@ -56,5 +65,7 @@ public class Rocker : MonoBehaviour {
         image = btn.transform.Find("Image");
         
         btn.gameObject.SetActive(false);
+
+        direction = Vector2.zero;
     }
 }

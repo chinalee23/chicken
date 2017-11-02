@@ -1,35 +1,32 @@
 local _M = module()
 
 local game = require 'game'
-local driver = require 'battle.logic.driver'
+local world = require 'battle.world'
 local input = require 'battle.input'
 
 local started = false
 
 local function fixedUpdate( ... )
 	if not started then return end
-
-	local command = input.getCommand()
-	if command[1] or command[2] or command[3] or command[4] then
-		driver.characters[game.myid]:setCommand(command)
-	end
-
-	driver.go()
+	table.insert(ecs.Single.input.inputs, {
+		id = world.getPlayerEntityId(game.myid),
+		direction = input.direction,
+	})
+	world.frameCalc()
 end
 
 local function update( ... )
 	if not started then return end
-
-	input.update()
+	world.update()
 end
 
 local function onBattleMonoPrepared( ... )
 	started = true
 end
 
-function start(data)
-	driver.prepare(data)
-	LuaInterface.LoadPrefab('Prefab/battle')
+function start()
+	started = false
+	LuaInterface.LoadScene('01battlefield_grass_ad_1v1')
 end
 
 events.update.addListener(update)

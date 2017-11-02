@@ -3,7 +3,7 @@ local util = {
 	'ut_string',
 	'ut_table',
 	'async',
-	'instance',
+	'class',
 	'module',
 	'event',
 	'vector2',
@@ -14,6 +14,10 @@ for i = 1, #util do
 	require('util.' .. util[i])
 end
 
+UnityEngine = CS.UnityEngine
 LuaInterface = CS.LuaInterface
+Time = UnityEngine.Time
+
+require 'ecs.ecs'
 
 require 'restrict_global'

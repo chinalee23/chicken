@@ -32,12 +32,14 @@
 
 using System;
 using System.Globalization;
+using XLua;
 
 namespace RVO
 {
     /**
      * <summary>Defines a two-dimensional vector.</summary>
      */
+     [LuaCallCSharp]
     public struct Vector2
     {
         internal float x_;

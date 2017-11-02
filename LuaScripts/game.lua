@@ -5,11 +5,14 @@ local json = require 'util.dkjson'
 local function startOffline( ... )
 	myid = 1
 
-	local data = {
-		{id = 1, pos = {200, 200}, size = 20},
+	_M.battleData = {
+		characters = {
+			{id = myid, pos = {0, 0}},
+		},
+		seed = os.time(),
 	}
 	local battle = require 'battle.battle_offline'
-	battle.start(data)
+	battle.start()
 end
 
 local function startOnline( ... )

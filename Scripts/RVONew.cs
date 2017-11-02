@@ -118,7 +118,7 @@ public class RVONew : MonoBehaviour {
     }
 
     void setMajorVelocity() {
-        if (rocker.direction == Vector3.zero) {
+        if (rocker.direction == UnityEngine.Vector2.zero) {
             if (!isObstacle) {
                 isObstacle = true;
                 removeGeneralAgent();
@@ -144,8 +144,8 @@ public class RVONew : MonoBehaviour {
             if (kvp.Value == generalAgentIndex) {
                 continue;
             }
-            Vector3 velocity = rocker.direction;
-            if (rocker.direction == Vector3.zero) {
+            UnityEngine.Vector2 velocity = rocker.direction;
+            if (rocker.direction == UnityEngine.Vector2.zero) {
                 Vector3 offset = general.localPosition - kvp.Key.localPosition;
                 if (offset.magnitude > layers[kvp.Key] * retinueGap) {
                     velocity = offset.normalized;

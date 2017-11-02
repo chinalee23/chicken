@@ -11,8 +11,8 @@ public class NetSystem : Singleton<NetSystem> {
     private bool recvConnect;
 
     public void Init() {
-        //transfer = new Net.TransferTcp();
-        transfer = new Net.TransferUdp();
+        transfer = new Net.TransferTcp();
+        //transfer = new Net.TransferUdp();
 
         waitConnect = false;
         recvConnect = false;

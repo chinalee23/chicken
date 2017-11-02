@@ -37,4 +37,8 @@ function ondestroy( ... )
 	-- body
 end
 
+function fixedupdate( ... )
+	-- body
+end
+
 return _M

@@ -33,12 +33,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using XLua;
 
 namespace RVO
 {
     /**
      * <summary>Defines the simulation.</summary>
      */
+     [LuaCallCSharp]
     public class Simulator
     {
         /**
@@ -289,47 +291,58 @@ namespace RVO
          *
          * <returns>The global time after the simulation step.</returns>
          */
+        public float processTime = 0f;
+        public bool workThread = false;
         public float doStep()
         {
-            if (workers_ == null)
-            {
-                workers_ = new Worker[numWorkers_];
-                doneEvents_ = new ManualResetEvent[workers_.Length];
+            float start = UnityEngine.Time.realtimeSinceStartup;
 
-                for (int block = 0; block < workers_.Length; ++block)
-                {
-                    doneEvents_[block] = new ManualResetEvent(false);
-                    workers_[block] = new Worker(doneEvents_[block]);
+            if (workThread) {
+                if (workers_ == null) {
+                    workers_ = new Worker[numWorkers_];
+                    doneEvents_ = new ManualResetEvent[workers_.Length];
+
+                    for (int block = 0; block < workers_.Length; ++block) {
+                        doneEvents_[block] = new ManualResetEvent(false);
+                        workers_[block] = new Worker(doneEvents_[block]);
+                    }
+                }
+
+                for (int block = 0; block < workers_.Length; block++) {
+                    workers_[block].set(block * getNumAgents() / workers_.Length, (block + 1) * getNumAgents() / workers_.Length);
+                }
+
+                kdTree_.buildAgentTree();
+
+                for (int block = 0; block < workers_.Length; ++block) {
+                    doneEvents_[block].Reset();
+                    ThreadPool.QueueUserWorkItem(workers_[block].step);
+                }
+
+                WaitHandle.WaitAll(doneEvents_);
+
+                for (int block = 0; block < workers_.Length; ++block) {
+                    doneEvents_[block].Reset();
+                    ThreadPool.QueueUserWorkItem(workers_[block].update);
+                }
+
+                WaitHandle.WaitAll(doneEvents_);
+            } else {
+                kdTree_.buildAgentTree();
+
+                for (int i = 0; i < agents_.Count; i++) {
+                    agents_[i].computeNeighbors();
+                    agents_[i].computeNewVelocity();
+                }
+                for (int i = 0; i < agents_.Count; i++) {
+                    agents_[i].update();
                 }
             }
 
-            for (int block = 0; block < workers_.Length; block++) {
-                workers_[block].set(block * getNumAgents() / workers_.Length, (block + 1) * getNumAgents() / workers_.Length);
+            float offset = UnityEngine.Time.realtimeSinceStartup - start;
+            if (offset > processTime) {
+                processTime = offset;
             }
-
-            kdTree_.buildAgentTree();
-
-            //for (int i = 0; i < agents_.Count; i++) {
-            //    agents_[i].computeNeighbors();
-            //    agents_[i].computeNewVelocity();
-            //}
-            //for (int i = 0; i < agents_.Count; i++) {
-            //    agents_[i].update();
-            //}
-
-            for (int block = 0; block < workers_.Length; ++block) {
-                doneEvents_[block].Reset();
-                ThreadPool.QueueUserWorkItem(workers_[block].step);
-            }
-
-            WaitHandle.WaitAll(doneEvents_);
-
-            for (int block = 0; block < workers_.Length; ++block) {
-                doneEvents_[block].Reset();
-                ThreadPool.QueueUserWorkItem(workers_[block].update);
-            }
-
-            WaitHandle.WaitAll(doneEvents_);
 
             globalTime_ += timeStep_;
 

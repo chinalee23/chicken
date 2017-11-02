@@ -35,8 +35,17 @@ local function event( ... )
 	return self
 end
 
+
 local def = require 'util.event_def'
 events = {}
-for _, v in ipairs(def) do
-	events[v] = event()
+local function creatEvents(tbl, def)
+	for k, v in pairs(def) do
+		if type(v) == 'table' then
+			tbl[k] = {}
+			creatEvents(tbl[k], v)
+		else
+			tbl[v] = event()
+		end
+	end
 end
+creatEvents(events, def)
