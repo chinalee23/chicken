@@ -10,6 +10,8 @@ public class Game : MonoBehaviour {
     public Camera UICamera;
 
     void Awake() {
+        Debug.Log("Gamestart...");
+
         instance = this;
         DontDestroyOnLoad(this);
 

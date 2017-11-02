@@ -9,7 +9,7 @@ function connect(ip, port, cb)
 end
 
 function processMsg(msg)
-	log.info('receive msg', msg)
+	-- log.info('receive msg', msg)
 	local jd = json.decode(msg)
 	local msgType = jd.msgType
 	if not regs[msgType] then return end
@@ -19,7 +19,7 @@ function processMsg(msg)
 end
 
 function send(msg)
-	LuaInterface.Send(msg)
+	LuaInterface.Send(1, msg)
 end
 
 function addListener(msgType, cb)

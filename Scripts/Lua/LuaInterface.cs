@@ -1,9 +1,13 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using XLua;
 
+[LuaCallCSharp]
 public class LuaInterface {
     public static void LoadScene(string name, System.Action cb) {
         Game.Instance().StartCoroutine(loadScene(name, cb));
@@ -33,6 +37,10 @@ public class LuaInterface {
         return go;
     }
 
+    public static void SetParent(GameObject go, GameObject parent) {
+        go.transform.parent = parent.transform;
+    }
+
     public static void SetLocalPosition(GameObject go, float x, float y, float z) {
         go.transform.localPosition = new Vector3(x, y, z);
     }
@@ -45,32 +53,105 @@ public class LuaInterface {
         MonoBehaviour.Destroy(go);
     }
 
-    public static void AddClick(GameObject go, LuaFunction cb) {
-        Button btn = go.GetComponent<Button>();
-        btn.onClick.AddListener(delegate () {
-            cb.Call(go);
+    public static void AddClick(GameObject gameObject, LuaFunction cb) {
+        EventTrigger trigger = gameObject.GetComponent<EventTrigger>();
+        if (trigger == null) {
+            trigger = gameObject.AddComponent<EventTrigger>();
+        }
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerClick;
+        entry.callback.AddListener(delegate (BaseEventData data) {
+            cb.Call(gameObject);
         });
+        trigger.triggers.Add(entry);
     }
 
-    public static GameObject Find(GameObject root, string path) {
+    public static void AddEvent(GameObject go, EventTriggerType type, LuaFunction cb) {
+        EventTrigger trigger = go.GetComponent<EventTrigger>();
+        if (trigger == null) {
+            trigger = go.AddComponent<EventTrigger>();
+        }
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = type;
+        entry.callback.AddListener(delegate (BaseEventData data) {
+            cb.Call(go);
+        });
+        trigger.triggers.Add(entry);
+    }
+
+    public static object Find(GameObject root, string path, string component = null) {
         Transform trans = root.transform.Find(path);
         if (trans == null) {
             return null;
         } else {
-            return trans.gameObject;
+            if (component == null) {
+                return trans.gameObject;
+            } else {
+                object o = trans.GetComponent(component);
+                return o;
+            }
         }
+    }
+
+    public static LuaTable GetAllChild(GameObject parent) {
+        Transform trans = parent.transform;
+        LuaTable lt = LuaManager.Instance().luaEnv.NewTable();
+        for (int i = 0; i < trans.childCount; ++i) {
+            lt.Set(i + 1, trans.GetChild(i).gameObject);
+        }
+        return lt;
+    }
+
+    public static LuaTable GetLocalPosition(GameObject go) {
+        LuaTable lt = LuaManager.Instance().luaEnv.NewTable();
+        lt.Set(1, go.transform.localPosition.x);
+        lt.Set(2, go.transform.localPosition.y);
+        lt.Set(3, go.transform.localPosition.z);
+        return lt;
     }
 
     #region net
     public static void Connect(string ip, int port, LuaFunction cb) {
-        NetSystem.Instance().Connect(ip, port, delegate (bool status) {
-            cb.Call(status);
-        });
+        NetSystem.Instance().Connect(ip, port, cb);
     }
 
-    public static void Send(string msg) {
+    public static void Send(int msgType, string msg) {
         byte[] data = System.Text.Encoding.UTF8.GetBytes(msg);
-        NetSystem.Instance().Send(data);
+        NetSystem.Instance().Send(msgType, data);
     }
     #endregion
+
+    public static void LuaError(string s) {
+        Debug.LogError(s);
+    }
+
+    #region rvo
+    public static int RvoAddObstacle(LuaTable lt) {
+        IList<RVO.Vector2> obstacle = new List<RVO.Vector2>();
+        for (int i = 1; i <= lt.Length; i++) {
+            RVO.Vector2 v;
+            lt.Get(i, out v);
+            obstacle.Add(v);
+        }
+        return RVO.Simulator.Instance.addObstacle(obstacle);
+    }
+    #endregion
+
+    #region animation
+    public static void PlayAnimation(GameObject go, string animName) {
+        Animation anim = go.GetComponent<Animation>();
+        if (anim != null) {
+            anim.Play(animName);
+        }
+    }
+    #endregion
+}
+
+public static class LuaCallUnity {
+    [LuaCallCSharp]
+    public static List<System.Type> list = new List<System.Type>() {
+        typeof(GameObject),
+        typeof(Transform),
+        typeof(Vector3),
+    };
 }
