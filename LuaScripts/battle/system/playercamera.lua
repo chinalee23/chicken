@@ -2,10 +2,10 @@ local Com = ecs.Com
 local concerns = {
 	Com.playercamera,
 	Com.view,
-	Com.troop,
 }
 local sys = ecs.newsys('playercamera', concerns)
 
+local input = ecs.Single.input
 local ratio = 3
 local highThreshold = 10
 
@@ -17,13 +17,24 @@ end
 
 function sys:update( ... )
 	for _, entity in pairs(self.entities) do
-		local troop = entity:getComponent(Com.troop)
 		local camera = entity:getComponent(Com.playercamera)
 		local view = entity:getComponent(Com.view)
-		local offset = camera.offset
-		if #troop.retinues > highThreshold then
-			offset = camera.offset + camera.offset.normalized * ratio
+		camera.trans.localPosition = camera.offset + view.trans.localPosition
+	end
+end
+
+function sys:adjustCamera(entity, direction)
+	local camera = entity:getComponent(Com.playercamera)
+	camera.offset = camera.offset + camera.offset.normalized * direction * ratio
+end
+
+function sys:frameCalc( ... )
+	for _, v in ipairs(input.inputs) do
+		if v.highcamera then
+			self:adjustCamera(self.entities[v.id], 1)
 		end
-		camera.trans.localPosition = offset + view.trans.localPosition
+		if v.lowcamera then
+			self:adjustCamera(self.entities[v.id], -1)
+		end
 	end
 end

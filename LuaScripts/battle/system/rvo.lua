@@ -17,7 +17,7 @@ local maxNeighbors = 10
 local timeHorizon = 2
 local timeHorizonObst = 2
 local radius = 0.5
-local speed = 7
+local maxSpeed = 20
 
 
 function sys:addAgent(entity)
@@ -59,6 +59,16 @@ function sys:removeObstacle(entity)
 	rvo.obstacleIndex = -1
 end
 
+function sys:initPosition( ... )
+	for _, v in pairs(self.entities) do
+		local rvo = v:getComponent(Com.rvo)
+		local trans = v:getComponent(Com.transform)
+		if rvo.agentIndex >= 0 then
+			RVO.Simulator.Instance:setAgentPosition(rvo.agentIndex, RVO.Vector2(trans.position.x, trans.position.y))
+		end
+	end
+end
+
 function sys:setPrefVelocity( ... )
 	for _, v in pairs(self.entities) do
 		local rvo = v:getComponent(Com.rvo)
@@ -78,11 +88,11 @@ function sys:setPrefVelocity( ... )
 					self:addAgent(v)
 				end
 				local velocity = RVO.Vector2(trans.direction.x, trans.direction.y)
-				RVO.Simulator.Instance:setAgentPrefVelocity(rvo.agentIndex, speed*velocity)
+				RVO.Simulator.Instance:setAgentPrefVelocity(rvo.agentIndex, trans.speed*velocity)
 			end
 		else
 			local velocity = RVO.Vector2(trans.direction.x, trans.direction.y)
-			RVO.Simulator.Instance:setAgentPrefVelocity(rvo.agentIndex, speed*velocity)
+			RVO.Simulator.Instance:setAgentPrefVelocity(rvo.agentIndex, trans.speed*velocity)
 			trans.direction:Set(0, 0)
 		end
 		trans.direction:Set(0, 0)
@@ -114,10 +124,11 @@ function sys:setup(entity)
 end
 
 function sys:frameCalc( ... )
+	sys:initPosition()
 	self:setPrefVelocity()
 	RVO.Simulator.Instance:doStep()
 	self:setPosition()
 end
 
 RVO.Simulator.Instance:setTimeStep(timeStep)
-RVO.Simulator.Instance:setAgentDefaults(neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, speed, RVO.Vector2(0, 0));
+RVO.Simulator.Instance:setAgentDefaults(neighborDist, maxNeighbors, timeHorizon, timeHorizonObst, radius, maxSpeed, RVO.Vector2(0, 0));

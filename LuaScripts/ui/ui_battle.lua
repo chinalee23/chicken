@@ -1,43 +1,41 @@
 local input = require 'battle.input'
+local BTN = require 'ui.btn'
 
 local _M = module()
 
 local gameObject
 
-local blinkCover
-local blinkText
-
-local blinkInterval = 3
-local blinkCountdown = 0
+local btns = {}
 
 local init
 local onBtnBlinkClick
-local updateBlink
+local updateBtns
 
 function init( ... )
-	local btnBlink = LuaInterface.Find(gameObject, 'BtnBlink')
-	LuaInterface.AddClick(btnBlink, onBtnBlinkClick)
+	local go = LuaInterface.Find(gameObject, 'BtnBlink')
+	local btn = BTN.new(go, '瞬移', 3, 'blink')
+	table.insert(btns, btn)
+	
+	local go = LuaInterface.Find(gameObject, 'BtnAccelerate')
+	local btn = BTN.new(go, '加速', 2, 'accelerate')
+	table.insert(btns, btn)
 
-	blinkCover = LuaInterface.Find(btnBlink, 'cover', 'Image')
-	blinkText = LuaInterface.Find(btnBlink, 'Text', 'Text')
+	local go = LuaInterface.Find(gameObject, 'BtnSlowdown')
+	local btn = BTN.new(go, '减速', 2, 'slowdown')
+	table.insert(btns, btn)
+
+	local go = LuaInterface.Find(gameObject, 'BtnHighcamera')
+	local btn = BTN.new(go, '拉高', 0, 'highcamera')
+	table.insert(btns, btn)
+
+	local go = LuaInterface.Find(gameObject, 'BtnLowcamera')
+	local btn = BTN.new(go, '降低', 0, 'lowcamera')
+	table.insert(btns, btn)
 end
 
-function onBtnBlinkClick( ... )
-	if blinkCountdown > 0 then return end
-	blinkCountdown = blinkInterval
-	input.useBlink = true
-end
-
-function updateBlink( ... )
-	if blinkCountdown == 0 then
-		blinkCover.gameObject:SetActive(false)
-		blinkText.text = '瞬移'
-	else
-		blinkCover.gameObject:SetActive(true)
-		blinkCountdown = blinkCountdown - Time.deltaTime
-		blinkCover.fillAmount = blinkCountdown / blinkInterval
-		blinkText.text = math.ceil(blinkCountdown)
-		if blinkCountdown < 0 then blinkCountdown = 0 end
+function updateBtns( ... )
+	for _, v in ipairs(btns) do
+		v:update()
 	end
 end
 
@@ -51,7 +49,7 @@ function start( ... )
 end
 
 function update( ... )
-	updateBlink()
+	updateBtns()
 end
 
 function ondestroy( ... )

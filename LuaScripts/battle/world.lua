@@ -22,6 +22,7 @@ local function loadSystems( ... )
 	require 'battle.system.rvo'
 	require 'battle.system.view'
 	require 'battle.system.playercamera'
+	require 'battle.system.blink'
 end
 
 local function createEntities(data, root)
@@ -73,15 +74,12 @@ function frameCalc( ... )
 
 	ecs.Sys.move:frameCalc()
 	ecs.Sys.rvo:frameCalc()
+	ecs.Sys.blink:frameCalc()
 	ecs.Sys.recruit:frameCalc()
 	ecs.Sys.view:frameCalc()
+	ecs.Sys.playercamera:frameCalc()
 
 	ecs.Single.input.inputs = {}
-
-	local offset = UnityEngine.Time.realtimeSinceStartup - frameStartTime
-	if offset > CS.Rocker.frameTime then
-		CS.Rocker.frameTime = offset
-	end
 end
 
 function update( ... )

@@ -11,7 +11,13 @@ local function fixedUpdate( ... )
 	table.insert(ecs.Single.input.inputs, {
 		id = world.getPlayerEntityId(game.myid),
 		direction = input.direction,
+		blink = input.blink,
+		accelerate = input.accelerate,
+		slowdown = input.slowdown,
+		highcamera = input.highcamera,
+		lowcamera = input.lowcamera,
 	})
+	input.reset()
 	world.frameCalc()
 end
 
