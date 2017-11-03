@@ -27,6 +27,7 @@ func NewServer(addr string, eh func(error)) (stTcpServer, error) {
 		fmt.Println("tcp listen[", addr, "] error:", err)
 		return tcpServer, err
 	}
+	fmt.Println("tcp listen[", addr, "] success")
 	return stTcpServer{
 		svr:   svr,
 		conns: make([]*stTcp, 0),

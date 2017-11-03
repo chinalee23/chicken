@@ -28,7 +28,7 @@ func initBattle() {
 	waitQueue = list.New()
 	chConnection = make(chan netdef.Connection, 1000)
 
-	svr, err := network.NewTcpServer("192.168.142.140:12345", eh)
+	svr, err := network.NewTcpServer("192.168.10.238:12345", eh)
 	if err != nil {
 		return
 	}

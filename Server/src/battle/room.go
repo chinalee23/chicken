@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"network/netdef"
 	"sync"
 	"time"
@@ -17,6 +18,9 @@ type protoStart struct {
 	X       []int  `json:"x"`
 	Y       []int  `json:"y"`
 	Seed    int64  `json:"seed"`
+
+	NX []int `json:"nx"`
+	NY []int `json:"ny"`
 }
 
 type protoFight struct {
@@ -42,6 +46,10 @@ type stRoom struct {
 }
 
 func newRoom(playerCount int) *stRoom {
+	posConfig = [2][2]int{
+		{0, 50},
+		{0, 50},
+	}
 	return &stRoom{
 		playerCount: playerCount,
 		players:     make([]*stPlayer, playerCount),
@@ -71,17 +79,24 @@ func (p *stRoom) playerEnter(player *stPlayer) {
 	}
 
 	seed := time.Now().Unix()
+	rand.Seed(seed)
 	jd := protoStart{
 		MsgType: "start",
 		Ids:     make([]int, p.playerCount),
 		X:       make([]int, p.playerCount),
 		Y:       make([]int, p.playerCount),
+		NX:      make([]int, 100),
+		NY:      make([]int, 100),
 		Seed:    seed,
 	}
 	for i := 0; i < p.playerCount; i++ {
 		jd.Ids[i] = i
-		jd.X[i] = posConfig[0][i]
-		jd.Y[i] = posConfig[1][i]
+		jd.X[i] = rand.Intn(100) - 50
+		jd.Y[i] = rand.Intn(100) - 50
+	}
+	for i := 0; i < 100; i++ {
+		jd.NX[i] = rand.Intn(100) - 50
+		jd.NY[i] = rand.Intn(100) - 50
 	}
 	data, err := json.Marshal(jd)
 	if err != nil {
@@ -123,7 +138,7 @@ func (p *stRoom) playerFrame(player *stPlayer, frame *json.RawMessage) {
 
 func (p *stRoom) fight() {
 	for {
-		time.Sleep(66 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 		frames := p.getFrames()
 		jd := protoFrame{
 			MsgType: "frame",
