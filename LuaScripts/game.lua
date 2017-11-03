@@ -1,5 +1,7 @@
 local _M = module()
 
+frameMaxInterval = 0
+
 local json = require 'util.dkjson'
 
 local function startOffline( ... )
@@ -10,7 +12,11 @@ local function startOffline( ... )
 			{id = myid, pos = {0, 0}},
 		},
 		seed = os.time(),
+		npcs = {},
 	}
+	for i = 1, 100 do
+		table.insert(_M.battleData.npcs, {pos = {math.random(-100, 100), math.random(-100, 100)}})
+	end
 	local battle = require 'battle.battle_offline'
 	battle.start()
 end

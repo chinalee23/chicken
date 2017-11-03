@@ -5,7 +5,7 @@ local concerns = {
 }
 local sys = ecs.newsys('move', concerns)
 
-local retinueGap = 3
+local retinueGap = 2
 local input = ecs.Single.input
 
 function sys:move(entity, direction)
@@ -16,7 +16,21 @@ function sys:move(entity, direction)
 		trans_g.face:Set(direction.x, direction.y)
 	end
 
-	local range = retinueGap * (math.floor((#troop_g.retinues - 1) / 10) + 1)
+	local layer = 1
+	if #troop_g.retinues > 80 then
+		layer = 5
+	elseif #troop_g.retinues > 40 then
+		layer = 4
+	elseif #troop_g.retinues > 15 then
+		layer = 3
+	elseif #troop_g.retinues > 5 then
+		layer = 2
+	else
+		layer = 1
+	end
+
+	-- local range = retinueGap * (math.floor((#troop_g.retinues - 1) / 10) + 1)
+	local range = layer * retinueGap
 	local sqrRange = range * range
 	for _, v in ipairs(troop_g.retinues) do
 		local retinue = self.entities[v]
@@ -40,7 +54,7 @@ function sys:slowdown(entity)
 	trans.speed = trans.speed - 2
 end
 
-function sys:frameCalc( ... )
+function sys:_frameCalc( ... )
 	for _, v in ipairs(input.inputs) do
 		self:move(self.entities[v.id], v.direction)
 		if v.accelerate then

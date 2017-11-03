@@ -23,7 +23,7 @@ local function checkDistance(pos1, pos2)
 	return dist < recruitGap
 end
 
-function sys:frameCalc( ... )
+function sys:_frameCalc( ... )
 	local npcs = {}
 	local generals = {}
 	for _, v in pairs(self.entities) do

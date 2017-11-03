@@ -16,7 +16,7 @@ function sys:setup(entity)
 	view.targetPos = pos:Clone()
 end
 
-function sys:frameCalc( ... )
+function sys:_frameCalc( ... )
 	for _, v in pairs(self.entities) do
 		local trans = v:getComponent(Com.transform)
 		local view = v:getComponent(Com.view)
@@ -24,7 +24,11 @@ function sys:frameCalc( ... )
 		view.trans.localPosition = UnityEngine.Vector3(view.targetPos.x, 0, view.targetPos.y)
 		view.targetPos = trans.position:Clone()
 		view.trans:LookAt(UnityEngine.Vector3(view.targetPos.x, 0, view.targetPos.y))
-		view.moveTime = world.frameInterval - (UnityEngine.Time.realtimeSinceStartup - world.frameStartTime)
+
+		view.moveStartTime = Time.realtimeSinceStartup
+		-- view.moveTime = world.frameInterval - (view.moveStartTime - world.frameStartTime)
+		view.moveTime = world.frameInterval
+		view.moveStartPos = view.trans.localPosition
 
 		if trans.moving and not view.moving then
 			view.moving = true
@@ -40,6 +44,7 @@ function sys:update( ... )
 	for _, v in pairs(self.entities) do
 		local view = v:getComponent(Com.view)
 		local v3 = UnityEngine.Vector3(view.targetPos.x, 0, view.targetPos.y)
-		view.trans.localPosition = UnityEngine.Vector3.Lerp(view.trans.localPosition, v3, UnityEngine.Time.deltaTime / view.moveTime)
+		local offset = Time.realtimeSinceStartup - view.moveStartTime
+		view.trans.localPosition = UnityEngine.Vector3.Lerp(view.moveStartPos, v3, offset/view.moveTime)
 	end
 end

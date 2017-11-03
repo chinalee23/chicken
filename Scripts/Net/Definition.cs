@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Net {
     class Definition {
-        public static int BUFFER_SIZE = 1024;
+        public static int BUFFER_SIZE = 512 * 1024;
     }
 
     class Buffer {

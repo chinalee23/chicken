@@ -6,6 +6,8 @@ function system:ctor(concerns)
 	end
 	self.entities = {}
 	self.candidates = {}
+
+	self.frameCalcTime = 0
 end
 
 function system:onAddComponent(c, entity)
@@ -47,6 +49,17 @@ function system:onEntityDestroy(entity)
 	end
 	if self.candidates[entity.id] then
 		self.candidates[entity.id] = nil
+	end
+end
+
+function system:frameCalc()
+	if self._frameCalc then
+		local start = Time.realtimeSinceStartup
+		self:_frameCalc()
+		local offset = Time.realtimeSinceStartup - start
+		if offset > self.frameCalcTime then
+			self.frameCalcTime = offset
+		end
 	end
 end
 

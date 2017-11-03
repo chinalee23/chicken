@@ -16,7 +16,7 @@ local neighborDist = 10
 local maxNeighbors = 10
 local timeHorizon = 2
 local timeHorizonObst = 2
-local radius = 0.5
+local radius = 0.2
 local maxSpeed = 20
 
 
@@ -123,11 +123,23 @@ function sys:setup(entity)
 	rvo.agentIndex = RVO.Simulator.Instance:addAgent(v)
 end
 
-function sys:frameCalc( ... )
-	sys:initPosition()
-	self:setPrefVelocity()
-	RVO.Simulator.Instance:doStep()
-	self:setPosition()
+function sys:noRVO( ... )
+	for _, v in pairs(self.entities) do
+		local trans = v:getComponent(Com.transform)
+		trans.position = trans.position + trans.direction * trans.speed * timeStep
+		trans.moving = trans.direction.x ~= 0 or trans.direction.y ~= 0
+	end
+end
+
+function sys:_frameCalc( ... )
+	if CS.Config.USE_RVO then
+		sys:initPosition()
+		self:setPrefVelocity()
+		RVO.Simulator.Instance:doStep()
+		self:setPosition()
+	else
+		self:noRVO()
+	end
 end
 
 RVO.Simulator.Instance:setTimeStep(timeStep)

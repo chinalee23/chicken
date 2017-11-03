@@ -63,6 +63,8 @@ namespace Net {
             msgQueue.Add(msg);
 
             offset += sz + szLen + 2;
+
+            //UnityEngine.Debug.Log("unpack sz: " + offset);
             return true;
         }
 
@@ -70,6 +72,7 @@ namespace Net {
             while (true) {
                 try {
                     int sz = socket.Receive(socketBuffer.bt, socketBuffer.len, Definition.BUFFER_SIZE - socketBuffer.len, SocketFlags.None);
+                    //UnityEngine.Debug.Log("socket receive len: " + sz);
                     socketBuffer.len += sz;
                     copyToDataBuffer();
                 } catch (Exception e) {

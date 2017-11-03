@@ -21,7 +21,7 @@ function sys:blink(entity)
 	end
 end
 
-function sys:frameCalc( ... )
+function sys:_frameCalc( ... )
 	for _, v in ipairs(input.inputs) do
 		if v.blink then
 			self:blink(self.entities[v.id])

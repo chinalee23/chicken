@@ -2,6 +2,13 @@ local _M = module()
 
 local game = require 'game'
 
+local prefabConfig = {
+	'Prefab/Player/Female01Base3D/female01_base_prefab',
+	'Prefab/Player/Male01/male01_base_prefab',
+	'Prefab/Player/Male02Base3D/male02_base_prefab',
+	'Prefab/Player/Female03Base3D/female03_base_prefab',
+}
+
 local entities = {}
 local playerEntities = {}
 
@@ -32,10 +39,10 @@ local function createEntities(data, root)
 		e:addComponent(ecs.Com.transform, v.pos)
 		e:addComponent(ecs.Com.playercontrolled)
 		e:addComponent(ecs.Com.troop, 'general', e.id)
-		e:addComponent(ecs.Com.view, root, 'Prefab/Player/Male01/male01_base_prefab')
+		e:addComponent(ecs.Com.view, root, prefabConfig[e.id])
+		e:addComponent(ecs.Com.rvo)
 
 		if v.id == game.myid then
-			e:addComponent(ecs.Com.rvo)
 			local goCamera = LuaInterface.Find(root, 'Camera')
 			local txt = LuaInterface.Find(root, 'UIRoot/Canvas/TextTroopCount', 'Text')
 			e:addComponent(ecs.Com.playercamera, goCamera, txt)
@@ -46,9 +53,9 @@ local function createEntities(data, root)
 	end
 
 	local rootNpc = LuaInterface.Find(root, 'npcs')
-	for i = 1, 100 do
-		local x = math.random(-100, 100)
-		local y = math.random(-100, 100)
+	for i = 1, #data.npcs do
+		local x = data.npcs[i].pos[1]
+		local y = data.npcs[i].pos[2]
 		local e = ecs.Entity.new()
 		
 		e:addComponent(ecs.Com.transform, {x, y})
@@ -61,6 +68,7 @@ end
 
 function build(data, root)
 	math.randomseed(data.seed)
+	log.info('seed', data.seed)
 
 	loadComponents()
 	loadSystems()
@@ -68,11 +76,8 @@ function build(data, root)
 	createEntities(data, root)
 end
 
-frameStartTime = 0
-frameInterval = 0.066
+frameInterval = 0.1
 function frameCalc( ... )
-	frameStartTime = UnityEngine.Time.realtimeSinceStartup
-
 	ecs.Sys.move:frameCalc()
 	ecs.Sys.rvo:frameCalc()
 	ecs.Sys.blink:frameCalc()

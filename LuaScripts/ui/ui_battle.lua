@@ -21,6 +21,20 @@ function init( ... )
 	addBtn('BtnLowcamera', '降低', 0, 'lowcamera')
 
 	texTroopCount = LuaInterface.Find(gameObject, 'TextTroopCount', 'Text')
+
+	local btnTime = LuaInterface.Find(gameObject, 'BtnTime')
+	LuaInterface.AddClick(btnTime, function ( ... )
+		local world = require 'battle.world'
+		for k, v in pairs(ecs.Sys) do
+			log.info(k, v.frameCalcTime)
+		end
+	end)
+
+	local btnNet = LuaInterface.Find(gameObject, 'BtnNet')
+	LuaInterface.AddClick(btnNet, function ( ... )
+		local game = require 'game'
+		log.info(game.frameMaxInterval)
+	end)
 end
 
 function addBtn(goName, name, interval, inputName)
@@ -35,6 +49,24 @@ function updateBtns( ... )
 	end
 end
 
+local csInput = CS.UnityEngine.Input
+local keyCode = CS.UnityEngine.KeyCode
+function updateInput( ... )
+	if csInput.GetKey(keyCode.W) then
+		input.direction.x = 0
+		input.direction.y = 1
+	elseif csInput.GetKey(keyCode.S) then
+		input.direction.x = 0
+		input.direction.y = -1
+	elseif csInput.GetKey(keyCode.A) then
+		input.direction.x = -1
+		input.direction.y = 0
+	elseif csInput.GetKey(keyCode.D) then
+		input.direction.x = 1
+		input.direction.y = 0
+	end
+end
+
 ------------------------- unity callback ------------------
 function awake(go)
 	gameObject = go
@@ -46,6 +78,7 @@ end
 
 function update( ... )
 	updateBtns()
+	updateInput()
 end
 
 function ondestroy( ... )

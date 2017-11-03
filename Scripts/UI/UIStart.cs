@@ -4,29 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UIStart : MonoBehaviour {
-    public Text textLog;
-
-    void onConnect(bool status) {
-        if (status) {
-            textLog.text += "connect success\n";
-        } else {
-            textLog.text += "connect fail\n";
-        }
-    }
-
-    void onBtnTest() {
-        textLog.text += "click test\n";
-    }
+    public Toggle UseRVO;
 	
 	void Start () {
-        
+        UseRVO.onValueChanged.AddListener(delegate (bool status) {
+            Config.USE_RVO = status;
+        });
 	}
-		
-	void Update () {
-		
-	}
-
-    void onStart() {
-        
-    }
 }

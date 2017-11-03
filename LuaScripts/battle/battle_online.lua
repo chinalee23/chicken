@@ -8,30 +8,24 @@ local input = require 'battle.input'
 
 local started = false
 
-local function sendCommand(command)
+local function fixedUpdate( ... )
+	if not started then return end
+
 	local jd = json.encode({
 			msgType = 'frame',
 			data = {
 				id = game.myid,
-				command = command,
+				direction = {input.direction.x, input.direction.y},
+				blink = input.blink,
+				accelerate = input.accelerate,
+				slowdown = input.slowdown,
+				highcamera = input.highcamera,
+				lowcamera = input.lowcamera,
 			},
 		})
+	-- log.info(jd)
+	input.reset()
 	net.send(jd)
-end
-
-local function fixedUpdate( ... )
-	if not started then return end
-
-	if not input.inorigin then
-		local jd = json.encode({
-				msgType = 'frame',
-				data = {
-					id = game.myid,
-					direction = {input.direction.x, input.direction.y},
-				},
-			})
-		net.send(jd)
-	end
 end
 
 local function update( ... )
@@ -58,15 +52,18 @@ local function onEnterRsp(msg)
 end
 
 local function onStart(msg)
-	table.print(msg)
-
 	local data = {
 		characters = {},
 		seed = msg.seed,
+		npcs = {}
 	}
 	for i = 1, #msg.ids do
 		local t = {id = msg.ids[i], pos = {msg.x[i], msg.y[i]}}
 		table.insert(data.characters, t)
+	end
+	for i = 1, #msg.nx do
+		local t = {pos = {msg.nx[i], msg.ny[i]}}
+		table.insert(data.npcs, t)
 	end
 	game.battleData = data
 	
@@ -78,13 +75,31 @@ local function onFight(msg)
 	started = true
 end
 
+local lastFrameTime = 0
 local function onFrame(msg)
+	local now = Time.realtimeSinceStartup
+	if lastFrameTime == 0 then
+		lastFrameTime = now
+	else
+		local offset = now - lastFrameTime
+		lastFrameTime = now
+		if offset > game.frameMaxInterval then
+			game.frameMaxInterval = offset
+		end
+	end
+	
+	
 	local input = ecs.Single.input.inputs
 	if msg.frames then
 		for _, v in ipairs(msg.frames) do
 			table.insert(input, {
 				id = world.getPlayerEntityId(v.id),
-				direction = Vector2(v.direction[1], v.direction[2])
+				direction = Vector2(v.direction[1], v.direction[2]),
+				blink = v.blink,
+				accelerate = v.accelerate,
+				slowdown = v.slowdown,
+				highcamera = v.highcamera,
+				lowcamera = v.lowcamera,
 			})
 		end
 	end
@@ -99,7 +114,7 @@ local function onBattleMonoPrepared( ... )
 end
 
 function start( ... )
-	net.connect('192.168.142.140', 12345, onConnect)
+	net.connect('192.168.10.238', 12345, onConnect)
 end
 
 events.update.addListener(update)
