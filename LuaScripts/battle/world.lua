@@ -37,7 +37,8 @@ local function createEntities(data, root)
 		if v.id == game.myid then
 			e:addComponent(ecs.Com.rvo)
 			local goCamera = LuaInterface.Find(root, 'Camera')
-			e:addComponent(ecs.Com.playercamera, goCamera)
+			local txt = LuaInterface.Find(root, 'UIRoot/Canvas/TextTroopCount', 'Text')
+			e:addComponent(ecs.Com.playercamera, goCamera, txt)
 		end
 
 		playerEntities[v.id] = e.id

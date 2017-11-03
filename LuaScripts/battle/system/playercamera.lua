@@ -2,6 +2,7 @@ local Com = ecs.Com
 local concerns = {
 	Com.playercamera,
 	Com.view,
+	Com.troop,
 }
 local sys = ecs.newsys('playercamera', concerns)
 
@@ -20,6 +21,9 @@ function sys:update( ... )
 		local camera = entity:getComponent(Com.playercamera)
 		local view = entity:getComponent(Com.view)
 		camera.trans.localPosition = camera.offset + view.trans.localPosition
+
+		local troop = entity:getComponent(Com.troop)
+		camera.txtTroopCount.text = string.format('部队人数: %s', #troop.retinues + 1)
 	end
 end
 

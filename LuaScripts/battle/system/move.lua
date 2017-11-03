@@ -5,7 +5,7 @@ local concerns = {
 }
 local sys = ecs.newsys('move', concerns)
 
-local retinueGap = 4
+local retinueGap = 3
 local input = ecs.Single.input
 
 function sys:move(entity, direction)

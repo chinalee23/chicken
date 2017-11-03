@@ -18,11 +18,6 @@ function awake(go)
 	end
 	LuaInterface.AddClick(btnOnline, cb)
 	LuaInterface.AddClick(btnOffline, cb)
-
-	local btnTest = LuaInterface.Find(go, 'BtnTest')
-	LuaInterface.AddClick(btnTest, function ( ... )
-		LuaInterface.LoadScene('rvo')
-	end)
 end
 
 function start( ... )

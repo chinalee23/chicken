@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class UIStart : MonoBehaviour {
     public Text textLog;
-    public Button btnTest;
 
     void onConnect(bool status) {
         if (status) {
@@ -20,7 +19,7 @@ public class UIStart : MonoBehaviour {
     }
 	
 	void Start () {
-        btnTest.onClick.AddListener(onBtnTest);
+        
 	}
 		
 	void Update () {

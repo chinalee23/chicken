@@ -4,32 +4,28 @@ local BTN = require 'ui.btn'
 local _M = module()
 
 local gameObject
+local txtTroopCount
 
 local btns = {}
 
 local init
+local addBtn
 local onBtnBlinkClick
 local updateBtns
 
 function init( ... )
-	local go = LuaInterface.Find(gameObject, 'BtnBlink')
-	local btn = BTN.new(go, '瞬移', 3, 'blink')
-	table.insert(btns, btn)
-	
-	local go = LuaInterface.Find(gameObject, 'BtnAccelerate')
-	local btn = BTN.new(go, '加速', 2, 'accelerate')
-	table.insert(btns, btn)
+	addBtn('BtnBlink', '瞬移', 3, 'blink')
+	addBtn('BtnAccelerate', '加速', 3, 'accelerate')
+	addBtn('BtnSlowdown', '减速', 3, 'slowdown')
+	addBtn('BtnHighcamera', '拉高', 0, 'highcamera')
+	addBtn('BtnLowcamera', '降低', 0, 'lowcamera')
 
-	local go = LuaInterface.Find(gameObject, 'BtnSlowdown')
-	local btn = BTN.new(go, '减速', 2, 'slowdown')
-	table.insert(btns, btn)
+	texTroopCount = LuaInterface.Find(gameObject, 'TextTroopCount', 'Text')
+end
 
-	local go = LuaInterface.Find(gameObject, 'BtnHighcamera')
-	local btn = BTN.new(go, '拉高', 0, 'highcamera')
-	table.insert(btns, btn)
-
-	local go = LuaInterface.Find(gameObject, 'BtnLowcamera')
-	local btn = BTN.new(go, '降低', 0, 'lowcamera')
+function addBtn(goName, name, interval, inputName)
+	local go = LuaInterface.Find(gameObject, goName)
+	local btn = BTN.new(go, name, interval, inputName)
 	table.insert(btns, btn)
 end
 
