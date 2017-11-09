@@ -10,6 +10,7 @@ local sys = ecs.newsys('view', concerns)
 function sys:setup(entity)
 	local view = entity:getComponent(Com.view)
 	view.gameObject = LuaInterface.LoadPrefab(view.prefab, view.root)
+	LuaInterface.SetLocalScale(view.gameObject, view.scale)
 	view.trans = view.gameObject.transform
 	local pos = entity:getComponent(Com.transform).position
 	view.trans.localPosition = UnityEngine.Vector3(pos.x, 0, pos.y)

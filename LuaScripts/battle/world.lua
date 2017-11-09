@@ -39,7 +39,7 @@ local function createEntities(data, root)
 		e:addComponent(ecs.Com.transform, v.pos)
 		e:addComponent(ecs.Com.playercontrolled)
 		e:addComponent(ecs.Com.troop, 'general', e.id)
-		e:addComponent(ecs.Com.view, root, prefabConfig[e.id])
+		e:addComponent(ecs.Com.view, root, prefabConfig[e.id], 1.5)
 		e:addComponent(ecs.Com.rvo)
 
 		if v.id == game.myid then
@@ -60,7 +60,7 @@ local function createEntities(data, root)
 		
 		e:addComponent(ecs.Com.transform, {x, y})
 		e:addComponent(ecs.Com.troop, 'villager')
-		e:addComponent(ecs.Com.view, rootNpc, 'Prefab/npc/N_pikeman_01/N_pikeman_01_low')
+		e:addComponent(ecs.Com.view, rootNpc, 'Prefab/npc/N_pikeman_01/N_pikeman_01_low', 1)
 
 		entities[e.id] = e
 	end
