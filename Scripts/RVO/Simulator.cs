@@ -292,7 +292,7 @@ namespace RVO
          * <returns>The global time after the simulation step.</returns>
          */
         public float processTime = 0f;
-        public bool workThread = false;
+        public bool workThread = true;
         public float doStep()
         {
             float start = UnityEngine.Time.realtimeSinceStartup;

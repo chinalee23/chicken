@@ -45,8 +45,16 @@ public class LuaInterface {
         go.transform.localPosition = new Vector3(x, y, z);
     }
 
-    public static void SetLocalScale(GameObject go, float x, float y, float z) {
-        go.transform.localScale = new Vector3(x, y, z);
+    public static void SetLocalScale(GameObject go, float scale) {
+        go.transform.localScale = new Vector3(scale, scale, scale);
+    }
+
+    public static void SetLocalEulerAngle(GameObject go, float x, float y, float z) {
+        go.transform.localEulerAngles = new Vector3(x, y, z);
+    }
+
+    public static void LookAt(GameObject go, float x, float y, float z) {
+        go.transform.LookAt(new Vector3(x, y, z));
     }
 
     public static void DestroyGameObject(GameObject go) {
@@ -138,10 +146,25 @@ public class LuaInterface {
     #endregion
 
     #region animation
-    public static void PlayAnimation(GameObject go, string animName) {
-        Animation anim = go.GetComponent<Animation>();
-        if (anim != null) {
-            anim.Play(animName);
+    public static float PlayAnimation(GameObject go, string animName, float speed = 1, float startTime = -1) {
+        if (go == null) {
+            return -1;
+        }
+
+        Animation anim = go.transform.GetComponent<Animation>();
+        AnimationState animState = go.transform.GetComponent<Animation>()[animName];
+        if (animState != null) {
+            if (startTime < 0) {
+                startTime = 0;
+            }
+
+            animState.speed = speed;
+            animState.time = startTime;
+            anim.CrossFade(animName);
+
+            return animState.clip.length;
+        } else {
+            return -1;
         }
     }
     #endregion
