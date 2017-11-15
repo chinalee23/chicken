@@ -1,3 +1,5 @@
+local Vector2 = require 'math.vector2'
+
 local world = require 'battle.world'
 
 local Com = ecs.Com
@@ -15,37 +17,34 @@ function sys:setup(entity)
 	local pos = entity:getComponent(Com.transform).position
 	view.trans.localPosition = UnityEngine.Vector3(pos.x, 0, pos.y)
 	view.targetPos = pos:Clone()
+
+	local angle = math.random(0, 360)
+	LuaInterface.SetLocalEulerAngle(view.gameObject, 0, angle, 0)
 end
 
 function sys:_frameCalc( ... )
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		local trans = v:getComponent(Com.transform)
 		local view = v:getComponent(Com.view)
 		
-		view.trans.localPosition = UnityEngine.Vector3(view.targetPos.x, 0, view.targetPos.y)
-		view.targetPos = trans.position:Clone()
-		view.trans:LookAt(UnityEngine.Vector3(view.targetPos.x, 0, view.targetPos.y))
-
 		view.moveStartTime = Time.realtimeSinceStartup
-		-- view.moveTime = world.frameInterval - (view.moveStartTime - world.frameStartTime)
 		view.moveTime = world.frameInterval
-		view.moveStartPos = view.trans.localPosition
+		view.moveStartPos = view.targetPos:Clone()
 
-		if trans.moving and not view.moving then
-			view.moving = true
-			LuaInterface.PlayAnimation(view.gameObject, 'run')
-		elseif not trans.moving and view.moving then
-			view.moving = false
-			LuaInterface.PlayAnimation(view.gameObject, 'idle1')
-		end
+		LuaInterface.SetLocalPosition(view.gameObject, view.targetPos.x, 0, view.targetPos.y)
+		view.targetPos = trans.position:Clone()
 	end
 end
 
 function sys:update( ... )
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		local view = v:getComponent(Com.view)
-		local v3 = UnityEngine.Vector3(view.targetPos.x, 0, view.targetPos.y)
 		local offset = Time.realtimeSinceStartup - view.moveStartTime
-		view.trans.localPosition = UnityEngine.Vector3.Lerp(view.moveStartPos, v3, offset/view.moveTime)
+		local newPos = Vector2.Lerp(view.moveStartPos, view.targetPos, offset/view.moveTime)
+		LuaInterface.SetLocalPosition(view.gameObject, newPos.x, 0, newPos.y)
+
+		LuaInterface.LookAt(view.gameObject, view.lookPos.x, 0, view.lookPos.y)
 	end
 end

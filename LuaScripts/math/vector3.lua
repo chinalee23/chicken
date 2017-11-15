@@ -31,28 +31,14 @@ local clamp = function (t, min, max)
 	end
 end
 
-Vector3 = 
+local Vector3 = 
 {	
 	class = "Vector3",
 }
 
-local fields = {}
-
 setmetatable(Vector3, Vector3)
 
-Vector3.__index = function(t,k)
-	local var = rawget(Vector3, k)
-	
-	if var == nil then							
-		var = rawget(fields, k)
-		
-		if var ~= nil then
-			return var(t)				
-		end		
-	end
-	
-	return var
-end
+Vector3.__index = Vector3
 
 Vector3.__call = function(t,x,y,z)
 	return Vector3.New(x,y,z)
@@ -317,7 +303,7 @@ function Vector3.SmoothDamp(current, target, currentVelocity, smoothTime)
     local num = 2 / smoothTime
     local num2 = num * deltaTime
     local num3 = 1 / (((1 + num2) + ((0.48 * num2) * num2)) + (((0.235 * num2) * num2) * num2))    
-    local vector2 = target:Clone()
+    local Vector2 = target:Clone()
     local maxLength = maxSpeed * smoothTime
 	local vector = current - target
     vector:ClampMagnitude(maxLength)
@@ -326,8 +312,8 @@ function Vector3.SmoothDamp(current, target, currentVelocity, smoothTime)
     currentVelocity = (currentVelocity - (vec3 * num)) * num3
     local vector4 = target + (vector + vec3) * num3	
 	
-    if Vector3.Dot(vector2 - current, vector4 - vector2) > 0 then    
-        vector4 = vector2
+    if Vector3.Dot(Vector2 - current, vector4 - Vector2) > 0 then    
+        vector4 = Vector2
         currentVelocity:Set(0,0,0)
     end
 	
@@ -383,7 +369,17 @@ function Vector3.ProjectOnPlane(vector, planeNormal)
 	v3:Mul(-1)
 	v3:Add(vector)
 	return v3
-end		
+end
+
+function Vector3.Lerp(from, to, t)
+	if t <= 0 then return from:Clone() end
+	if t >= 1 then return to:Clone() end
+	local v = Vector3()
+	v.x = from.x + (to.x - from.x) * t
+	v.y = from.y + (to.y - from.y) * t
+	v.z = from.z + (to.z - from.z) * t
+	return v
+end
 
 function Vector3.Slerp2(from, to, t)		
 	if t <= 0 then
@@ -564,14 +560,4 @@ Vector3.__eq = function(a,b)
 	return delta < 1e-10
 end
 
-fields.up 		= function() return Vector3.New(0,1,0) end
-fields.down 	= function() return Vector3.New(0,-1,0) end
-fields.right	= function() return Vector3.New(1,0,0) end
-fields.left		= function() return Vector3.New(-1,0,0) end
-fields.forward 	= function() return Vector3.New(0,0,1) end
-fields.back		= function() return Vector3.New(0,0,-1) end
-fields.zero		= function() return Vector3.New(0,0,0) end
-fields.one		= function() return Vector3.New(1,1,1) end
-fields.magnitude 	= Vector3.Magnitude
-fields.normalized 	= Vector3.Normalize
-fields.sqrMagnitude = Vector3.SqrMagnitude
+return Vector3

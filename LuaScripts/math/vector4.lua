@@ -11,7 +11,7 @@ local sqrt	= math.sqrt
 local min	= math.min
 local max 	= math.max
 
-Vector4 = 
+local Vector4 = 
 {
 	x = 0,
 	y = 0,		
@@ -23,21 +23,7 @@ Vector4 =
 
 setmetatable(Vector4, Vector4)
 
-local fields = {}
-
-Vector4.__index = function(t,k)
-	local var = rawget(Vector4, k)
-	
-	if var == nil then							
-		var = rawget(fields, k)
-		
-		if var ~= nil then
-			return var(t)	
-		end
-	end
-	
-	return var
-end
+Vector4.__index = Vector4
 
 function Vector4.New(x, y, z, w)
 	local v = {x = 0, y = 0, z = 0, w = 0}
@@ -202,9 +188,4 @@ Vector4.__eq = function(va,vb)
 	return delta < 1e-10
 end
 
-fields.zero		= function() return Vector4.New(0, 0, 0, 0) end
-fields.one		= function() return Vector4.New(1, 1, 1, 1) end
-
-fields.magnitude 	= Vector4.Magnitude
-fields.normalized 	= Vector4.Normalize
-fields.sqrMagnitude = Vector4.SqrMagnitude
+return Vector4

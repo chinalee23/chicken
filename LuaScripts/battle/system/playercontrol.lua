@@ -8,8 +8,9 @@ local input = ecs.Single.input
 
 function sys:onControlMsg(msg)
 	for _, v in ipairs(msg) do
-		if self.entities[v.id] then
-			local com = self.entities[v.id]:getComponent(Com.transform)
+		local entity = self:getEntity(v.id)
+		if entity then
+			local com = entity:getComponent(Com.transform)
 			com.direction = v.direction
 		end
 	end
@@ -17,7 +18,7 @@ end
 
 function sys:frameCalc( ... )
 	for _, v in ipairs(input.inputs) do
-		local entity = self.entities[v.id]
+		local entity = self:getEntity(v.id)
 		
 	end
 end

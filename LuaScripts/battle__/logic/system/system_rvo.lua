@@ -1,3 +1,5 @@
+local Vector2 = require 'math.vector2'
+
 local _M = module()
 
 local RVO = CS.RVO

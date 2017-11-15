@@ -12,6 +12,8 @@ function entity:addComponent(c, ...)
 	self.components[c] = com
 
 	events.ecs.addComponent(c, self)
+
+	return com
 end
 
 function entity:getComponent(c)

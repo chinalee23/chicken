@@ -1,5 +1,6 @@
 local _M = module()
 
+local Vector2 = require 'math.vector2'
 local world = require 'battle.world'
 local game = require 'game'
 local input = require 'battle.input'

@@ -7,6 +7,8 @@ local concerns = {
 	Com.transform,
 	Com.rvo,
 	Com.troop,
+	Com.animation,
+	Com.view,
 }
 local sys = ecs.newsys('rvo', concerns)
 
@@ -22,14 +24,16 @@ local maxSpeed = 20
 
 function sys:addAgent(entity)
 	local pos = entity:getComponent(Com.transform).position
-	entity:getComponent(Com.rvo).agentIndex = RVO.Simulator.Instance:addAgent(RVO.Vector2(pos.x, pos.y))
+	local rvo = entity:getComponent(Com.rvo)
+	rvo.agentIndex = RVO.Simulator.Instance:addAgent(RVO.Vector2(pos.x, pos.y))
 end
 
 function sys:removeAgent(entity)
 	local rvo = entity:getComponent(Com.rvo)
 	RVO.Simulator.Instance:removeAgent(rvo.agentIndex)
 
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		if v.id ~= entity.id then
 			local r = v:getComponent(Com.rvo)
 			if r.agentIndex > rvo.agentIndex then
@@ -60,7 +64,8 @@ function sys:removeObstacle(entity)
 end
 
 function sys:initPosition( ... )
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		local rvo = v:getComponent(Com.rvo)
 		local trans = v:getComponent(Com.transform)
 		if rvo.agentIndex >= 0 then
@@ -70,7 +75,8 @@ function sys:initPosition( ... )
 end
 
 function sys:setPrefVelocity( ... )
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		local rvo = v:getComponent(Com.rvo)
 		local trans = v:getComponent(Com.transform)
 		local troop = v:getComponent(Com.troop)
@@ -100,18 +106,31 @@ function sys:setPrefVelocity( ... )
 end
 
 function sys:setPosition( ... )
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		local rvo = v:getComponent(Com.rvo)
 		local trans = v:getComponent(Com.transform)
+		local anim = v:getComponent(Com.animation)
+
+		local moving
 		if rvo.agentIndex >= 0 then
 			local v2 = RVO.Simulator.Instance:getAgentPosition(rvo.agentIndex)
 			trans.position.x = v2:x()
 			trans.position.y = v2:y()
 
 			local velocity = RVO.Simulator.Instance:getAgentVelocity(rvo.agentIndex)
-			trans.moving = velocity:x() ~= 0 or velocity:y() ~= 0
+			moving = velocity:x() ~= 0 or velocity:y() ~= 0
 		else
-			trans.moving = false
+			moving = false
+		end
+		
+		local animName = moving and 'run' or 'idle'
+		if not anim.tarAnim or anim.tarAnim == 'idle' or anim.tarAnim == 'run' then
+			anim.tarAnim = animName
+			anim.tarSpeed = 1
+
+			local view = v:getComponent(Com.view)
+			view.lookPos = trans.position
 		end
 	end
 end
@@ -124,7 +143,8 @@ function sys:setup(entity)
 end
 
 function sys:noRVO( ... )
-	for _, v in pairs(self.entities) do
+	local entities = self:getEntities()
+	for _, v in pairs(entities) do
 		local trans = v:getComponent(Com.transform)
 		trans.position = trans.position + trans.direction * trans.speed * timeStep
 		trans.moving = trans.direction.x ~= 0 or trans.direction.y ~= 0

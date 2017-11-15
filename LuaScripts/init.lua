@@ -6,9 +6,6 @@ local util = {
 	'class',
 	'module',
 	'event',
-	'vector2',
-	'vector3',
-	'vector4',
 }
 for i = 1, #util do
 	require('util.' .. util[i])

@@ -14,6 +14,4 @@ function processMsg(msg)
 	net.processMsg(msg)
 end
 
-require 'test'
-
 return _M

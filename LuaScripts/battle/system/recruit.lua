@@ -1,65 +1,76 @@
+local kdtree = require 'math.kdtree'
+local Circle = require 'math.circle'
+local utmath = require 'math.util'
+
 local Com = ecs.Com
-local concern = {
+local concern_1 = {
 	Com.troop,
 	Com.transfrom,
 }
-local sys = ecs.newsys('recruit', concern)
+local concern_2 = {
+	Com.npc,
+	Com.transfrom,
+}
+local sys = ecs.newsys('recruit', concern_1, concern_2)
 
 local recruitGap = 3
 
 local function recruit(npc, general)
-	local troop_n = npc:getComponent(Com.troop)
+	npc:removeComponent(Com.npc)
+	npc:addComponent(Com.rvo)
+	local troop_n = npc:addComponent(Com.troop)
 	troop_n.rank = 'retinue'
 	troop_n.generalId = general.id
-	
-	npc:addComponent(Com.rvo)
+
+	npc:addComponent(Com.attack, 2, 4, 15)
+	npc:addComponent(Com.animation)
 	
 	local troop_g = general:getComponent(Com.troop)
 	table.insert(troop_g.retinues, npc.id)
 end
 
-local function checkDistance(pos1, pos2)
-	local dist = Vector2.Distance(pos1, pos2)
-	return dist < recruitGap
+function sys:collectNodes( ... )
+	local nodes = {}
+	local entities = self:getEntities()
+	for k, v in pairs(entities) do
+		local troop = v:getComponent(Com.troop)
+		local generalId = troop.generalId
+		if not nodes[generalId] then
+			nodes[generalId] = {}
+		end
+		local pos = v:getComponent(Com.transform).position
+		table.insert(nodes[generalId], {dot = pos, data = k})
+	end
+	return nodes
 end
 
 function sys:_frameCalc( ... )
-	local npcs = {}
-	local generals = {}
-	for _, v in pairs(self.entities) do
-		local rank = v:getComponent(Com.troop).rank
-		if rank == 'villager' then
-			table.insert(npcs, v)
-		elseif rank == 'general' then
-			table.insert(generals, v)
-		end
+	local npcs = self:getEntities(2)
+	local nodes = self:collectNodes()
+	
+	local trees = {}
+	for k, v in pairs(nodes) do
+		trees[k] = kdtree.new()
+		trees[k]:createQuadrangle(v)
 	end
-
-	local i = 1
-	while i < #npcs do
-		local pos_i = npcs[i]:getComponent(Com.transform).position
-		local flag = false
-		for _, v in ipairs(generals) do
-			local pos_g = v:getComponent(Com.transform).position
-			if checkDistance(pos_i, pos_g) then
-				recruit(npcs[i], v)
-				flag = true
-			else
-				local troop = v:getComponent(Com.troop)
-				for _, id in ipairs(troop.retinues) do
-					local retinue = self.entities[id]
-					local pos_r = retinue:getComponent(Com.transform).position
-					if checkDistance(pos_i, pos_r) then
-						recruit(npcs[i], v)
-						flag = true
-						break
-					end
+	
+	local record = {}
+	for _, npc in pairs(npcs) do
+		local posNpc = npc:getComponent(Com.transform).position
+		local c = Circle.new(posNpc, recruitGap)
+		for k, v in pairs(trees) do
+			if utmath.intersect_q_c(v.quadrangle, c) then
+				if not v.treeCreated then
+					v:createTree(nodes[k])
+				end
+				if v:queryRangeTree(posNpc, recruitGap) then
+					record[npc] = k
+					break
 				end
 			end
-			if flag then
-				break
-			end
 		end
-		i = i + 1
+	end
+	for k, v in pairs(record) do
+		recruit(k, self:getEntity(v))
 	end
 end

@@ -18,7 +18,7 @@ function sys:setup(entity)
 end
 
 function sys:update( ... )
-	for _, entity in pairs(self.entities) do
+	for _, entity in pairs(self.concerns[1].entities) do
 		local camera = entity:getComponent(Com.playercamera)
 		local viewPosition = entity:getComponent(Com.transform).position
 		local view = entity:getComponent(Com.view)
@@ -36,12 +36,12 @@ end
 
 function sys:_frameCalc( ... )
 	for _, v in ipairs(input.inputs) do
-		if self.entities[v.id] then
+		if self:getEntity(v.id) then
 			if v.highcamera then
-				self:adjustCamera(self.entities[v.id], 1)
+				self:adjustCamera(self:getEntity(v.id), 1)
 			end
 			if v.lowcamera then
-				self:adjustCamera(self.entities[v.id], -1)
+				self:adjustCamera(self:getEntity(v.id), -1)
 			end
 		end
 	end

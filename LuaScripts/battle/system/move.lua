@@ -8,6 +8,7 @@ local sys = ecs.newsys('move', concerns)
 local retinueGap = 2
 local input = ecs.Single.input
 
+
 function sys:move(entity, direction)
 	local troop_g = entity:getComponent(Com.troop)
 	local trans_g = entity:getComponent(Com.transform)
@@ -28,12 +29,11 @@ function sys:move(entity, direction)
 	else
 		layer = 1
 	end
-
-	-- local range = retinueGap * (math.floor((#troop_g.retinues - 1) / 10) + 1)
+	
 	local range = layer * retinueGap
 	local sqrRange = range * range
 	for _, v in ipairs(troop_g.retinues) do
-		local retinue = self.entities[v]
+		local retinue = self:getEntity(v)
 		local trans_r = retinue:getComponent(Com.transform)
 		local offset = trans_g.position - trans_r.position
 		if offset:SqrMagnitude() > sqrRange then
@@ -56,12 +56,12 @@ end
 
 function sys:_frameCalc( ... )
 	for _, v in ipairs(input.inputs) do
-		self:move(self.entities[v.id], v.direction)
+		self:move(self:getEntity(v.id), v.direction)
 		if v.accelerate then
-			self:accelerate(self.entities[v.id])
+			self:accelerate(self:getEntity(v.id))
 		end
 		if v.slowdown then
-			self:slowdown(self.entities[v.id])
+			self:slowdown(self:getEntity(v.id))
 		end
 	end
 end

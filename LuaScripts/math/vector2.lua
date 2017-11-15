@@ -7,6 +7,7 @@
 --------------------------------------------------------------------------------
 
 local sqrt = math.sqrt
+local abs = math.abs
 local setmetatable = setmetatable
 local rawset = rawset
 local rawget = rawget
@@ -21,7 +22,7 @@ local clamp = function (t, min, max)
 	end
 end
 
-Vector2 = 
+local Vector2 = 
 {
 --[[	x = 0,
 	y = 0,		
@@ -30,8 +31,6 @@ Vector2 =
 }
 
 setmetatable(Vector2, Vector2)
-
-local fields = {}
 
 Vector2.__index = Vector2
 
@@ -79,6 +78,11 @@ function Vector2:SetNormalize()
 	end 
 
 	return self
+end
+
+function Vector2:Abs( ... )
+	self.x = abs(self.x)
+	self.y = abs(self.y)
 end
 
 function Vector2.Dot(lhs, rhs)
@@ -138,6 +142,15 @@ function Vector2:Sub(b)
 	return
 end
 
+function Vector2.Lerp(from, to, t)
+	if t <= 0 then return from:Clone() end
+	if t >= 1 then return to:Clone() end
+	local v = Vector2()
+	v.x = from.x + (to.x - from.x) * t
+	v.y = from.y + (to.y - from.y) * t
+	return v
+end
+
 Vector2.__tostring = function(self)
 	return string.format("[%f,%f]", self.x, self.y)
 end
@@ -166,13 +179,4 @@ Vector2.__eq = function(va,vb)
 	return va.x == vb.x and va.y == vb.y
 end
 
-fields.up 		= function() return Vector2.New(0,1) end
-fields.down		= function() return Vector2.New(0, -1) end
-fields.right	= function() return Vector2.New(1,0) end
-fields.left		= function() return Vector2.New(-1, 0) end
-fields.zero		= function() return Vector2.New(0,0) end
-fields.one		= function() return Vector2.New(1,1) end
-
-fields.magnitude 	= Vector2.Magnitude
-fields.normalized 	= Vector2.Normalize
-fields.sqrMagnitude = Vector2.SqrMagnitude
+return Vector2

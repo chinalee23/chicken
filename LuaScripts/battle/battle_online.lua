@@ -1,3 +1,5 @@
+local Vector2 = require 'math.Vector2'
+
 local _M = module()
 
 local net = require 'net.net'
