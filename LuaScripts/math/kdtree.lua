@@ -80,29 +80,37 @@ local function createTree(nodes, root, sortDismension)
 		createTree(rightTbl, root.right, splitDismension)
 	end
 end
-function classTree:ctor()
-	self.treeCreated = false
+function classTree:ctor(nodes)
+	self.nodes = nodes
+	self.quadrangle = nil
+	self.root = nil
 end
 
-function classTree:createTree(nodes)
+function classTree:createTree()
 	self.root = classTreeNode.new()
-	createTree(nodes, self.root)
-	self.treeCreated = true
+	createTree(self.nodes, self.root)
 end
 
-function classTree:createQuadrangle(nodes)
-	local minX = nodes[1].dot.x
-	local maxX = nodes[1].dot.x
-	local minY = nodes[1].dot.y
-	local maxY = nodes[1].dot.y
-	for i = 2, #nodes do
-		local dot = nodes[i].dot
+function classTree:createQuadrangle()
+	local minX = self.nodes[1].dot.x
+	local maxX = self.nodes[1].dot.x
+	local minY = self.nodes[1].dot.y
+	local maxY = self.nodes[1].dot.y
+	for i = 2, #self.nodes do
+		local dot = self.nodes[i].dot
 		minX = math.min(minX, dot.x)
 		maxX = math.max(maxX, dot.x)
 		minY = math.min(minY, dot.y)
 		maxY = math.max(maxY, dot.y)
 	end
 	self.quadrangle = Quadrangle.new(Vector2(minX, minY), Vector2(maxX, maxY))
+end
+
+function classTree:getQuadrangle( ... )
+	if not self.quadrangle then
+		self:createQuadrangle()
+	end
+	return self.quadrangle
 end
 
 function classTree:print()
@@ -172,10 +180,14 @@ function classTree:getSearchPath(dot)
 	return path
 end
 
+
+
 -- 查找树上是否有节点在目标点的范围内
 -- dot: 目标点
 -- radius: 目标点的范围
 function classTree:queryRangeTree(dot, radius)
+	if not self.root then self:createTree() end
+
 	local path = self:getSearchPath(dot)
 	
 	local range = radius^2
@@ -203,6 +215,8 @@ end
 
 -- 查找树上离目标点最近的节点
 function classTree:queryClosest(dot)
+	if not self.root then self:createTree() end
+
 	local path = self:getSearchPath(dot)
 	local minDist = 0
 	local minNode = nil

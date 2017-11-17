@@ -10,4 +10,8 @@ return {
 		'removeComponent',
 		'entityDestroy',
 	},
+
+	battle = {
+		'hpChange',
+	},
 }

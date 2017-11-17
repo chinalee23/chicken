@@ -11,7 +11,7 @@ function entity:addComponent(c, ...)
 	local com = c.new(...)
 	self.components[c] = com
 
-	events.ecs.addComponent(c, self)
+	events.ecs.addComponent(self, c)
 
 	return com
 end
@@ -21,8 +21,16 @@ function entity:getComponent(c)
 end
 
 function entity:removeComponent(c)
+	events.ecs.removeComponent(self, c)
 	self.components[c] = nil
-	events.ecs.removeComponent(c, self)
+end
+
+function entity:removeComponents(exclude)
+	for k, _ in pairs(self.components) do
+		if not exclude[k] then
+			self:removeComponent(k)
+		end
+	end
 end
 
 function entity:destroy( ... )

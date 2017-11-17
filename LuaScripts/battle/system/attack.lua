@@ -3,16 +3,27 @@ local utmath = require 'math.util'
 local world = require 'battle.world'
 
 local Com = ecs.Com
-local concern = {
+local concern_1 = {
 	Com.troop,
 	Com.transform,
-	Com.attack,
+	Com.attacker,
 	Com.animation,
 	Com.view,
+	Com.property,
+}
+local concern_2 = {
+	Com.attackee,
+	Com.transform,
 }
 local sys = ecs.newsys('attack', concern)
 
 local maxAttDist = 10
+
+local fsm = {
+	idle = require 'battle.fsm.idle',
+	qianyao = require 'battle.fsm.qianyao',
+	houyao = require 'battle.fsm.houyao',
+}
 
 
 local treeNodes
@@ -94,13 +105,11 @@ function sys:checkTargetInRange(entity, target)
 end
 
 function sys:handleEntity(entity)
-	local attack = entity:getComponent(Com.attack)
-	if attack.status == 'idle' then
-		self:inIdle(entity, attack)
-	elseif attack.status == 'qianyao' then
-		self:inQianyao(entity, attack)
-	elseif attack.status == 'houyao' then
-		self:inHouyao(entity, attack)
+	local comAttack = entity:getComponent(Com.attack)
+	local status = fsm[comAttack.status].calc(entity)
+	if status then
+		comAttack.status = status
+		fsm[status].enter(entity)
 	end
 end
 

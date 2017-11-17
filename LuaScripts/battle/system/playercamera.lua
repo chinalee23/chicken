@@ -2,7 +2,7 @@ local Com = ecs.Com
 local concerns = {
 	Com.playercamera,
 	Com.view,
-	Com.troop,
+	Com.general,
 	Com.transform,
 }
 local sys = ecs.newsys('playercamera', concerns)
@@ -18,20 +18,21 @@ function sys:setup(entity)
 end
 
 function sys:update( ... )
-	for _, entity in pairs(self.concerns[1].entities) do
-		local camera = entity:getComponent(Com.playercamera)
+	local entities = self:getEntities()
+	for _, entity in pairs(entities) do
+		local comCamera = entity:getComponent(Com.playercamera)
 		local viewPosition = entity:getComponent(Com.transform).position
 		local view = entity:getComponent(Com.view)
-		camera.trans.localPosition = camera.offset + view.trans.localPosition
-
-		local troop = entity:getComponent(Com.troop)
-		camera.txtTroopCount.text = string.format('部队人数: %s', #troop.retinues + 1)
+		comCamera.trans.localPosition = comCamera.offset + view.trans.localPosition
+		
+		local comGeneral = entity:getComponent(Com.general)
+		comCamera.txtTroopCount.text = string.format('部队人数: %s', #comGeneral.retinues + 1)
 	end
 end
 
-function sys:adjustCamera(entity, direction)
-	local camera = entity:getComponent(Com.playercamera)
-	camera.offset = camera.offset + camera.offset.normalized * direction * ratio
+function sys:adjustCamera(id, direction)
+	local comCamera = self:getEntity(id):getComponent(Com.playercamera)
+	comCamera.offset = comCamera.offset + comCamera.offset.normalized * direction * ratio
 end
 
 function sys:_frameCalc( ... )

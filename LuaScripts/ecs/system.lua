@@ -8,7 +8,7 @@ function classConcern:ctor(coms)
 	self.candidates = {}
 end
 
-function classConcern:onAddComponent(c, entity)
+function classConcern:onAddComponent(entity, c)
 	if not self.coms[c] then return end
 	if self.entities[entity.id] then return end
 
@@ -28,24 +28,33 @@ function classConcern:onAddComponent(c, entity)
 	end
 end
 
-function classConcern:onRemoveComponent(c, entity)
-	if not self.coms[c] then return end
+function classConcern:onRemoveComponent(entity, c)
+	local flag = false
+	if not self.coms[c] then
+		return flag
+	end
+
 	if self.entities[entity.id] then
 		self.entities[entity.id] = nil
 		self.candidates[entity.id] = {}
+		flag = true
 	end
 	if self.candidates[entity.id] then
 		self.candidates[entity.id][c] = true
 	end
+	return flag
 end
 
 function classConcern:onEntityDestroy(entity)
+	local flag = false
 	if self.entities[entity.id] then
 		self.entities[entity.id] = nil
+		flag = true
 	end
 	if self.candidates[entity.id] then
 		self.candidates[entity.id] = nil
 	end
+	return flag
 end
 
 
@@ -63,23 +72,29 @@ function system:ctor(...)
 	self.frameCalcTime = 0
 end
 
-function system:onAddComponent(c, entity)
+function system:onAddComponent(entity, c)
 	for k, v in ipairs(self.concerns) do
-		if v:onAddComponent(c, entity) and self.setup then
+		if v:onAddComponent(entity, c) and self.setup then
 			self:setup(entity, k)
 		end
 	end
 end
 
-function system:onRemoveComponent(c, entity)
-	for _, v in ipairs(self.concerns) do
-		v:onRemoveComponent(c, entity)
+function system:onRemoveComponent(entity, c)
+	for k, v in ipairs(self.concerns) do
+		if v:onRemoveComponent(entity, c) and self._onRemoveComponent then
+			self:_onRemoveComponent(entity, k, c)
+		end
 	end
 end
 
 function system:onEntityDestroy(entity)
-	for _, v in ipairs(self.concerns) do
-		v:onEntityDestroy(entity)
+	for k, v in ipairs(self.concerns) do
+		if v:onEntityDestroy(entity) then
+			if self._onEntityDestroy then
+				self:_onEntityDestroy(entity, k)
+			end
+		end
 	end
 end
 
@@ -109,22 +124,41 @@ ecs.Sys = {}
 function ecs.newsys(name, ...)
 	local sys = system.new(...)
 	sys.__name = name
-	ecs.Sys[name] = sys
-	return sys
+	if sys._ctor then sys:_ctor() end
+
+	local seps = string.split(name, '.')
+	local t = ecs.Sys
+	for i = 1, #seps-1 do
+		local sep = seps[i]
+		if not t[sep] then
+			t[sep] = {}
+		end
+		t = t[sep]
+	end
+	if t[seps[#seps]] then
+		log.error('!!!!  duplicate sys', name)
+	else
+		t[seps[#seps]] = sys
+		return sys
+	end
 end
 
-events.ecs.addComponent.addListener(function (c, entity)
-	for _, sys in pairs(ecs.Sys) do
-		sys:onAddComponent(c, entity)
+local function traverse(t, func, ...)
+	for _, v in pairs(t) do
+		if v.__name then
+			v[func](v, ...)
+		else
+			traverse(v, func, ...)
+		end
 	end
+end
+
+events.ecs.addComponent.addListener(function (entity, c)
+	traverse(ecs.Sys, 'onAddComponent', entity, c)
 end)
-events.ecs.removeComponent.addListener(function (c, entity)
-	for _, sys in pairs(ecs.Sys) do
-		sys:onRemoveComponent(c, entity)
-	end
+events.ecs.removeComponent.addListener(function (entity, c)
+	traverse(ecs.Sys, 'onRemoveComponent', entity, c)
 end)
 events.ecs.entityDestroy.addListener(function (entity)
-	for _, sys in pairs(ecs.Sys) do
-		sys:onEntityDestroy(entity)
-	end
+	traverse(ecs.Sys, 'onEntityDestroy', entity)
 end)

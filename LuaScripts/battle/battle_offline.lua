@@ -32,6 +32,7 @@ end
 
 function start()
 	started = false
+	world.init()
 	LuaInterface.LoadScene('01battlefield_grass_ad_1v1')
 end
 

@@ -69,6 +69,7 @@ local function onStart(msg)
 	end
 	game.battleData = data
 	
+	world.init()
 	LuaInterface.LoadScene('01battlefield_grass_ad_1v1')
 end
 

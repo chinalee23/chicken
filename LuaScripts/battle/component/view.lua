@@ -11,6 +11,4 @@ function com:ctor(root, prefab, scale, idle)
 	self.moveTime = 0.1
 	self.moveStartTime = 0
 	self.moveStartPos = Vector2(0, 0)
-
-	self.lookPos = Vector2(0, 0)
 end

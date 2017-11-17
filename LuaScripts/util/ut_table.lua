@@ -47,7 +47,7 @@ end
 function table.removeV(t, element)
 	for i = 1, #t do
 		if t[i] == element then
-			remove(t, i)
+			table.remove(t, i)
 			return
 		end
 	end

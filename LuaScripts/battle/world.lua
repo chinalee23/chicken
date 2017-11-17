@@ -16,6 +16,7 @@ local playerEntities = {}
 
 local function loadComponents( ... )
 	require 'battle.component.Singleton.input'
+	require 'battle.component.Singleton.ui'
 
 	require 'battle.component.playercontrolled'
 	require 'battle.component.transform'
@@ -24,8 +25,17 @@ local function loadComponents( ... )
 	require 'battle.component.view'
 	require 'battle.component.playercamera'
 	require 'battle.component.npc'
-	require 'battle.component.attack'
+	require 'battle.component.property'
 	require 'battle.component.animation'
+	require 'battle.component.general'
+
+	require 'battle.component.attack.attacker'
+	require 'battle.component.attack.attackee'
+	require 'battle.component.attack.idle'
+	require 'battle.component.attack.qianyao'
+	require 'battle.component.attack.houyao'
+	require 'battle.component.attack.lengque'
+	require 'battle.component.attack.die'
 end
 
 local function loadSystems( ... )
@@ -35,8 +45,16 @@ local function loadSystems( ... )
 	require 'battle.system.view'
 	require 'battle.system.playercamera'
 	require 'battle.system.blink'
-	require 'battle.system.attack'
 	require 'battle.system.animation'
+	require 'battle.system.general'
+
+	require 'battle.system.attack.idle'
+	require 'battle.system.attack.qianyao'
+	require 'battle.system.attack.houyao'
+	require 'battle.system.attack.lengque'
+	require 'battle.system.attack.die'
+
+	require 'battle.system.ui.hpbar'
 end
 
 local function createEntities(data, root)
@@ -45,19 +63,22 @@ local function createEntities(data, root)
 
 		e:addComponent(ecs.Com.transform, v.pos)
 		e:addComponent(ecs.Com.playercontrolled)
-		e:addComponent(ecs.Com.troop, 'general', e.id)
-		e:addComponent(ecs.Com.view, root, prefabConfig[e.id], 1.5, 'idle')
-		e:addComponent(ecs.Com.rvo)
-		e:addComponent(ecs.Com.animation)
+		e:addComponent(ecs.Com.troop, e.id)
+		e:addComponent(ecs.Com.general)
+		e:addComponent(ecs.Com.rvo, true)
 
+		e:addComponent(ecs.Com.property, 10, 5, 200, 4, 50, 2, 8, 10)
+		-- e:addComponent(ecs.Com.attack.attackee)
+		e:addComponent(ecs.Com.attack.attacker)
+		e:addComponent(ecs.Com.attack.idle)
 		if v.id == game.myid then
 			local goCamera = LuaInterface.Find(root, 'Camera')
 			local txt = LuaInterface.Find(root, 'UIRoot/Canvas/TextTroopCount', 'Text')
 			e:addComponent(ecs.Com.playercamera, goCamera, txt)
-			e:addComponent(ecs.Com.attack, 4, 2, 10)
-		else
-			e:addComponent(ecs.Com.attack, 0)
 		end
+
+		e:addComponent(ecs.Com.view, root, prefabConfig[e.id], 1.5, 'idle')
+		e:addComponent(ecs.Com.animation)
 
 		playerEntities[v.id] = e.id
 		entities[e.id] = e
@@ -71,18 +92,21 @@ local function createEntities(data, root)
 		
 		e:addComponent(ecs.Com.npc)
 		e:addComponent(ecs.Com.transform, {x, y})
+		e:addComponent(ecs.Com.property, 5, 2, 100, 3, 50, 4, 11, 10)
 		e:addComponent(ecs.Com.view, rootNpc, 'Prefab/character/16011001_Diffuse_Prefab', 1.2, 'idle')
 
 		entities[e.id] = e
 	end
 end
 
+function init( ... )
+	loadComponents()
+	loadSystems()
+end
+
 function build(data, root)
 	math.randomseed(data.seed)
 	log.info('seed', data.seed)
-
-	loadComponents()
-	loadSystems()
 	
 	createEntities(data, root)
 end
@@ -92,10 +116,16 @@ frameNo = 0
 function frameCalc( ... )
 	frameNo = frameNo + 1
 
-	ecs.Sys.attack:frameCalc()
 	ecs.Sys.move:frameCalc()
 	ecs.Sys.rvo:frameCalc()
 	ecs.Sys.blink:frameCalc()
+
+	ecs.Sys.attack.idle:frameCalc()
+	ecs.Sys.attack.qianyao:frameCalc()
+	ecs.Sys.attack.houyao:frameCalc()
+	ecs.Sys.attack.lengque:frameCalc()
+	ecs.Sys.attack.die:frameCalc()
+	
 	ecs.Sys.recruit:frameCalc()
 	ecs.Sys.view:frameCalc()
 	ecs.Sys.playercamera:frameCalc()
@@ -107,6 +137,7 @@ end
 function update( ... )
 	ecs.Sys.view:update()
 	ecs.Sys.playercamera:update()
+	ecs.Sys.ui.hpbar:update()
 end
 
 function getPlayerEntityId(pid)

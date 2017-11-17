@@ -10,41 +10,49 @@ local concerns = {
 local sys = ecs.newsys('view', concerns)
 
 function sys:setup(entity)
-	local view = entity:getComponent(Com.view)
-	view.gameObject = LuaInterface.LoadPrefab(view.prefab, view.root)
-	LuaInterface.SetLocalScale(view.gameObject, view.scale)
-	view.trans = view.gameObject.transform
+	local comView = entity:getComponent(Com.view)
+	comView.gameObject = LuaInterface.LoadPrefab(comView.prefab, comView.root)
+	LuaInterface.SetLocalScale(comView.gameObject, comView.scale)
+	comView.trans = comView.gameObject.transform
 	local pos = entity:getComponent(Com.transform).position
-	view.trans.localPosition = UnityEngine.Vector3(pos.x, 0, pos.y)
-	view.targetPos = pos:Clone()
+	comView.trans.localPosition = UnityEngine.Vector3(pos.x, 0, pos.y)
+	comView.targetPos = pos:Clone()
 
 	local angle = math.random(0, 360)
-	LuaInterface.SetLocalEulerAngle(view.gameObject, 0, angle, 0)
+	LuaInterface.SetLocalEulerAngle(comView.gameObject, 0, angle, 0)
+end
+
+function sys:_onEntityDestroy(entity)
+	local comView = entity:getComponent(Com.view)
+	LuaInterface.DestroyGameObject(comView.gameObject)
 end
 
 function sys:_frameCalc( ... )
 	local entities = self:getEntities()
 	for _, v in pairs(entities) do
 		local trans = v:getComponent(Com.transform)
-		local view = v:getComponent(Com.view)
+		local comView = v:getComponent(Com.view)
 		
-		view.moveStartTime = Time.realtimeSinceStartup
-		view.moveTime = world.frameInterval
-		view.moveStartPos = view.targetPos:Clone()
+		comView.moveStartTime = Time.realtimeSinceStartup
+		comView.moveTime = world.frameInterval
+		comView.moveStartPos = comView.targetPos:Clone()
 
-		LuaInterface.SetLocalPosition(view.gameObject, view.targetPos.x, 0, view.targetPos.y)
-		view.targetPos = trans.position:Clone()
+		LuaInterface.SetLocalPosition(comView.gameObject, comView.targetPos.x, 0, comView.targetPos.y)
+		comView.targetPos = trans.position:Clone()
+
+		local comTrans = v:getComponent(Com.transform)
+		LuaInterface.LookAt(comView.gameObject, comTrans.face.x, 0, comTrans.face.y)
+		-- LuaInterface.LookAt(comView.gameObject, comTrans.position.x, 0, comTrans.position.y)
 	end
 end
 
 function sys:update( ... )
 	local entities = self:getEntities()
 	for _, v in pairs(entities) do
-		local view = v:getComponent(Com.view)
-		local offset = Time.realtimeSinceStartup - view.moveStartTime
-		local newPos = Vector2.Lerp(view.moveStartPos, view.targetPos, offset/view.moveTime)
-		LuaInterface.SetLocalPosition(view.gameObject, newPos.x, 0, newPos.y)
-
-		LuaInterface.LookAt(view.gameObject, view.lookPos.x, 0, view.lookPos.y)
+		local comView = v:getComponent(Com.view)
+		local comTrans = v:getComponent(Com.transform)
+		local offset = Time.realtimeSinceStartup - comView.moveStartTime
+		local newPos = Vector2.Lerp(comView.moveStartPos, comView.targetPos, offset/comView.moveTime)
+		LuaInterface.SetLocalPosition(comView.gameObject, newPos.x, 0, newPos.y)
 	end
 end

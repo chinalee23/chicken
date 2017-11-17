@@ -1,67 +1,67 @@
 local Com = ecs.Com
-local concerns = {
+local concerns_1 = {
 	Com.transform,
 	Com.troop,
 }
-local sys = ecs.newsys('move', concerns)
+local concerns_2 = {
+	Com.general,
+}
+local sys = ecs.newsys('move', concerns_1, concerns_2)
 
 local retinueGap = 2
 local input = ecs.Single.input
 
 
-function sys:move(entity, direction)
-	local troop_g = entity:getComponent(Com.troop)
-	local trans_g = entity:getComponent(Com.transform)
-	trans_g.direction = direction
-	if direction.x ~= 0 or direction.y ~= 0 then
-		trans_g.face:Set(direction.x, direction.y)
-	end
-
-	local layer = 1
-	if #troop_g.retinues > 80 then
-		layer = 5
-	elseif #troop_g.retinues > 40 then
-		layer = 4
-	elseif #troop_g.retinues > 15 then
-		layer = 3
-	elseif #troop_g.retinues > 5 then
-		layer = 2
+local function calcLayer(retinueCnt)
+	if retinueCnt > 100 then
+		return 5
+	elseif retinueCnt > 70 then
+		return 4
+	elseif retinueCnt > 30 then
+		return 3
+	elseif retinueCnt > 10 then
+		return 2
 	else
-		layer = 1
+		return 1
 	end
-	
-	local range = layer * retinueGap
-	local sqrRange = range * range
-	for _, v in ipairs(troop_g.retinues) do
-		local retinue = self:getEntity(v)
-		local trans_r = retinue:getComponent(Com.transform)
-		local offset = trans_g.position - trans_r.position
+end
+
+function sys:move(id, direction)
+	local comTrans_g = self:getEntity(id, 1):getComponent(Com.transform)
+	comTrans_g.direction:Set(direction.x, direction.y)
+
+	local comGeneral = self:getEntity(id, 2):getComponent(Com.general)
+	local layer = calcLayer(#comGeneral.retinues)
+	local sqrRange = (layer * retinueGap)^2
+	for _, v in ipairs(comGeneral.retinues) do
+		local comTrans_r = self:getEntity(v, 1):getComponent(Com.transform)
+		local offset = comTrans_g.position - comTrans_r.position
 		if offset:SqrMagnitude() > sqrRange then
-			trans_r.direction = offset:Normalize()
+			comTrans_r.direction = offset:Normalize()
 		else
-			trans_r.direction:Set(trans_g.direction.x, trans_g.direction.y)
+			comTrans_r.direction:Set(direction.x, direction.y)
 		end
 	end
 end
 
-function sys:accelerate(entity)
-	local trans = entity:getComponent(Com.transform)
+function sys:accelerate(id)
+	local trans = self:getEntity(id, 1):getComponent(Com.transform)
 	trans.speed = trans.speed + 2
 end
 
-function sys:slowdown(entity)
-	local trans = entity:getComponent(Com.transform)
+function sys:slowdown(id)
+	local trans = self:getEntity(id, 1):getComponent(Com.transform)
 	trans.speed = trans.speed - 2
 end
 
 function sys:_frameCalc( ... )
 	for _, v in ipairs(input.inputs) do
-		self:move(self:getEntity(v.id), v.direction)
+		self:move(v.id, v.direction)
 		if v.accelerate then
-			self:accelerate(self:getEntity(v.id))
+			self:accelerate(v.id)
 		end
 		if v.slowdown then
-			self:slowdown(self:getEntity(v.id))
+			self:slowdown(v.id)
 		end
 	end
 end

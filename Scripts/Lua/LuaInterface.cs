@@ -30,19 +30,37 @@ public class LuaInterface {
         }
         GameObject go = MonoBehaviour.Instantiate(o) as GameObject;
         if (parent != null) {
-            go.transform.parent = parent.transform;
+            go.transform.SetParent(parent.transform);
             go.transform.localPosition = Vector3.zero;
             go.transform.localScale = Vector3.one;
         }
         return go;
     }
 
+    public static GameObject Clone(GameObject prefab, GameObject parent = null) {
+        GameObject go = MonoBehaviour.Instantiate(prefab);
+        if (parent != null) {
+            go.transform.SetParent(parent.transform);
+        }
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localScale = Vector3.one;
+
+        return go;
+    }
+
     public static void SetParent(GameObject go, GameObject parent) {
-        go.transform.parent = parent.transform;
+        go.transform.SetParent(parent.transform);
     }
 
     public static void SetLocalPosition(GameObject go, float x, float y, float z) {
         go.transform.localPosition = new Vector3(x, y, z);
+    }
+
+    public static Vector3 GetPosition(GameObject go) {
+        return go.transform.position;
+    }
+    public static void SetPosition(GameObject go, float x, float y, float z) {
+        go.transform.position = new Vector3(x, y, z);
     }
 
     public static void SetLocalScale(GameObject go, float scale) {
@@ -133,6 +151,19 @@ public class LuaInterface {
         Debug.LogError(s);
     }
 
+    public static Vector2 GetScreenPosFromWorld(GameObject go, Vector3 v) {
+        Vector3 viewPoint = Camera.main.WorldToViewportPoint(v);
+        
+        Camera uiCamera = go.GetComponent<Camera>();
+        Vector3 uiPos = uiCamera.ViewportToWorldPoint(viewPoint);
+        return new Vector2(uiPos.x, uiPos.y);
+    }
+
+    public static void ShowDamageText(GameObject root, int d, float x, float y, float z) {
+        GameObject go = LoadPrefab("Prefab/UI/DamgeText", root);
+        go.GetComponent<UIDamageText>().SetDamage(d, new Vector3(x, y, z));
+    }
+
     #region rvo
     public static int RvoAddObstacle(LuaTable lt) {
         IList<RVO.Vector2> obstacle = new List<RVO.Vector2>();
@@ -176,5 +207,6 @@ public static class LuaCallUnity {
         typeof(GameObject),
         typeof(Transform),
         typeof(Vector3),
+        typeof(Vector2),
     };
 }

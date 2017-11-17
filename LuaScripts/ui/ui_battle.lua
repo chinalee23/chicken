@@ -1,3 +1,4 @@
+local sui = ecs.Single.ui
 local input = require 'battle.input'
 local BTN = require 'ui.btn'
 
@@ -9,6 +10,9 @@ local txtTroopCount
 local btns = {}
 
 local init
+local initHpbar
+local initCamera
+local initDamage
 local addBtn
 local onBtnBlinkClick
 local updateBtns
@@ -35,6 +39,24 @@ function init( ... )
 		local game = require 'game'
 		log.info(game.frameMaxInterval)
 	end)
+
+	initHpbar()
+	initCamera()
+	initDamage()
+end
+
+function initHpbar( ... )
+	sui.hpbarRoot = LuaInterface.Find(gameObject, 'HpRoot')
+	sui.hpbarPrefab = LuaInterface.Find(sui.hpbarRoot, 'HpBar')
+	sui.hpbarPrefab:SetActive(false)
+end
+
+function initCamera( ... )
+	sui.uiCamera = LuaInterface.Find(gameObject, 'UICamera')
+end
+
+function initDamage( ... )
+	sui.damageRoot = LuaInterface.Find(gameObject, 'DamageRoot')
 end
 
 function addBtn(goName, name, interval, inputName)
