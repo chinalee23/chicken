@@ -9,6 +9,8 @@ local world = require 'battle.world'
 local input = require 'battle.input'
 
 local started = false
+local playerCount = 0
+local roomid = 0
 
 local function fixedUpdate( ... )
 	if not started then return end
@@ -51,6 +53,12 @@ end
 local function onEnterRsp(msg)
 	log.info('id', msg.id)
 	game.myid = msg.id
+	roomid = msg.roomId
+end
+
+local function onPlayerCount(msg)
+	log.info('onPlayerCount', msg.playerCount)
+	playerCount = msg.playerCount
 end
 
 local function onStart(msg)
@@ -68,7 +76,7 @@ local function onStart(msg)
 		table.insert(data.npcs, t)
 	end
 	game.battleData = data
-	
+
 	world.init()
 	LuaInterface.LoadScene('01battlefield_grass_ad_1v1')
 end
@@ -120,6 +128,22 @@ function start( ... )
 	net.connect('192.168.10.238', 12345, onConnect)
 end
 
+function roomStart( ... )
+	log.info('room start')
+	local jd = json.encode({
+			msgType = 'start',
+		})
+	net.send(jd)
+end
+
+function getPlayerCount( ... )
+	return playerCount
+end
+
+function getRoomId( ... )
+	return roomid
+end
+
 events.update.addListener(update)
 events.fixedUpdate.addListener(fixedUpdate)
 events.battleMonoPrepared.addListener(onBattleMonoPrepared)
@@ -128,5 +152,6 @@ net.addListener('enterRsp', onEnterRsp)
 net.addListener('start', onStart)
 net.addListener('fight', onFight)
 net.addListener('frame', onFrame)
+net.addListener('playerCount', onPlayerCount)
 
 return _M
