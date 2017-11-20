@@ -27,6 +27,7 @@ local function calcLayer(retinueCnt)
 end
 
 function sys:move(id, direction)
+	if not self:getEntity(id, 1) then return end
 	local comTrans_g = self:getEntity(id, 1):getComponent(Com.transform)
 	comTrans_g.direction:Set(direction.x, direction.y)
 

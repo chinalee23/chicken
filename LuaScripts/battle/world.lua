@@ -36,6 +36,7 @@ local function loadComponents( ... )
 	require 'battle.component.attack.houyao'
 	require 'battle.component.attack.lengque'
 	require 'battle.component.attack.die'
+	require 'battle.component.attack.dismiss'
 end
 
 local function loadSystems( ... )
@@ -53,6 +54,7 @@ local function loadSystems( ... )
 	require 'battle.system.attack.houyao'
 	require 'battle.system.attack.lengque'
 	require 'battle.system.attack.die'
+	require 'battle.system.attack.dismiss'
 
 	require 'battle.system.ui.hpbar'
 end
@@ -67,8 +69,13 @@ local function createEntities(data, root)
 		e:addComponent(ecs.Com.general)
 		e:addComponent(ecs.Com.rvo, true)
 
-		e:addComponent(ecs.Com.property, 10, 5, 200, 4, 50, 2, 8, 10)
-		-- e:addComponent(ecs.Com.attack.attackee)
+		if v.id == 1 then
+			e:addComponent(ecs.Com.property, 100, 5, 200, 4, 50, 2, 8, 10)
+		else
+			e:addComponent(ecs.Com.property, 10, 5, 200, 4, 50, 2, 8, 10)
+		end
+		
+		e:addComponent(ecs.Com.attack.attackee)
 		e:addComponent(ecs.Com.attack.attacker)
 		e:addComponent(ecs.Com.attack.idle)
 		if v.id == game.myid then
@@ -125,6 +132,7 @@ function frameCalc( ... )
 	ecs.Sys.attack.houyao:frameCalc()
 	ecs.Sys.attack.lengque:frameCalc()
 	ecs.Sys.attack.die:frameCalc()
+	ecs.Sys.attack.dismiss:frameCalc()
 	
 	ecs.Sys.recruit:frameCalc()
 	ecs.Sys.view:frameCalc()

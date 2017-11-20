@@ -18,8 +18,11 @@ end
 function sys:removeRetinue(entity)
 	local id = entity:getComponent(Com.troop).id
 	if id ~= entity.id then
-		local comGeneral = self:getEntity(id, 1):getComponent(Com.general)
-		table.removeV(comGeneral.retinues, entity.id)
+		local general = self:getEntity(id, 1)
+		if general then
+			local comGeneral = general:getComponent(Com.general)
+			table.removeV(comGeneral.retinues, entity.id)
+		end
 	end
 end
 

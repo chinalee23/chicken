@@ -12,7 +12,13 @@ local concern_2 = {
 	Com.attack.attackee,
 	Com.animation,
 }
-local sys = ecs.newsys('attack.qianyao', concern_1, concern_2)
+local concern_3 = {
+	Com.general,
+}
+local concern_4 = {
+	Com.troop,
+}
+local sys = ecs.newsys('attack.qianyao', concern_1, concern_2, concern_3, concern_4)
 
 function sys:checkTargetInRange(entity, eTarget)
 	local attDist = entity:getComponent(Com.property).attDist
@@ -43,19 +49,22 @@ function sys:attack(entity, eTarget)
 
 	if comProperty_attee.hp <= 0 then
 		-- die
-		eTarget:removeComponents(
-			{
-				[Com.view] = true,
-				[Com.transform] = true,
-				[Com.animation] = true,
-				[Com.property] = true,
-			})
-		local comAnim = eTarget:getComponent(Com.animation)
-		comAnim.tarAnim = 'die'
-		eTarget:addComponent(Com.attack.die, world.frameNo)
+		self:die(eTarget)
 	end
-
 	entity:addComponent(Com.attack.houyao, eTarget.id, world.frameNo)
+end
+
+function sys:die(entity)
+	entity:addComponent(Com.attack.die)
+
+	-- if general, dismiss retinues
+	if self:getEntity(entity.id, 3) then
+		local comGeneral = entity:getComponent(Com.general)
+		for _, v in ipairs(comGeneral.retinues) do
+			local retinue = self:getEntity(v, 4)
+			retinue:addComponent(Com.attack.dismiss)
+		end
+	end
 end
 
 function sys:cancel(entity)

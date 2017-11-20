@@ -1,4 +1,5 @@
 local com = ecs.newcom('attack.die')
-function com:ctor(frame)
-	self.startFrame = frame
+function com:ctor()
+	self.dying = false
+	self.startFrame = nil
 end
