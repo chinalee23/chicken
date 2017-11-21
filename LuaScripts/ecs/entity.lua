@@ -1,10 +1,14 @@
-local entity = class()
-
 local id = 0
+local entities = {}
+
+
+local entity = class()
 function entity:ctor( ... )
 	id = id + 1
 	self.id = id
 	self.components = {}
+
+	entities[id] = self
 end
 
 function entity:addComponent(c, ...)
@@ -35,6 +39,10 @@ end
 
 function entity:destroy( ... )
 	events.ecs.entityDestroy(self)
+	entities[self.id] = nil
 end
 
 ecs.Entity = entity
+function ecs.getEntity(id)
+	return entities[id]
+end

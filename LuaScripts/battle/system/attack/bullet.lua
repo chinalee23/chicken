@@ -1,4 +1,6 @@
 local Vector2 = require 'math.vector2'
+local util = require 'battle.system.util'
+local world = require 'battle.world'
 
 local Com = ecs.Com
 local concern_1 = {
@@ -9,37 +11,28 @@ local concern_2 = {
 	Com.attack.attackee,
 	Com.transform,
 }
-local sys = ecs.newsys('attack.bullet', concern_1)
+local sys = ecs.newsys('attack.bullet', concern_1, concern_2)
 
-
-local threshold = 0.1
-
-
-function sys:updatePos(entity)
+function sys:calc(entity)
 	local comBullet = entity:getComponent(Com.attack.bullet)
-	local target = self:getEntity(comBullet.target, 2)
-	if target then
+	local attee = self:getEntity(comBullet.attee, 2)
+	if attee and not util.isDead(attee) then
 		local comTrans_b = entity:getComponent(Com.transform)
-		local comTrans_t = target:getComponent(Com.transform)
-		comTrans_b.position = Vector2.Lerp(comTrans_b.position, comTrans_t.position, Time.deltaTime * comBullet.speed)
-		local offset = comTrans_t.position - comTrans_b.position
-		if offset:SqrMagnitude() < 0.1 then
-			
+		local comTrans_e = attee:getComponent(Com.transform)
+		local distSq = (comTrans_e.position, comTrans_b.position):SqrMagnitude()
+		if distSq < 0.01 then
+			util.attack(comBullet.att, attee)
+		else
+			local t = math.sqrt(distSq) / comBullet.speed
+			comTrans_b.position = Vector2.Lerp(comTrans_b.position, comTrans_e.position, world.frameInterval / t)
 		end
 	else
-	end
-end
-
-function sys:update( ... )
-	local entities = self:getEntities(1)
-	for _, v in pairs(entities) do
-		v:updatePos(v)
 	end
 end
 
 function sys:_frameCalc( ... )
 	local entities = self:getEntities()
 	for _, v in pairs(entities) do
-
+		self:calc(v)
 	end
 end
