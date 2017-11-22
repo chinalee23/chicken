@@ -17,8 +17,8 @@ function classMap:ctor(width, height, sideLen)
 	self.height = height
 	self.sideLen = sideLen
 
-	local maxX = math.ceil(width/sideLen)
-	local maxY = math.ceil(height/sideLen)
+	local maxX = math.ceil(width/sideLen + 1)
+	local maxY = math.ceil(height/sideLen + 1)
 	self.grids = {}
 	for i = 0, maxX-1 do
 		self.grids[i] = {}
@@ -39,7 +39,7 @@ end
 -- 插入一关键字
 function classMap:insert(key, pos)
 	local grid = self:calcGrid(pos)
-	grid.datas[key] = pos
+	grid.datas[key] = pos:Clone()
 	self.cache[key] = grid
 end
 
@@ -60,7 +60,7 @@ end
 
 -- 查找范围内的格子
 -- 返回左下角和右上角的格子
-function classMap:findGridsInRangeByPos(pos. radius)
+function classMap:findGridsInRangeByPos(pos, radius)
 	local dot1 = Vector2(math.max(pos.x-radius, 0), math.max(pos.y-radius, 0))
 	local dot2 = Vector2(math.min(pos.x+radius, self.width), math.min(pos.y+radius, self.height))
 	return self:calcGrid(dot1), self:calcGrid(dot2)

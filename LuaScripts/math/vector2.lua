@@ -61,6 +61,11 @@ function Vector2:Clone()
 	return Vector2.New(self.x, self.y)
 end
 
+function Vector2:Cover(v)
+	self.x = v.x
+	self.y = v.y
+end
+
 function Vector2:Normalize()
 	local v = self:Clone()
 	return v:SetNormalize()	

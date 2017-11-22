@@ -1,3 +1,6 @@
+local Vector2 = require 'math.vector2'
+local world = require 'battle.world'
+
 local Com = ecs.Com
 
 local tuple = {
@@ -13,13 +16,19 @@ local tuple = {
 local sys = ecs.newsys('move', tuple)
 
 local inputs = ecs.Single.inputs
-local speed = 1
+local map = ecs.Single.map
+local speed = 0.1
 local retinueGap = 1
+
 
 function sys:move(eGeneral, direction)
 	local comTrans_g = eGeneral:getComponent(Com.transform)
-	local pos_g = comTrans_g.position + direction * speed
-	comTrans_g.position	= pos_g
+	if direction.x ~= 0 or direction.y ~= 0 then
+		comTrans_g.direction = direction:Clone()
+		comTrans_g.position = comTrans_g.position + direction * speed
+		map:modify(eGeneral.id, comTrans_g.position)
+	end
+	local pos_g = comTrans_g.position
 
 	local comGeneral = eGeneral:getComponent(Com.general)
 	local layer = 0
@@ -46,8 +55,18 @@ function sys:move(eGeneral, direction)
 				x = x - retinueGap
 			end
 		end
-		local direction = (tarPos - comTrans_r.position):Normalize()
-		comTrans_r.position = comTrans_r.position + direction * speed
+		local tarPos = Vector2(x, y)
+		local offset = tarPos - comTrans_r.position
+		local distSq = offset:SqrMagnitude()
+		if distSq > 0.0001 then
+			comTrans_r.direction = offset:Normalize()
+			local t = math.sqrt(distSq)/speed
+			comTrans_r.position = Vector2.Lerp(comTrans_r.position, tarPos, 1/t)
+		else
+			comTrans_r.direction = direction:Clone()
+			comTrans_r.position = comTrans_r.position + comTrans_r.direction * speed
+		end
+		map:modify(v, comTrans_r.position)
 	end
 end
 
@@ -56,7 +75,7 @@ function sys:_frameCalc( ... )
 	for k, v in pairs(generals) do
 		-- get input
 		local input = inputs[k]
-		if input.direction then
+		if input and input.direction then
 			self:move(v, input.direction)
 		end
 	end

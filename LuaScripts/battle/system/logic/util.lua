@@ -7,9 +7,9 @@ function addRetinue(rid, tid)
 	local en = ecs.getEntity(rid)
 
 	local et = ecs.getEntity(tid)
-	local comGeneral = e:getComponent(Com.general)
+	local comGeneral = et:getComponent(Com.general)
 	if not comGeneral then
-		local comRetinue = e:getComponent(Com.retinue)
+		local comRetinue = et:getComponent(Com.retinue)
 		if comRetinue then
 			comGeneral = ecs.getEntity(comRetinue.general):getComponent(Com.general)
 		end

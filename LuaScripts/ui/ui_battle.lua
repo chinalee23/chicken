@@ -40,6 +40,12 @@ function init( ... )
 		log.info(game.frameMaxInterval)
 	end)
 
+	local btnFrameCalc = LuaInterface.Find(gameObject, 'Debug/BtnFrame')
+	LuaInterface.AddClick(btnFrameCalc, function ( ... )
+		local world = require 'battle.world'
+		world.frameCalc()
+	end)
+
 	initHpbar()
 	initCamera()
 	initDamage()

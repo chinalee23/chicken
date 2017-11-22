@@ -8,19 +8,15 @@ local started = false
 
 local function fixedUpdate( ... )
 	if not started then return end
-	-- table.insert(ecs.Single.input.inputs, {
-	-- 	id = world.getPlayerEntityId(game.myid),
-	-- 	direction = input.direction,
-	-- 	blink = input.blink,
-	-- 	accelerate = input.accelerate,
-	-- 	slowdown = input.slowdown,
-	-- 	highcamera = input.highcamera,
-	-- 	lowcamera = input.lowcamera,
-	-- })
-	local eid = world.getPlayerEntityId(game.myid)
-	ecs.Single.inputs[eid] = {
-		direction = input.direction:Clone(),
-	}
+	table.insert(ecs.Single.input.inputs, {
+		id = world.getPlayerEntityId(game.myid),
+		direction = input.direction,
+		blink = input.blink,
+		accelerate = input.accelerate,
+		slowdown = input.slowdown,
+		highcamera = input.highcamera,
+		lowcamera = input.lowcamera,
+	})
 	input.reset()
 	world.frameCalc()
 end

@@ -61,19 +61,18 @@ end
 
 
 local system = class()
-function system:ctor(...)
-	local args = {...}
+function system:ctor(tuple)
 	self.concerns = {}
-	for _, v in ipairs(args) do
+	for k, v in pairs(tuple) do
 		local c = classConcern.new(v)
-		table.insert(self.concerns, c)
+		self.concerns[k] = c
 	end
 
 	self.frameCalcTime = 0
 end
 
 function system:onAddComponent(entity, c)
-	for k, v in ipairs(self.concerns) do
+	for k, v in pairs(self.concerns) do
 		if v:onAddComponent(entity, c) and self.setup then
 			self:setup(entity, k)
 		end
@@ -81,7 +80,7 @@ function system:onAddComponent(entity, c)
 end
 
 function system:onRemoveComponent(entity, c)
-	for k, v in ipairs(self.concerns) do
+	for k, v in pairs(self.concerns) do
 		if v:onRemoveComponent(entity, c) and self._onRemoveComponent then
 			self:_onRemoveComponent(entity, k, c)
 		end
@@ -89,7 +88,7 @@ function system:onRemoveComponent(entity, c)
 end
 
 function system:onEntityDestroy(entity)
-	for k, v in ipairs(self.concerns) do
+	for k, v in pairs(self.concerns) do
 		if v:onEntityDestroy(entity) then
 			if self._onEntityDestroy then
 				self:_onEntityDestroy(entity, k)
@@ -98,14 +97,14 @@ function system:onEntityDestroy(entity)
 	end
 end
 
-function system:getEntity(id, concernIndex)
-	concernIndex = concernIndex or 1
-	return self.concerns[concernIndex].entities[id]
+function system:getEntity(id, tupleKey)
+	tupleKey = tupleKey or 1
+	return self.concerns[tupleKey].entities[id]
 end
 
-function system:getEntities(concernIndex)
-	concernIndex = concernIndex or 1
-	return self.concerns[concernIndex].entities
+function system:getEntities(tupleKey)
+	tupleKey = tupleKey or 1
+	return self.concerns[tupleKey].entities
 end
 
 function system:frameCalc()
@@ -121,8 +120,8 @@ end
 
 
 ecs.Sys = {}
-function ecs.newsys(name, ...)
-	local sys = system.new(...)
+function ecs.newsys(name, tuple)
+	local sys = system.new(tuple)
 	sys.__name = name
 	if sys._ctor then sys:_ctor() end
 

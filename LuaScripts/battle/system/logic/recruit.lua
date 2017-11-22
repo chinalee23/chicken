@@ -1,4 +1,4 @@
-local util = require 'battle.system.util'
+local util = require 'battle.system.logic.util'
 
 local Com = ecs.Com
 local tuple = {
@@ -20,15 +20,22 @@ local sys = ecs.newsys('recruit', tuple)
 local map = ecs.Single.map
 local recruitGap = 2
 
+function sys:setup(entity, tupleKey)
+	local comTrans = entity:getComponent(Com.transform)
+	map:modify(entity.id, comTrans.position)
+end
+
 function sys:recruit(npc, eid)
 	util.addRetinue(npc.id, eid)
-	npc:addComponent(Com.retinue)
+
+	npc:removeComponent(Com.npc)
+	npc:addComponent(Com.retinue, eid)
 end
 
 function sys:_frameCalc( ... )
 	local npcs = self:getEntities('npc')
 	for k, v in pairs(npcs) do
-		local key = map:findCloestInRange(k, recruitGap)
+		local key = map:findCloestInRangeByKey(k, recruitGap)
 		if key then
 			self:recruit(v, key)
 		end
