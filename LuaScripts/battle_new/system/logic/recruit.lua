@@ -1,3 +1,5 @@
+local util = require 'battle.system.util'
+
 local Com = ecs.Com
 local tuple = {
 	general = {
@@ -19,8 +21,10 @@ local map = ecs.Single.map
 local recruitGap = 2
 
 function sys:recruit(npc, eid)
+	util.addRetinue(npc.id, eid)
 	npc:addComponent(Com.retinue)
 end
+
 function sys:_frameCalc( ... )
 	local npcs = self:getEntities('npc')
 	for k, v in pairs(npcs) do

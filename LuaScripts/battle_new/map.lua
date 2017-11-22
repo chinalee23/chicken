@@ -60,24 +60,45 @@ end
 
 -- 查找范围内的格子
 -- 返回左下角和右上角的格子
-function classMap:findGridsInRange(key, radius)
-	if not self.cache[key] then return end
-		
-	local pos = self.cache[key].datas[key]
+function classMap:findGridsInRangeByPos(pos. radius)
 	local dot1 = Vector2(math.max(pos.x-radius, 0), math.max(pos.y-radius, 0))
 	local dot2 = Vector2(math.min(pos.x+radius, self.width), math.min(pos.y+radius, self.height))
 	return self:calcGrid(dot1), self:calcGrid(dot2)
 end
+function classMap:findGridsInRangeByKey(key, radius)
+	if not self.cache[key] then return end
+	return self:findGridsInRangeByPos(self.cache[key].datas[key])
+end
 
 -- 查找范围内的关键字
 -- 返回包含距离的关键字列表，并按照距离升序排列
-function classMap:findKeysInRange(key, radius)
+function classMap:findKeysInRangeByPos(pos, radius)
+	local rst = {}
+	local rangeSq = radius^2
+	local g1, g2 = self:findGridsInRangeByPos(pos, radius)
+	for i = g1.x, g2.x do
+		for j = g1.y, g2.y do
+			local grid = self.grids[i][j]
+			for k, v in pairs(grid.datas) do
+				local distSq = (v-pos):SqrMagnitude()
+				if distSq < rangeSq then
+					table.insert(rst, {k, distSq})
+				end
+			end
+		end
+	end
+	table.sort(rst, function (a, b)
+		return a[2] <= b[2]
+	end)
+	return rst
+end
+function classMap:findKeysInRangeByKey(key, radius)
 	if not self.cache[key] then return end
 
 	local rst = {}
 	local pos = self.cache[key].datas[key]
 	local rangeSq = radius^2
-	local g1, g2 = self:findGridInRange(key, radius)
+	local g1, g2 = self:findGridsInRangeByPos(pos, radius)
 	for i = g1.x, g2.x do
 		for j = g1.y, g2.y do
 			local grid = self.grids[i][j]
@@ -98,11 +119,28 @@ function classMap:findKeysInRange(key, radius)
 end
 
 -- 查找范围内最近的关键字
-function classMap:findCloestInRange(key, radius)
+function classMap:findCloestInRangeByPos(pos, radius)
+	local g1, g2 = self:findGridsInRangeByPos(pos, radius)
+	local minKey
+	local minDistSq = radius^2
+	for i = g1.x, g2.x do
+		for j = g1.y, g2.y do
+			local grid = self.grids[i][j]
+			for k, v in pairs(grid.datas) do
+				local distSq = (v-pos):SqrMagnitude()
+				if distSq < minDistSq then
+					minKey = k
+				end
+			end
+		end
+	end
+	return minKey
+end
+function classMap:findCloestInRangeByKey(key, radius)
 	if not self.cache[key] then return end
 	
 	local pos = self.cache[key].datas[key]
-	local g1, g2 = self:findGridInRange(key, radius)
+	local g1, g2 = self:findGridsInRangeByPos(pos, radius)
 	local minKey
 	local minDistSq = radius^2
 	for i = g1.x, g2.x do
