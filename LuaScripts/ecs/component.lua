@@ -22,8 +22,7 @@ function ecs.newcom(name)
 end
 
 ecs.Single = {}
-function ecs.newsingle(name)
-	local com = {}
-	ecs.Single[name] = com
-	return com
+function ecs.newsingle(name, com)
+	ecs.Single[name] = com or {}
+	return ecs.Single[name]
 end

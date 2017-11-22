@@ -15,10 +15,7 @@ local concern_2 = {
 local concern_3 = {
 	Com.general,
 }
-local concern_4 = {
-	Com.troop,
-}
-local sys = ecs.newsys('attack.qianyao', concern_1, concern_2, concern_3, concern_4)
+local sys = ecs.newsys('attack.qianyao', concern_1, concern_2, concern_3)
 
 function sys:checkTargetInRange(entity, eTarget)
 	local attDist = entity:getComponent(Com.property).attDist
