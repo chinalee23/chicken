@@ -1,4 +1,4 @@
-local com = ecs.newcom('attack')
+local com = ecs.newcom('attacker')
 function com:ctor( ... )
 	self.status = 'idle'
 	self.target = nil

@@ -20,14 +20,8 @@ local function fixedUpdate( ... )
 			data = {
 				id = game.myid,
 				direction = {input.direction.x, input.direction.y},
-				blink = input.blink,
-				accelerate = input.accelerate,
-				slowdown = input.slowdown,
-				highcamera = input.highcamera,
-				lowcamera = input.lowcamera,
 			},
 		})
-	-- log.info(jd)
 	input.reset()
 	net.send(jd)
 end
@@ -100,18 +94,13 @@ local function onFrame(msg)
 	end
 	
 	
-	local input = ecs.Single.input.inputs
+	local inputs = ecs.Single.inputs
 	if msg.frames then
 		for _, v in ipairs(msg.frames) do
-			table.insert(input, {
-				id = world.getPlayerEntityId(v.id),
+			local eid = world.getPlayerEntityId(v.id)
+			inputs[eid] = {
 				direction = Vector2(v.direction[1], v.direction[2]),
-				blink = v.blink,
-				accelerate = v.accelerate,
-				slowdown = v.slowdown,
-				highcamera = v.highcamera,
-				lowcamera = v.lowcamera,
-			})
+			}
 		end
 	end
 	world.frameCalc()

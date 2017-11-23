@@ -107,13 +107,6 @@ function Vector2.Magnitude(v2)
 	return sqrt(v2.x * v2.x + v2.y * v2.y)
 end
 
-
-function Vector2.Lerp(v, from, to, t)
-	t = clamp(t, 0, 1)
-	v.x = from.x * (1 - t) + to.x * t
-	v.y = from.y * (1 - t) + to.y * t
-end
-
 function Vector2.Distance(lhs, rhs)
 	return Vector2.Magnitude(rhs - lhs)
 end

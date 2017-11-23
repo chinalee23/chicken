@@ -1,33 +1,55 @@
 local Vector2 = require 'math.vector2'
 local world = require 'battle.world'
+local util = require 'battle.system.logic.util'
 
 local Com = ecs.Com
 
 local tuple = {
 	general = {
 		Com.general,
-		Com.transform,
+		Com.logic.transform,
+		Com.logic.animation,
 	},
 	retinue = {
 		Com.retinue,
-		Com.transform,
+		Com.logic.transform,
+		Com.logic.animation,
 	},
 }
 local sys = ecs.newsys('move', tuple)
 
 local inputs = ecs.Single.inputs
-local map = ecs.Single.map
-local speed = 0.2
+local speed = 1
 local retinueGap = 1
 
 
+local function setAnim(comAnim, anim)
+	if not comAnim.anim or comAnim.anim ~= 'skill1' then
+		comAnim.anim = anim
+	end
+end
+
+local function limitPos(pos)
+	pos.x = math.max(pos.x, 0)
+	pos.x = math.min(pos.x, 100)
+	pos.y = math.max(pos.y, 0)
+	pos.y = math.min(pos.y, 100)
+end
+
+
 function sys:move(eGeneral, direction)
-	local comTrans_g = eGeneral:getComponent(Com.transform)
+	direction = direction or Vector2(0, 0)
+	local comTrans_g = eGeneral:getComponent(Com.logic.transform)
+	local comAnim_g = eGeneral:getComponent(Com.logic.animation)
 	if direction.x ~= 0 or direction.y ~= 0 then
 		comTrans_g.direction = direction:Clone()
 		comTrans_g.position = comTrans_g.position + direction * speed
-		map:modify(eGeneral.id, comTrans_g.position)
+		limitPos(comTrans_g.position)
+		setAnim(comAnim_g, 'run')
+	else
+		setAnim(comAnim_g, 'idle')
 	end
+	util.updateMap(eGeneral)
 	local pos_g = comTrans_g.position
 
 	local comGeneral = eGeneral:getComponent(Com.general)
@@ -36,7 +58,9 @@ function sys:move(eGeneral, direction)
 	local layerIndex = 0
 	local x, y
 	for i, v in ipairs(comGeneral.retinues) do
-		local comTrans_r = self:getEntity(v, 'retinue'):getComponent(Com.transform)
+		local eRetinue = self:getEntity(v, 'retinue')
+		local comTrans_r = eRetinue:getComponent(Com.logic.transform)
+		local comAnim_r = eRetinue:getComponent(Com.logic.animation)
 		if i == 1 or layerIndex == 8*layer then
 			layer = layer + 1
 			sideLen = 2*layer+1
@@ -62,11 +86,17 @@ function sys:move(eGeneral, direction)
 			comTrans_r.direction = offset:Normalize()
 			local t = math.sqrt(distSq)/speed
 			comTrans_r.position = Vector2.Lerp(comTrans_r.position, tarPos, 1/t)
-		else
+			limitPos(comTrans_r.position)
+			setAnim(comAnim_r, 'run')
+		elseif direction.x ~= 0 or direction.y ~= 0 then
 			comTrans_r.direction = direction:Clone()
 			comTrans_r.position = comTrans_r.position + comTrans_r.direction * speed
+			limitPos(comTrans_r.position)
+			setAnim(comAnim_r, 'run')
+		else
+			setAnim(comAnim_r, 'idle')
 		end
-		map:modify(v, comTrans_r.position)
+		util.updateMap(eRetinue)
 	end
 end
 
@@ -77,6 +107,8 @@ function sys:_frameCalc( ... )
 		local input = inputs[k]
 		if input and input.direction then
 			self:move(v, input.direction)
+		else
+			self:move(v)
 		end
 	end
 end

@@ -81,7 +81,7 @@ end
 
 -- 查找范围内的关键字
 -- 返回包含距离的关键字列表，并按照距离升序排列
-function classMap:findKeysInRangeByPos(pos, radius)
+function classMap:findKeysInRangeByPos(pos, radius, filtFunc)
 	local rst = {}
 	local rangeSq = radius^2
 	local g1, g2 = self:findGridsInRangeByPos(pos, radius)
@@ -91,7 +91,9 @@ function classMap:findKeysInRangeByPos(pos, radius)
 			for k, v in pairs(grid.datas) do
 				local distSq = (v-pos):SqrMagnitude()
 				if distSq < rangeSq then
-					table.insert(rst, {k, distSq})
+					if not filtFunc or filtFunc(k) then
+						table.insert(rst, {k, distSq})
+					end
 				end
 			end
 		end
@@ -128,7 +130,7 @@ function classMap:findKeysInRangeByKey(key, radius)
 end
 
 -- 查找范围内最近的关键字
-function classMap:findCloestInRangeByPos(pos, radius)
+function classMap:findCloestInRangeByPos(pos, radius, filtFunc)
 	local g1, g2 = self:findGridsInRangeByPos(pos, radius)
 	local minKey
 	local minDistSq = radius^2
@@ -136,9 +138,11 @@ function classMap:findCloestInRangeByPos(pos, radius)
 		for j = g1.y, g2.y do
 			local grid = self.grids[i][j]
 			for k, v in pairs(grid.datas) do
-				local distSq = (v-pos):SqrMagnitude()
-				if distSq < minDistSq then
-					minKey = k
+				if not filtFunc or filtFunc(k) then
+					local distSq = (v-pos):SqrMagnitude()
+					if distSq < minDistSq then
+						minKey = k
+					end
 				end
 			end
 		end

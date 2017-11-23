@@ -10,14 +10,13 @@ local function startOffline( ... )
 	_M.battleData = {
 		characters = {
 			{id = myid, pos = {50, 50}},
-			-- {id = 10, pos = {10, 10}},
+			{id = 10, pos = {60, 60}},
 		},
 		seed = os.time(),
-		-- seed = 1511398247,
 		npcs = {},
 	}
 	for i = 1, 100 do
-		table.insert(_M.battleData.npcs, {pos = {math.random(25, 75), math.random(25, 75)}})
+		table.insert(_M.battleData.npcs, {pos = {math.random(0, 100), math.random(0, 100)}})
 	end
 	-- table.insert(_M.battleData.npcs, {pos = {41, 51}})
 

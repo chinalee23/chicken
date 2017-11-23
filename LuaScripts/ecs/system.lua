@@ -1,5 +1,5 @@
-local classConcern = class()
-function classConcern:ctor(coms)
+local classTuple = class()
+function classTuple:ctor(coms)
 	self.coms = {}
 	for _, v in ipairs(coms) do
 		self.coms[v] = true
@@ -8,7 +8,7 @@ function classConcern:ctor(coms)
 	self.candidates = {}
 end
 
-function classConcern:onAddComponent(entity, c)
+function classTuple:onAddComponent(entity, c)
 	if not self.coms[c] then return end
 	if self.entities[entity.id] then return end
 
@@ -28,7 +28,7 @@ function classConcern:onAddComponent(entity, c)
 	end
 end
 
-function classConcern:onRemoveComponent(entity, c)
+function classTuple:onRemoveComponent(entity, c)
 	local flag = false
 	if not self.coms[c] then
 		return flag
@@ -45,7 +45,7 @@ function classConcern:onRemoveComponent(entity, c)
 	return flag
 end
 
-function classConcern:onEntityDestroy(entity)
+function classTuple:onEntityDestroy(entity)
 	local flag = false
 	if self.entities[entity.id] then
 		self.entities[entity.id] = nil
@@ -62,17 +62,17 @@ end
 
 local system = class()
 function system:ctor(tuple)
-	self.concerns = {}
+	self.tuples = {}
 	for k, v in pairs(tuple) do
-		local c = classConcern.new(v)
-		self.concerns[k] = c
+		local c = classTuple.new(v)
+		self.tuples[k] = c
 	end
 
 	self.frameCalcTime = 0
 end
 
 function system:onAddComponent(entity, c)
-	for k, v in pairs(self.concerns) do
+	for k, v in pairs(self.tuples) do
 		if v:onAddComponent(entity, c) and self.setup then
 			self:setup(entity, k)
 		end
@@ -80,7 +80,7 @@ function system:onAddComponent(entity, c)
 end
 
 function system:onRemoveComponent(entity, c)
-	for k, v in pairs(self.concerns) do
+	for k, v in pairs(self.tuples) do
 		if v:onRemoveComponent(entity, c) and self._onRemoveComponent then
 			self:_onRemoveComponent(entity, k, c)
 		end
@@ -88,7 +88,7 @@ function system:onRemoveComponent(entity, c)
 end
 
 function system:onEntityDestroy(entity)
-	for k, v in pairs(self.concerns) do
+	for k, v in pairs(self.tuples) do
 		if v:onEntityDestroy(entity) then
 			if self._onEntityDestroy then
 				self:_onEntityDestroy(entity, k)
@@ -99,12 +99,12 @@ end
 
 function system:getEntity(id, tupleKey)
 	tupleKey = tupleKey or 1
-	return self.concerns[tupleKey].entities[id]
+	return self.tuples[tupleKey].entities[id]
 end
 
 function system:getEntities(tupleKey)
 	tupleKey = tupleKey or 1
-	return self.concerns[tupleKey].entities
+	return self.tuples[tupleKey].entities
 end
 
 function system:frameCalc()

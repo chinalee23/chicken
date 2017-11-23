@@ -42,8 +42,8 @@ function init( ... )
 		log.info(game.frameMaxInterval)
 	end)
 
-	btnMap = LuaInterface.Find(gameObject, 'Debug/BtnMap')
-	LuaInterface.AddClick(btnMap, printMap)
+	-- btnMap = LuaInterface.Find(gameObject, 'Debug/BtnMap')
+	-- LuaInterface.AddClick(btnMap, printMap)
 
 	initHpbar()
 	initCamera()

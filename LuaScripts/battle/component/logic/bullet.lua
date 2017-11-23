@@ -1,6 +1,6 @@
 local com = ecs.newcom('bullet')
-function com:ctor( ... )
-	self.att = 0
-	self.target = nil
-	self.speed = 0
+function com:ctor(att, target)
+	self.att = att or 1
+	self.target = target
+	self.speed = 40
 end

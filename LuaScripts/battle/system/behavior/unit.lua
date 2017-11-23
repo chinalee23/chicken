@@ -15,6 +15,8 @@ function sys:setup(entity)
 	comUnit.gameObject = LuaInterface.LoadPrefab(comUnit.prefab, comUnit.root)
 	comUnit.gameObject.name = entity.id
 
+	LuaInterface.SetLocalScale(comUnit.gameObject, comUnit.scale)
+
 	local comTrans = entity:getComponent(Com.transform)
 	comUnit.currPos = comTrans.position:Clone()
 	comUnit.tarPos = comTrans.position:Clone()
@@ -31,12 +33,12 @@ function sys:updatePos(entity)
 	if dist > 0.0001 then
 		comUnit.currPos = Vector2.Lerp(comUnit.currPos, comUnit.tarPos, Time.deltaTime/world.frameInterval)
 		LuaInterface.SetPosition(comUnit.gameObject, comUnit.currPos.x, 0, comUnit.currPos.y)
-		if not comUnit.currAnim or comUnit.currAnim ~= 'run' then
+		if not comUnit.currAnim or (comUnit.currAnim ~= 'skill1' and comUnit.currAnim ~= 'run') then
 			comUnit.currAnim = 'run'
 			LuaInterface.PlayAnimation(comUnit.gameObject, comUnit.currAnim)
 		end
 	else
-		if not comUnit.currAnim or comUnit.currAnim ~= 'idle' then
+		if not comUnit.currAnim or (comUnit.currAnim ~= 'skill1' and comUnit.currAnim ~= 'idle') then
 			comUnit.currAnim = 'idle'
 			LuaInterface.PlayAnimation(comUnit.gameObject, comUnit.currAnim)
 		end
@@ -53,6 +55,23 @@ function sys:calc(entity)
 	local lookPos = comUnit.tarPos + comTrans.direction
 	LuaInterface.LookAt(comUnit.gameObject, lookPos.x, 0, lookPos.y)
 end
+
+function sys:onAttack(id)
+	local comUnit = self:getEntity(id):getComponent(Com.unit)
+	comUnit.currAnim = 'skill1'
+	LuaInterface.PlayAnimation(comUnit.gameObject, comUnit.currAnim)
+end
+events.battle.attack.addListener(function (id)
+	sys:onAttack(id)
+end)
+
+function sys:onAttackOver(id)
+	local comUnit = self:getEntity(id):getComponent(Com.unit)
+	comUnit.currAnim = nil
+end
+events.battle.attackover.addListener(function (id)
+	sys:onAttackOver(id)
+end)
 
 function sys:update()
 	local entities = self:getEntities()

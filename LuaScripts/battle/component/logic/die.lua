@@ -1,4 +1,5 @@
 local com = ecs.newcom('die')
 function com:ctor( ... )
-	-- body
+	self.dying = false
+	self.startFrame = 0
 end

@@ -1,104 +1,133 @@
-local util = require 'battle.system.util'
+local util = require 'battle.system.logic.util'
 local world = require 'battle.world'
 
 local Com = ecs.Com
 local tuple = {
 	attacker = {
 		Com.attacker,
-		Com.transform,
+		Com.logic.transform,
+		Com.logic.animation,
 		Com.property,
 	},
 	attackee = {
 		Com.attackee,
-		Com.transform,
+		Com.logic.transform,
 	},
 }
-local sys = ecs.newsys('attack')
+local sys = ecs.newsys('attacker', tuple)
 
 local map = ecs.Single.map
 
 local function findTarget(eAttacker)
-	local comTrans = eAttacker:getComponent(Com.transform)
+	local pos = eAttacker:getComponent(Com.logic.transform).position
 	local comProperty = eAttacker:getComponent(Com.property)
-	local targets = map:findKeysInRangeByPos(comTrans, comProperty.attDist)
-	for _, v in ipairs(targets) do
-		if isHostile(eAttacker.id, v) then
-			local comAttack = eAttacker:getComponent(Com.eAttacker)
-			comAttack.target = v
-			return v
-		end
-	end
+	return map.attackeeMap:findCloestInRangeByPos(pos, comProperty.attDist,
+		function (key)
+			return key ~= eAttacker.id and util.isHostile(eAttacker.id, key)
+		end)
 end
 
 local function checkTargetInRange(eAttacker, eTarget)
-	local pos_t = eTarget:getComponent(Com.transform).position
-	local pos_a = eAttacker:getComponent(Com.transform).position
+	local pos_t = eTarget:getComponent(Com.logic.transform).position
+	local pos_a = eAttacker:getComponent(Com.logic.transform).position
 	local attDist = eAttacker:getComponent(Com.property).attDist
 	return (pos_t - pos_a):SqrMagnitude() < attDist^2
 end
 
+function sys:calcDirection(eAttacker, eTarget)
+	local comTrans_a = eAttacker:getComponent(Com.logic.transform)
+	local comTrans_t = eTarget:getComponent(Com.logic.transform)
+	comTrans_a.direction = (comTrans_t.position - comTrans_a.position):Normalize()
+end
 
+function sys:enteridle(eAttacker)
+	local comAttacker = eAttacker:getComponent(Com.attacker)
+	comAttacker.target = nil
+	comAttacker.status = 'idle'
+
+	local comAnim = eAttacker:getComponent(Com.logic.animation)
+	comAnim.anim = nil
+end
 
 function sys:idle(eAttacker)
 	local target =  findTarget(eAttacker)
 	if not target then return end
+	-- log.info('find target', target, world.frameNo)
 
-	local comAttack = eAttacker:getComponent(Com.attack)
-	comAttack.startFrame = world.frameNo
-	comAttack.status = 'qianyao'
+	local comAttacker = eAttacker:getComponent(Com.attacker)
+	comAttacker.target = target
+	self:enterQianyao(eAttacker)
+end
+
+function sys:enterQianyao(eAttacker)
+	local comAttacker = eAttacker:getComponent(Com.attacker)
+	comAttacker.startFrame = world.frameNo
+	comAttacker.status = 'qianyao'
+
+	local comAnim = eAttacker:getComponent(Com.logic.animation)
+	comAnim.anim = 'skill1'
 end
 
 function sys:qianyao(eAttacker)
-	local comAttack = eAttacker:getComponent(Com.attack)
-	local eTarget = self:getEntity(comAttack.target, 'attackee')
+	local comAttacker = eAttacker:getComponent(Com.attacker)
+	local eTarget = self:getEntity(comAttacker.target, 'attackee')
 	if eTarget and checkTargetInRange(eAttacker, eTarget) then
+		self:calcDirection(eAttacker, eTarget)
 		local comProperty = eAttacker:getComponent(Com.property)
-		if world.frameNo - comAttack.startFrame >= comProperty.qianyaoFrame then
+		if world.frameNo - comAttacker.startFrame >= comProperty.qianyaoFrame then
+			-- log.info('qianyao over', world.frameNo)
 			if comProperty.attType == 'jinzhan' then
 				util.attackCalc(comProperty.att, eTarget)
 			else
 				-- 子弹
+				local pos = eAttacker:getComponent(Com.logic.transform).position
+				util.createBullet(comProperty.att, {pos.x, pos.y}, comAttacker.target)
 			end
-			self.status = 'houyao'
+			comAttacker.status = 'houyao'
 		end
 	else
-		comAttack.status = 'idle'
-		comAttack.target = nil
+		-- log.info('cancel qianyao')
+		self:enteridle(eAttacker)
 	end
 end
 
 function sys:houyao(eAttacker)
-	local comAttack = eAttacker:getComponent(Com.attack)
+	local comAttacker = eAttacker:getComponent(Com.attacker)
 	local comProperty = eAttacker:getComponent(Com.property)
-	if world.frameNo - comAttack.startFrame >= comProperty.houyaoFrame then
-		self.status = 'lengque'
+	if world.frameNo - comAttacker.startFrame >= comProperty.totalFrame then
+		-- log.info('houyao over', world.frameNo)
+		comAttacker.status = 'lengque'
+		local comAnim = eAttacker:getComponent(Com.logic.animation)
+		comAnim.anim = nil
 	end
 end
 
 function sys:lengque(eAttacker)
-	local comAttack = eAttacker:getComponent(Com.attack)
+	local comAttacker = eAttacker:getComponent(Com.attacker)
 	local comProperty = eAttacker:getComponent(Com.property)
-	local interval = math.ceil(200/(50+comProperty.attSpeed))
-	if world.frameNo - comAttack.startFrame >= comProperty.totalFrame + interval then
-		local eTarget = self:getEntity(comAttack.target, 'attackee')
+	-- local interval = math.ceil(200/(50+comProperty.attSpeed))
+	if world.frameNo - comAttacker.startFrame >= comProperty.totalFrame + comProperty.lengqueFrame then
+		-- log.info('lengque over', world.frameNo)
+		local eTarget = self:getEntity(comAttacker.target, 'attackee')
 		if eTarget and checkTargetInRange(eAttacker, eTarget) then
-			self.status = 'qianyao'
-			self.startFrame = world.frameNo
+			-- log.info('target still in range')
+			self:enterQianyao(eAttacker)
 		else
-			self.status = 'idle'
+			-- log.info('no target anymore')
+			self:enteridle(eAttacker)
 		end
 	end
 end
 
 
 function sys:calc(eAttacker)
-	local comAttack = eAttacker:getComponent(Com.attack)
-	self[comAttack.status](self, eAttacker)
+	local comAttacker = eAttacker:getComponent(Com.attacker)
+	self[comAttacker.status](self, eAttacker)
 end
 
 function sys:_frameCalc( ... )
 	local entities = self:getEntities('attacker')
-	for _ v in pairs(entities) do
+	for _, v in pairs(entities) do
 		self:calc(v)
 	end
 end

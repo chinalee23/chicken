@@ -22,30 +22,52 @@ local function loadComponents( ... )
 	
 	require 'battle.component.logic.property'
 	require 'battle.component.logic.transform'
+	require 'battle.component.logic.animation'
 	require 'battle.component.logic.general'
 	require 'battle.component.logic.npc'
 	require 'battle.component.logic.retinue'
+	require 'battle.component.logic.team'
+	require 'battle.component.logic.attacker'
+	require 'battle.component.logic.attackee'
+	require 'battle.component.logic.bullet'
+	require 'battle.component.logic.die'
+	require 'battle.component.logic.dismiss'
 
-	require 'battle.component.behavior.unit'
+	require 'battle.component.behavior.transform'
+	require 'battle.component.behavior.animation'
 	require 'battle.component.behavior.playercamera'
 end
 
 local function loadSystems( ... )
 	require 'battle.system.logic.move'
-	require 'battle.system.logic.recruit'	
-
-	require 'battle.system.behavior.unit'
+	require 'battle.system.logic.recruit'
+	require 'battle.system.logic.attacker'
+	require 'battle.system.logic.bullet'
+	require 'battle.system.logic.die'
+	require 'battle.system.logic.dismiss'
+	
+	require 'battle.system.behavior.transform'
+	require 'battle.system.behavior.animation'
 	require 'battle.system.behavior.playercamera'
+	require 'battle.system.behavior.hpbar'
 end
 
 local function createEntities(data, root)
 	for k, v in ipairs(data.characters) do
 		local e = ecs.Entity.new()
 
-		e:addComponent(Com.property, 2)
-		e:addComponent(Com.transform, v.pos)
+		e:addComponent(Com.property, 2, 10, 100, 5)
+		e:addComponent(Com.logic.transform, v.pos)
+		e:addComponent(Com.logic.animation, 'idle')
 		e:addComponent(Com.general)
-		e:addComponent(Com.unit, root, prefabConfig[e.id], 1.5)
+		e:addComponent(Com.team, e.id)
+		e:addComponent(Com.attacker)
+		e:addComponent(Com.attackee)
+
+		local go = LuaInterface.LoadPrefab(prefabConfig[e.id], root)
+		go.name = e.id
+		e:addComponent(Com.behavior.transform, go, 1.5)
+		e:addComponent(Com.behavior.animation, go)
 		if v.id == game.myid then
 			local goCamera = LuaInterface.Find(root, 'Camera')
 			e:addComponent(Com.playercamera, goCamera)
@@ -60,10 +82,15 @@ local function createEntities(data, root)
 		local y = data.npcs[i].pos[2]
 		local e = ecs.Entity.new()
 		
-		e:addComponent(Com.property, 2)
-		e:addComponent(Com.transform, {x, y})
+		e:addComponent(Com.property, 2, 3, 100, 5, 100)
+		e:addComponent(Com.logic.transform, {x, y})
+		e:addComponent(Com.logic.animation, 'idle')
 		e:addComponent(Com.npc)
-		e:addComponent(Com.unit, rootNpc, 'Prefab/character/16011001_Diffuse_Prefab')
+
+		local go = LuaInterface.LoadPrefab('Prefab/character/16011001_Diffuse_Prefab', rootNpc)
+		go.name = e.id
+		e:addComponent(Com.behavior.transform, go)
+		e:addComponent(Com.behavior.animation, go)
 	end
 end
 
@@ -79,21 +106,30 @@ function build(data, root)
 	createEntities(data, root)
 end
 
-frameInterval = 0.1
+frameInterval = Time.fixedDeltaTime
+log.info('frameInterval', frameInterval)
 frameNo = 0
+frameStartTime = 0
 function frameCalc( ... )
 	frameNo = frameNo + 1
+	frameStartTime = Time.time
 
 	Sys.move:frameCalc()
 	Sys.recruit:frameCalc()
+	Sys.attacker:frameCalc()
+	Sys.bullet:frameCalc()
+	Sys.die:frameCalc()
+	Sys.dismiss:frameCalc()
 
-	Sys.unit:frameCalc()
+	Sys.behavior.transform:frameCalc()
+	Sys.behavior.animation:frameCalc()
 
 	ecs.Single.inputs.direction = nil
 end
 
 function update( ... )
-	Sys.unit:update()
+	Sys.behavior.transform:update()
+	Sys.behavior.hpbar:update()
 	Sys.playercamera:update()
 end
 
