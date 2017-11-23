@@ -20,9 +20,9 @@ function classMap:ctor(width, height, sideLen)
 	local maxX = math.ceil(width/sideLen + 1)
 	local maxY = math.ceil(height/sideLen + 1)
 	self.grids = {}
-	for i = 0, maxX-1 do
+	for i = 1, maxX do
 		self.grids[i] = {}
-		for j = 0, maxY-1 do
+		for j = 1, maxY do
 			self.grids[i][j] = classGrid.new(i, j)
 		end
 	end
@@ -31,8 +31,8 @@ function classMap:ctor(width, height, sideLen)
 end
 
 function classMap:calcGrid(pos)
-	local x = math.floor(pos.x/self.sideLen)
-	local y = math.floor(pos.y/self.sideLen)
+	local x = math.floor(pos.x/self.sideLen) + 1
+	local y = math.floor(pos.y/self.sideLen) + 1
 	return self.grids[x][y]
 end
 
@@ -56,6 +56,15 @@ end
 function classMap:modify(key, pos)
 	self:remove(key)
 	self:insert(key, pos)
+end
+
+function classMap:getKey(key)
+	if not self.cache[key] then
+		log.info('map no key', key)
+		return
+	end
+	log.info('pos', self.cache[key].datas[key])
+	log.info('grid', self.cache[key].x, self.cahce[key].y)
 end
 
 -- 查找范围内的格子

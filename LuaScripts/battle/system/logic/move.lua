@@ -17,7 +17,7 @@ local sys = ecs.newsys('move', tuple)
 
 local inputs = ecs.Single.inputs
 local map = ecs.Single.map
-local speed = 0.1
+local speed = 0.2
 local retinueGap = 1
 
 
@@ -37,7 +37,7 @@ function sys:move(eGeneral, direction)
 	local x, y
 	for i, v in ipairs(comGeneral.retinues) do
 		local comTrans_r = self:getEntity(v, 'retinue'):getComponent(Com.transform)
-		if i == 1 or i == (layer+2)^2 then
+		if i == 1 or layerIndex == 8*layer then
 			layer = layer + 1
 			sideLen = 2*layer+1
 			layerIndex = 1

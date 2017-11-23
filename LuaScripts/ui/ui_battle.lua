@@ -8,6 +8,7 @@ local gameObject
 local txtTroopCount
 
 local btns = {}
+local btnMap
 
 local init
 local initHpbar
@@ -16,6 +17,7 @@ local initDamage
 local addBtn
 local onBtnBlinkClick
 local updateBtns
+local printMap
 
 function init( ... )
 	addBtn('BtnBlink', '瞬移', 3, 'blink')
@@ -40,11 +42,8 @@ function init( ... )
 		log.info(game.frameMaxInterval)
 	end)
 
-	local btnFrameCalc = LuaInterface.Find(gameObject, 'Debug/BtnFrame')
-	LuaInterface.AddClick(btnFrameCalc, function ( ... )
-		local world = require 'battle.world'
-		world.frameCalc()
-	end)
+	btnMap = LuaInterface.Find(gameObject, 'Debug/BtnMap')
+	LuaInterface.AddClick(btnMap, printMap)
 
 	initHpbar()
 	initCamera()
@@ -74,6 +73,18 @@ end
 function updateBtns( ... )
 	for _, v in ipairs(btns) do
 		v:update()
+	end
+end
+
+function printMap( ... )
+	local Vector2 = require 'math.vector2'
+	local txt = LuaInterface.Find(btnMap, 'TxtPos', 'Text')
+	local map = ecs.Single.map
+	local key = map:findCloestInRangeByKey(tonumber(txt), 2)
+	if key then
+		log.info('key', key)
+	else
+		log.info('no key', map:getKey(key))
 	end
 end
 

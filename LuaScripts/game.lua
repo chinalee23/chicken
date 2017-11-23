@@ -13,11 +13,13 @@ local function startOffline( ... )
 			-- {id = 10, pos = {10, 10}},
 		},
 		seed = os.time(),
+		-- seed = 1511398247,
 		npcs = {},
 	}
 	for i = 1, 100 do
-		table.insert(_M.battleData.npcs, {pos = {math.random(0, 100), math.random(0, 100)}})
+		table.insert(_M.battleData.npcs, {pos = {math.random(25, 75), math.random(25, 75)}})
 	end
+	-- table.insert(_M.battleData.npcs, {pos = {41, 51}})
 
 	local battle = require 'battle.battle_offline'
 	battle.start()

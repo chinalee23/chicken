@@ -2,24 +2,6 @@ local Com = ecs.Com
 
 local _M = module()
 
-
-function addRetinue(rid, tid)
-	local en = ecs.getEntity(rid)
-
-	local et = ecs.getEntity(tid)
-	local comGeneral = et:getComponent(Com.general)
-	if not comGeneral then
-		local comRetinue = et:getComponent(Com.retinue)
-		if comRetinue then
-			comGeneral = ecs.getEntity(comRetinue.general):getComponent(Com.general)
-		end
-	end
-
-	if comGeneral then
-		table.insert(comGeneral.retinues, rid)
-	end
-end
-
 function removeRetinue(rid)
 	local comRetinue = ecs.getEntity(rid):getComponent(Com.retinue)
 	local comGeneral = ecs.getEntity(comRetinue.general):getComponent(Com.general)

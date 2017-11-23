@@ -13,6 +13,7 @@ local sys = ecs.newsys('unit', tuple)
 function sys:setup(entity)
 	local comUnit = entity:getComponent(Com.unit)
 	comUnit.gameObject = LuaInterface.LoadPrefab(comUnit.prefab, comUnit.root)
+	comUnit.gameObject.name = entity.id
 
 	local comTrans = entity:getComponent(Com.transform)
 	comUnit.currPos = comTrans.position:Clone()
