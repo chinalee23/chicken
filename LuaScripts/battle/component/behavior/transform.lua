@@ -1,3 +1,5 @@
+local Vector2 = require 'math.vector2'
+
 local com = ecs.newcom('behavior.transform')
 function com:ctor(go, scale, height)
 	self.gameObject = go
@@ -5,6 +7,8 @@ function com:ctor(go, scale, height)
 	self.currPos = nil
 	self.tarPos = nil
 	self.height = height or 0
+
+	self.direction = Vector2(0, 0)
 
 	self.moveStartPos = nil
 	self.moveStartTime = 0

@@ -18,17 +18,25 @@ local sys = ecs.newsys('bullet', tuple)
 
 function sys:calc(eBullet)
 	local comBullet = eBullet:getComponent(Com.bullet)
+
+	if comBullet.hit then
+		return true
+	end
+
 	local eTarget = self:getEntity(comBullet.target, 'attackee')
 	if eTarget then
 		local comTrans_b = eBullet:getComponent(Com.logic.transform)
 		local comTrans_t = eTarget:getComponent(Com.logic.transform)
-		local distSq = (comTrans_b.position - comTrans_t.position):SqrMagnitude()
-		if distSq > 0.0001 then
-			local t = math.sqrt(distSq)/comBullet.speed
-			comTrans_b.position = Vector2.Lerp(comTrans_b.position, comTrans_t.position, world.frameInterval/t)
+
+		local offset = comTrans_t.position - comTrans_b.position
+		local direction = offset:Normalize()
+		local distSq = offset:SqrMagnitude()
+		if distSq > comBullet.speed^2 then
+			comTrans_b.position = comTrans_b.position + direction*comBullet.speed
 		else
+			comTrans_b.position = comTrans_t.position:Clone()
 			util.attackCalc(comBullet.att, eTarget)
-			return true
+			comBullet.hit = true
 		end
 	else
 		return true

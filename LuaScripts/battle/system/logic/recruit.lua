@@ -27,11 +27,13 @@ function sys:setup(entity, tupleIndex)
 end
 
 function sys:recruit(npc, eid)
-	local eGeneral = self:getEntity(eid, 'general')
-	if not eGeneral then
-		local comRetinue = self:getEntity(eid, 'retinue'):getComponent(Com.retinue)
-		eGeneral = self:getEntity(comRetinue.general, 'general')
-	end
+	local eGeneral = self:getEntity(eid, 'general') or
+		self:getEntity(self:getEntity(eid, 'retinue'):getComponent(Com.retinue).general, 'general')
+	-- if not eGeneral then
+		-- local comRetinue = self:getEntity(eid, 'retinue'):getComponent(Com.retinue)
+		-- eGeneral = self:getEntity(comRetinue.general, 'general')
+		-- eGeneral = self:getEntity(self:getEntity(eid, 'retinue'):getComponent(Com.retinue).general, 'general')
+	-- end
 
 	local comGeneral = eGeneral:getComponent(Com.general)
 	table.insert(comGeneral.retinues, npc.id)

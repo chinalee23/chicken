@@ -56,7 +56,7 @@ local function createEntities(data, root)
 	for k, v in ipairs(data.characters) do
 		local e = ecs.Entity.new()
 
-		e:addComponent(Com.property, 2, 10, 100, 5)
+		e:addComponent(Com.property, 2, 10, 100, 5, 1000)
 		e:addComponent(Com.logic.transform, v.pos)
 		e:addComponent(Com.logic.animation, 'idle')
 		e:addComponent(Com.general)

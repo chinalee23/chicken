@@ -10,6 +10,8 @@ local tuple = {
 }
 local sys = ecs.newsys('behavior.transform', tuple)
 
+local speed = 1
+
 function sys:setup(entity)
 	local comTrans_l = entity:getComponent(Com.logic.transform)
 	local comTrans_b = entity:getComponent(Com.behavior.transform)
@@ -30,12 +32,14 @@ function sys:_onEntityDestroy(entity)
 end
 
 function sys:updatePos(entity)
-	local comTrans = entity:getComponent(Com.behavior.transform)
-	local dist = (comTrans.tarPos - comTrans.currPos):SqrMagnitude()
-	if dist > 0.0001 then
-		comTrans.currPos = Vector2.Lerp(comTrans.moveStartPos, comTrans.tarPos, (Time.time - comTrans.moveStartTime)/comTrans.moveTime)
-		LuaInterface.SetPosition(comTrans.gameObject, comTrans.currPos.x, comTrans.height, comTrans.currPos.y)
-	end
+	local comTrans_b = entity:getComponent(Com.behavior.transform)
+	comTrans_b.currPos = comTrans_b.currPos + comTrans_b.direction * (speed * Time.deltaTime/world.frameInterval)
+	LuaInterface.SetPosition(comTrans_b.gameObject, comTrans_b.currPos.x, comTrans_b.height, comTrans_b.currPos.y)
+	-- local dist = (comTrans.tarPos - comTrans.currPos):SqrMagnitude()
+	-- if dist > 0.0001 then
+	-- 	comTrans.currPos = Vector2.Lerp(comTrans.moveStartPos, comTrans.tarPos, (Time.time - comTrans.moveStartTime)/comTrans.moveTime)
+	-- 	LuaInterface.SetPosition(comTrans.gameObject, comTrans.currPos.x, comTrans.height, comTrans.currPos.y)
+	-- end
 end
 
 function sys:calc(entity)
@@ -49,9 +53,11 @@ function sys:calc(entity)
 	local lookPos = comTrans_b.tarPos + comTrans_l.direction
 	LuaInterface.LookAt(comTrans_b.gameObject, lookPos.x, 0, lookPos.y)
 
-	comTrans_b.moveStartPos = comTrans_b.currPos:Clone()
-	comTrans_b.moveStartTime = Time.time
-	comTrans_b.moveTime = world.frameInterval - (Time.time - world.frameStartTime)
+	comTrans_b.direction = (comTrans_b.tarPos - comTrans_b.currPos):Normalize()
+
+	-- comTrans_b.moveStartPos = comTrans_b.currPos:Clone()
+	-- comTrans_b.moveStartTime = Time.time
+	-- comTrans_b.moveTime = world.frameInterval - (Time.time - world.frameStartTime)
 end
 
 function sys:update( ... )
