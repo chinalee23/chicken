@@ -1,22 +1,31 @@
 local game = require 'game'
+local configWeapon = require 'config.weapon'
+
 local Com = ecs.Com
 local Sys = ecs.Sys
 
 local _M = module()
 
 local prefabConfig = {
-	'Prefab/character/16021002_Diffuse_Prefab',
-	'Prefab/character/16021007_Diffuse_Prefab',
-	'Prefab/Player/Female01Base3D/female01_base_prefab',
-	'Prefab/Player/Male01/male01_base_prefab',
-	'Prefab/Player/Male02Base3D/male02_base_prefab',
-	'Prefab/Player/Female03Base3D/female03_base_prefab',
+	'Prefab/Characters/16034011_Diffuse_Prefab',
+	'Prefab/Characters/16111001_Diffuse_Prefab',
+	'Prefab/Characters/16112001_Diffuse_Prefab',
+	'Prefab/Characters/16113001_Diffuse_Prefab',
+	'Prefab/Characters/16114001_Diffuse_Prefab',
+	'Prefab/Characters/16134011_Diffuse_Prefab',
+	'Prefab/Characters/16034011_Diffuse_Prefab',
+	'Prefab/Characters/16111001_Diffuse_Prefab',
+	'Prefab/Characters/16112001_Diffuse_Prefab',
+	'Prefab/Characters/16113001_Diffuse_Prefab',
+	'Prefab/Characters/16114001_Diffuse_Prefab',
+	'Prefab/Characters/16134011_Diffuse_Prefab',
 }
 
 local playerEntities = {}
 
 local function loadComponents( ... )
 	require 'battle.singleton.input'
+	require 'battle.singleton.scene'
 	require 'battle.singleton.ui'
 	require 'battle.singleton.map'
 	
@@ -32,10 +41,12 @@ local function loadComponents( ... )
 	require 'battle.component.logic.bullet'
 	require 'battle.component.logic.die'
 	require 'battle.component.logic.dismiss'
-
+	require 'battle.component.logic.weapon'
+	
 	require 'battle.component.behavior.transform'
 	require 'battle.component.behavior.animation'
 	require 'battle.component.behavior.playercamera'
+	require 'battle.component.behavior.weapon'
 end
 
 local function loadSystems( ... )
@@ -45,30 +56,36 @@ local function loadSystems( ... )
 	require 'battle.system.logic.bullet'
 	require 'battle.system.logic.die'
 	require 'battle.system.logic.dismiss'
-	
+	require 'battle.system.logic.pickup'
+
 	require 'battle.system.behavior.transform'
 	require 'battle.system.behavior.animation'
 	require 'battle.system.behavior.playercamera'
 	require 'battle.system.behavior.hpbar'
+	require 'battle.system.behavior.weapon'
 end
 
 local function createEntities(data, root)
+	local scene = ecs.Single.scene
+
+	scene.rootPlayer = LuaInterface.Find(root, 'RootPlayer')
 	for k, v in ipairs(data.characters) do
 		local e = ecs.Entity.new()
 
-		e:addComponent(Com.property, 2, 10, 100, 5, 1000)
+		e:addComponent(Com.property, 2, 2, 50, 2, 1000)
 		e:addComponent(Com.logic.transform, v.pos)
 		e:addComponent(Com.logic.animation, 'idle')
 		e:addComponent(Com.general)
 		e:addComponent(Com.team, e.id)
-		e:addComponent(Com.attacker)
+		-- e:addComponent(Com.attacker)
 		e:addComponent(Com.attackee)
 
-		local go = LuaInterface.LoadPrefab(prefabConfig[e.id], root)
+		local go = LuaInterface.LoadPrefab(prefabConfig[e.id], scene.rootPlayer)
 		go.name = e.id
 		e:addComponent(Com.behavior.transform, go, 1.5)
 		e:addComponent(Com.behavior.animation, go)
 		if v.id == game.myid then
+			e:addComponent(Com.attacker)
 			local goCamera = LuaInterface.Find(root, 'Camera')
 			e:addComponent(Com.playercamera, goCamera)
 		end
@@ -76,21 +93,30 @@ local function createEntities(data, root)
 		playerEntities[v.id] = e.id
 	end
 
-	local rootNpc = LuaInterface.Find(root, 'npcs')
+	scene.rootNpc = LuaInterface.Find(root, 'RootNpc')
 	for i = 1, #data.npcs do
-		local x = data.npcs[i].pos[1]
-		local y = data.npcs[i].pos[2]
 		local e = ecs.Entity.new()
 		
-		e:addComponent(Com.property, 2, 3, 100, 5, 100)
-		e:addComponent(Com.logic.transform, {x, y})
+		e:addComponent(Com.property, 2, 2, 20, 2, 300)
+		e:addComponent(Com.logic.transform, {data.npcs[i].pos[1], data.npcs[i].pos[2]})
 		e:addComponent(Com.logic.animation, 'idle')
 		e:addComponent(Com.npc)
 
-		local go = LuaInterface.LoadPrefab('Prefab/character/16011001_Diffuse_Prefab', rootNpc)
+		local go = LuaInterface.LoadPrefab('Prefab/Characters/16011001_Diffuse_Prefab', scene.rootNpc)
 		go.name = e.id
 		e:addComponent(Com.behavior.transform, go)
 		e:addComponent(Com.behavior.animation, go)
+	end
+
+	scene.rootWeapon = LuaInterface.Find(root, 'RootWeapon')
+	for i = 1, #data.weapons do
+		local e = ecs.Entity.new()
+
+		local id = data.weapons[i].id
+		e:addComponent(Com.logic.weapon, id, {data.weapons[i].pos[1], data.weapons[i].pos[2]})
+
+		local go = LuaInterface.LoadPrefab(configWeapon[id].prefab, scene.rootWeapon)
+		e:addComponent(Com.behavior.weapon, id, go)
 	end
 end
 
@@ -116,6 +142,7 @@ function frameCalc( ... )
 
 	Sys.move:frameCalc()
 	Sys.recruit:frameCalc()
+	Sys.pickup:frameCalc()
 	Sys.attacker:frameCalc()
 	Sys.bullet:frameCalc()
 	Sys.die:frameCalc()
@@ -130,6 +157,7 @@ end
 function update( ... )
 	Sys.behavior.transform:update()
 	Sys.behavior.hpbar:update()
+	Sys.behavior.weapon:update()
 	Sys.playercamera:update()
 end
 

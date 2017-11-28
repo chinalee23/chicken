@@ -10,8 +10,6 @@ local tuple = {
 }
 local sys = ecs.newsys('behavior.transform', tuple)
 
-local speed = 1
-
 function sys:setup(entity)
 	local comTrans_l = entity:getComponent(Com.logic.transform)
 	local comTrans_b = entity:getComponent(Com.behavior.transform)
@@ -33,7 +31,8 @@ end
 
 function sys:updatePos(entity)
 	local comTrans_b = entity:getComponent(Com.behavior.transform)
-	comTrans_b.currPos = comTrans_b.currPos + comTrans_b.direction * (speed * Time.deltaTime/world.frameInterval)
+	local comTrans_l = entity:getComponent(Com.logic.transform)
+	comTrans_b.currPos = comTrans_b.currPos + comTrans_b.direction * (comTrans_l.speed * Time.deltaTime/world.frameInterval)
 	LuaInterface.SetPosition(comTrans_b.gameObject, comTrans_b.currPos.x, comTrans_b.height, comTrans_b.currPos.y)
 	-- local dist = (comTrans.tarPos - comTrans.currPos):SqrMagnitude()
 	-- if dist > 0.0001 then

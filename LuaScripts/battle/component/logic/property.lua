@@ -12,5 +12,6 @@ function com:ctor(speed, attDist, att, def, hp)
 	self.qianyaoFrame = 3
 	self.totalFrame = 10
 	self.lengqueFrame = 5
-	self.attType = 'yuancheng'
+
+	self.warningRange = 10
 end

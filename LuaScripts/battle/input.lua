@@ -1,17 +1,13 @@
 local Vector2 = require 'math.Vector2'
 
-local _M = module()
+local _M = {}
 
-function reset( ... )
-	inorigin = true
-	direction = Vector2(0, 0)
-	blink = false
-	accelerate = false
-	slowdown = false
-	highcamera = false
-	lowcamera = false
+function _M.reset( ... )
+	_M.direction = Vector2(0, 0)
+	_M.attType = nil
+	_M.accelerate = nil
 end
 
-reset()
+_M.reset()
 
 return _M

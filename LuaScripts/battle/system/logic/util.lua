@@ -29,6 +29,18 @@ function attackCalc(att, eAttee)
 end
 
 function die(entity)
+	local comAttacker = entity:getComponent(Com.attacker)
+	if comAttacker then
+		if comAttacker.weapons['jinzhan'] then
+			-- log.info(entity.id, 'die, drop jinzhan weapon', ecs.getEntity(comAttacker.weapons['jinzhan']):getComponent(Com.logic.weapon).id)
+			dropWeapon(entity, 'jinzhan')
+		end
+		if comAttacker.weapons['yuancheng'] then
+			-- log.info(entity.id, 'die, drop yuancheng weapon', ecs.getEntity(comAttacker.weapons['yuancheng']):getComponent(Com.logic.weapon).id)
+			dropWeapon(entity, 'yuancheng')
+		end
+	end
+
 	local comRetinue = entity:getComponent(Com.retinue)
 	if comRetinue then
 		dieRetinue(entity)
@@ -63,8 +75,21 @@ function dieGeneral(entity)
 		local eRetinue = ecs.getEntity(v)
 		eRetinue:removeComponent(Com.retinue)
 		eRetinue:removeComponent(Com.team)
-		eRetinue:removeComponent(Com.attacker)
 		eRetinue:removeComponent(Com.attackee)
+
+		local comAttacker = eRetinue:getComponent(Com.attacker)
+		if comAttacker then
+			if comAttacker.weapons['jinzhan'] then
+				-- log.info(eRetinue.id, 'dismiss, drop jinzhan weapon', ecs.getEntity(comAttacker.weapons['jinzhan']):getComponent(Com.logic.weapon).id)
+				dropWeapon(eRetinue, 'jinzhan')
+			end
+			if comAttacker.weapons['yuancheng'] then
+				-- log.info(eRetinue.id, 'dismiss, drop yuancheng weapon', ecs.getEntity(comAttacker.weapons['jinzhan']):getComponent(Com.logic.weapon).id)
+				dropWeapon(eRetinue, 'yuancheng')
+			end
+		end
+		eRetinue:removeComponent(Com.attacker)
+		
 
 		map.teamMap:remove(v)
 		map.attackeeMap:remove(v)
@@ -110,6 +135,45 @@ function createBullet(att, pos, target)
 
 	local go = LuaInterface.LoadPrefab('Fx/100301_001F_Prefab')
 	entity:addComponent(Com.behavior.transform, go, 1, 1)
+end
+
+function pickupWeapon(eChar, eWeapon, weaponType)
+	local comAttacker = eChar:getComponent(Com.attacker)
+	comAttacker.weapons[weaponType] = eWeapon.id
+	
+	local comWeapon = eWeapon:getComponent(Com.logic.weapon)
+	comWeapon.owner = eChar.id
+end
+
+function dropWeapon(eChar, weaponType)
+	local comAttacker = eChar:getComponent(Com.attacker)
+	local wid = comAttacker.weapons[weaponType]
+	comAttacker.weapons[weaponType] = nil
+
+	local eWeapon = ecs.getEntity(wid)
+	local comWeapon = eWeapon:getComponent(Com.logic.weapon)
+	comWeapon.owner = nil
+
+	local pos = eChar:getComponent(Com.logic.transform).position
+	comWeapon.position = pos:Clone()
+end
+
+function moveTowardTo(entity, eTarget, speed, distance)
+	distance = distance or 0
+	local comTrans_e = entity:getComponent(Com.logic.transform)
+	local comTrans_t = eTarget:getComponent(Com.logic.transform)
+	comTrans_e.direction = (comTrans_t.position - comTrans_e.position):Normalize()
+	local distSq = (comTrans_t.position - comTrans_e.position):SqrMagnitude(0)
+	if distSq < distance^2 then
+		return
+	else
+		local distSqrt = math.sqrt(distSq)
+		if distSqrt - distance > speed then
+			comTrans_e.position = comTrans_e.position + comTrans_e.direction * speed
+		else
+			comTrans_e.position = comTrans_e.position + comTrans_e.direction * (distSqrt - distance)
+		end
+	end
 end
 
 return _M

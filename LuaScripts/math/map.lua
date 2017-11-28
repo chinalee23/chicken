@@ -99,7 +99,10 @@ function classMap:findKeysInRangeByPos(pos, radius, filtFunc)
 		end
 	end
 	table.sort(rst, function (a, b)
-		return a[2] <= b[2]
+		if a[2] == b[2] then
+			return true
+		end
+		return a[2] < b[2]
 	end)
 	return rst
 end

@@ -20,6 +20,8 @@ local function fixedUpdate( ... )
 			data = {
 				id = game.myid,
 				direction = {input.direction.x, input.direction.y},
+				attType = input.attType,
+				accelerate = input.accelerate,
 			},
 		})
 	input.reset()
@@ -59,7 +61,8 @@ local function onStart(msg)
 	local data = {
 		characters = {},
 		seed = msg.seed,
-		npcs = {}
+		npcs = {},
+		weapons = {},
 	}
 	for i = 1, #msg.ids do
 		local t = {id = msg.ids[i], pos = {msg.x[i], msg.y[i]}}
@@ -68,6 +71,11 @@ local function onStart(msg)
 	for i = 1, #msg.nx do
 		local t = {pos = {msg.nx[i], msg.ny[i]}}
 		table.insert(data.npcs, t)
+	end
+	for i = 1, #msg.ws do
+		local id = msg.ws[i]
+		local pos = {msg.wx[i], msg.wy[i]}
+		table.insert(data.weapons, {id = id, pos = pos})
 	end
 	game.battleData = data
 
@@ -88,6 +96,7 @@ local function onFrame(msg)
 	else
 		local offset = now - lastFrameTime
 		lastFrameTime = now
+		game.frameLastInterval = offset
 		if offset > game.frameMaxInterval then
 			game.frameMaxInterval = offset
 		end
@@ -100,6 +109,8 @@ local function onFrame(msg)
 			local eid = world.getPlayerEntityId(v.id)
 			inputs[eid] = {
 				direction = Vector2(v.direction[1], v.direction[2]),
+				attType = v.attType,
+				accelerate = input.accelerate,
 			}
 		end
 	end

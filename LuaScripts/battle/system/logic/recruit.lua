@@ -29,29 +29,31 @@ end
 function sys:recruit(npc, eid)
 	local eGeneral = self:getEntity(eid, 'general') or
 		self:getEntity(self:getEntity(eid, 'retinue'):getComponent(Com.retinue).general, 'general')
-	-- if not eGeneral then
-		-- local comRetinue = self:getEntity(eid, 'retinue'):getComponent(Com.retinue)
-		-- eGeneral = self:getEntity(comRetinue.general, 'general')
-		-- eGeneral = self:getEntity(self:getEntity(eid, 'retinue'):getComponent(Com.retinue).general, 'general')
-	-- end
 
 	local comGeneral = eGeneral:getComponent(Com.general)
 	table.insert(comGeneral.retinues, npc.id)
 
 	npc:addComponent(Com.retinue, eGeneral.id)
 	npc:addComponent(Com.team, eGeneral.id)
-	npc:addComponent(Com.attacker)
 	npc:addComponent(Com.attackee)
-	npc:removeComponent(Com.npc)
+
+	npc:addComponent(Com.attacker)
+	npc:getComponent(Com.attacker).attType = eGeneral:getComponent(Com.attacker).attType
 end
 
 function sys:_frameCalc( ... )
 	local npcs = self:getEntities('npc')
+	local rm = {}
 	for k, v in pairs(npcs) do
 		local comTrans = v:getComponent(Com.logic.transform)
 		local key = map.teamMap:findCloestInRangeByPos(comTrans.position, recruitGap)
 		if key then
 			self:recruit(v, key)
+			table.insert(rm, v)
 		end
+	end
+
+	for _, v in ipairs(rm) do
+		v:removeComponent(Com.npc)
 	end
 end

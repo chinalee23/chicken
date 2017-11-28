@@ -19,7 +19,8 @@ local tuple = {
 local sys = ecs.newsys('move', tuple)
 
 local inputs = ecs.Single.inputs
-local speed = 1
+local normalSpeed = 0.7
+local maxSpeed = 1.2
 local retinueGap = 1
 
 
@@ -37,13 +38,21 @@ local function limitPos(pos)
 end
 
 
-function sys:move(eGeneral, direction)
+function sys:move(eGeneral, direction, accelerate)
 	direction = direction or Vector2(0, 0)
 	local comTrans_g = eGeneral:getComponent(Com.logic.transform)
 	local comAnim_g = eGeneral:getComponent(Com.logic.animation)
+	if accelerate then
+		log.info('move accelerate', accelerate)
+		if accelerate == 'on' then
+			comTrans_g.speed = maxSpeed
+		else
+			comTrans_g.speed = normalSpeed
+		end
+	end
 	if direction.x ~= 0 or direction.y ~= 0 then
 		comTrans_g.direction = direction:Clone()
-		comTrans_g.position = comTrans_g.position + direction * speed
+		comTrans_g.position = comTrans_g.position + direction * comTrans_g.speed
 		limitPos(comTrans_g.position)
 		setAnim(comAnim_g, 'run')
 	else
@@ -60,6 +69,13 @@ function sys:move(eGeneral, direction)
 	for i, v in ipairs(comGeneral.retinues) do
 		local eRetinue = self:getEntity(v, 'retinue')
 		local comTrans_r = eRetinue:getComponent(Com.logic.transform)
+		if accelerate then
+			if accelerate == 'on' then
+				comTrans_r.speed = maxSpeed
+			else
+				comTrans_r.speed = normalSpeed
+			end
+		end
 		local comAnim_r = eRetinue:getComponent(Com.logic.animation)
 		if i == 1 or layerIndex == 8*layer then
 			layer = layer + 1
@@ -84,13 +100,13 @@ function sys:move(eGeneral, direction)
 		local distSq = offset:SqrMagnitude()
 		if distSq > 0.0001 then
 			comTrans_r.direction = offset:Normalize()
-			local t = math.sqrt(distSq)/speed
+			local t = math.sqrt(distSq)/comTrans_r.speed
 			comTrans_r.position = Vector2.Lerp(comTrans_r.position, tarPos, 1/t)
 			limitPos(comTrans_r.position)
 			setAnim(comAnim_r, 'run')
 		elseif direction.x ~= 0 or direction.y ~= 0 then
 			comTrans_r.direction = direction:Clone()
-			comTrans_r.position = comTrans_r.position + comTrans_r.direction * speed
+			comTrans_r.position = comTrans_r.position + comTrans_r.direction * comTrans_r.speed
 			limitPos(comTrans_r.position)
 			setAnim(comAnim_r, 'run')
 		else
@@ -105,8 +121,8 @@ function sys:_frameCalc( ... )
 	for k, v in pairs(generals) do
 		-- get input
 		local input = inputs[k]
-		if input and input.direction then
-			self:move(v, input.direction)
+		if input then
+			self:move(v, input.direction, input.accelerate)
 		else
 			self:move(v)
 		end
