@@ -1,5 +1,3 @@
-local cfgWeapon = require 'config/weapon'
-
 local util = require 'battle.system.logic.util'
 local world = require 'battle.world'
 
@@ -9,6 +7,7 @@ local tuple = {
 		Com.general,
 	},
 	attacker = {
+		Com.team,
 		Com.attacker,
 		Com.logic.transform,
 		Com.logic.animation,
@@ -28,45 +27,50 @@ local inputs = ecs.Single.inputs
 local map = ecs.Single.map
 
 
-function sys:getAttDist(eAttacker)
-	local comAttacker = eAttacker:getComponent(Com.attacker)
-	if comAttacker.attType == 'yuancheng' and comAttacker.weapons['yuancheng'] then
-		local weaponId = self:getEntity(comAttacker.weapons['yuancheng'], 'weapon'):getComponent(Com.logic.weapon).id
-		return cfgWeapon[weaponId].attDist
-	end
-
-	if comAttacker.weapons['jinzhan'] then
-		local weaponId = self:getEntity(comAttacker.weapons['jinzhan'], 'weapon'):getComponent(Com.logic.weapon).id
-		return cfgWeapon[weaponId].attDist
-	end
-
-	local comProperty = eAttacker:getComponent(Com.property)
-	return comProperty.attDist
-end
-
 function sys:checkTargetInAttRange(eAttacker, eTarget)
 	local pos_t = eTarget:getComponent(Com.logic.transform).position
 	local pos_a = eAttacker:getComponent(Com.logic.transform).position
-	local attDist = self:getAttDist(eAttacker)
-	return (pos_t - pos_a):SqrMagnitude() < attDist^2
+	local attDist = util.getAttDist(eAttacker)
+	local distSq = (pos_t - pos_a):SqrMagnitude()
+	local attDistSq = attDist^2
+	return distSq < attDistSq or math.equal(distSq, attDistSq)
 end
 
 function sys:checkTargetInWarningRange(eAttacker, eTarget)
 	local pos_t = eTarget:getComponent(Com.logic.transform).position
 	local pos_a = eAttacker:getComponent(Com.logic.transform).position
 	local comProperty = eAttacker:getComponent(Com.property)
-	return (pos_t - pos_a):SqrMagnitude() < comProperty.warningRange^2
+	local distSq = (pos_t - pos_a):SqrMagnitude()
+	local rangeSq = comProperty.warningRange^2
+	return distSq < rangeSq or math.equal(distSq, rangeSq)
+end
+
+function sys:checkTargetInTeamMaxRange(eAttacker, eTarget)
+	local eGeneral
+	local comTeam = eAttacker:getComponent(Com.team)
+	if comTeam.id == eAttacker.id then
+		eGeneral = eAttacker
+	else
+		eGeneral = self:getEntity(comTeam.id, 'general')
+	end
+	local maxRange = eGeneral:getComponent(Com.general).maxRange
+	local pos_g = eGeneral:getComponent(Com.logic.transform).position
+	local pos_t = eTarget:getComponent(Com.logic.transform).position
+	local distSq = (pos_t - pos_g):SqrMagnitude()
+	local rangeSq = maxRange^2
+	return distSq < rangeSq or math.equal(distSq, rangeSq)
 end
 
 function sys:findTarget(eAttacker, range)
 	local pos = eAttacker:getComponent(Com.logic.transform).position
-	-- local attDist = self:getAttDist(eAttacker)
 	return map.attackeeMap:findCloestInRangeByPos(pos, range,
 		function (key)
-			return key ~= eAttacker.id and util.isHostile(eAttacker.id, key)
+			local eTarget = self:getEntity(key, 'attackee')
+			return key ~= eAttacker.id and
+					util.isHostile(eAttacker.id, key) and
+					self:checkTargetInTeamMaxRange(eAttacker, eTarget)
 		end)
 end
-
 
 function sys:calcDirection(eAttacker, eTarget)
 	local comTrans_a = eAttacker:getComponent(Com.logic.transform)
@@ -84,7 +88,7 @@ function sys:enteridle(eAttacker)
 end
 
 function sys:idle(eAttacker)
-	local target =  self:findTarget(eAttacker, self:getAttDist(eAttacker))
+	local target = self:findTarget(eAttacker, util.getAttDist(eAttacker))
 	if target then
 		local comAttacker = eAttacker:getComponent(Com.attacker)
 		comAttacker.target = target
@@ -98,25 +102,20 @@ function sys:idle(eAttacker)
 			return
 		end
 	end
-	-- log.info('find target', target, world.frameNo)
-
-	-- local comAttacker = eAttacker:getComponent(Com.attacker)
-	-- comAttacker.target = target
-	-- self:enterQianyao(eAttacker)
 end
 
 function sys:warning(eAttacker)
 	local comAttacker = eAttacker:getComponent(Com.attacker)
 	local eTarget = self:getEntity(comAttacker.target, 'attackee')
 	if not eTarget then
-		enteridle(eAttacker)
+		self:enteridle(eAttacker)
 		return
 	end
-	if self:checkTargetInAttRange(eAttacker, eTarget) then
+	if not self:checkTargetInTeamMaxRange(eAttacker, eTarget) or
+		not self:checkTargetInWarningRange(eAttacker, eTarget) then
+		self:enteridle(eAttacker)
+	elseif self:checkTargetInAttRange(eAttacker, eTarget) then
 		self:enterQianyao(eAttacker)
-	elseif self:checkTargetInWarningRange(eAttacker, eTarget) then
-		local comTrans = eAttacker:getComponent(Com.logic.transform)
-		util.moveTowardTo(eAttacker, eTarget, comTrans.speed, self:getAttDist(eAttacker))
 	end
 end
 
@@ -132,7 +131,9 @@ end
 function sys:qianyao(eAttacker)
 	local comAttacker = eAttacker:getComponent(Com.attacker)
 	local eTarget = self:getEntity(comAttacker.target, 'attackee')
-	if eTarget and self:checkTargetInAttRange(eAttacker, eTarget) then
+	if eTarget and
+		self:checkTargetInTeamMaxRange(eAttacker, eTarget) and
+		self:checkTargetInAttRange(eAttacker, eTarget) then
 		self:calcDirection(eAttacker, eTarget)
 		local comProperty = eAttacker:getComponent(Com.property)
 		if world.frameNo - comAttacker.startFrame >= comProperty.qianyaoFrame then
@@ -147,7 +148,6 @@ function sys:qianyao(eAttacker)
 			comAttacker.status = 'houyao'
 		end
 	else
-		-- log.info('cancel qianyao')
 		self:enteridle(eAttacker)
 	end
 end
@@ -170,7 +170,9 @@ function sys:lengque(eAttacker)
 	if world.frameNo - comAttacker.startFrame >= comProperty.totalFrame + comProperty.lengqueFrame then
 		-- log.info('lengque over', world.frameNo)
 		local eTarget = self:getEntity(comAttacker.target, 'attackee')
-		if eTarget and self:checkTargetInAttRange(eAttacker, eTarget) then
+		if eTarget and
+			self:checkTargetInTeamMaxRange(eAttacker, eTarget) and
+			self:checkTargetInAttRange(eAttacker, eTarget) then
 			-- log.info('target still in range')
 			self:enterQianyao(eAttacker)
 		else

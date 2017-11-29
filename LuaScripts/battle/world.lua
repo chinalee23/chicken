@@ -72,12 +72,12 @@ local function createEntities(data, root)
 	for k, v in ipairs(data.characters) do
 		local e = ecs.Entity.new()
 
-		e:addComponent(Com.property, 2, 2, 50, 2, 1000)
+		e:addComponent(Com.property, 2, 2, 50, 2, 1000, 2)
 		e:addComponent(Com.logic.transform, v.pos)
 		e:addComponent(Com.logic.animation, 'idle')
 		e:addComponent(Com.general)
 		e:addComponent(Com.team, e.id)
-		-- e:addComponent(Com.attacker)
+		e:addComponent(Com.attacker)
 		e:addComponent(Com.attackee)
 
 		local go = LuaInterface.LoadPrefab(prefabConfig[e.id], scene.rootPlayer)
@@ -85,7 +85,6 @@ local function createEntities(data, root)
 		e:addComponent(Com.behavior.transform, go, 1.5)
 		e:addComponent(Com.behavior.animation, go)
 		if v.id == game.myid then
-			e:addComponent(Com.attacker)
 			local goCamera = LuaInterface.Find(root, 'Camera')
 			e:addComponent(Com.playercamera, goCamera)
 		end

@@ -30,10 +30,11 @@ local function startOffline( ... )
 			{id = 10, pos = {65, 65}},
 		},
 		seed = os.time(),
+		-- seed = 1511927922,
 		npcs = {},
 		weapons = {},
 	}
-	-- addnpc()
+	addnpc()
 	addweapon()
 
 	local battle = require 'battle.battle_offline'

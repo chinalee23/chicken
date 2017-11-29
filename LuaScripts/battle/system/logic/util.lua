@@ -1,3 +1,5 @@
+local cfgWeapon = require 'config/weapon'
+
 local Com = ecs.Com
 local map = ecs.Single.map
 
@@ -158,21 +160,38 @@ function dropWeapon(eChar, weaponType)
 	comWeapon.position = pos:Clone()
 end
 
-function moveTowardTo(entity, eTarget, speed, distance)
-	distance = distance or 0
+function getAttDist(eAttacker)
+	local comAttacker = eAttacker:getComponent(Com.attacker)
+	if comAttacker.attType == 'yuancheng' and comAttacker.weapons['yuancheng'] then
+		local weaponId = ecs.getEntity(comAttacker.weapons['yuancheng'], 'weapon'):getComponent(Com.logic.weapon).id
+		return cfgWeapon[weaponId].attDist
+	end
+
+	if comAttacker.weapons['jinzhan'] then
+		local weaponId = ecs.getEntity(comAttacker.weapons['jinzhan'], 'weapon'):getComponent(Com.logic.weapon).id
+		return cfgWeapon[weaponId].attDist
+	end
+
+	local comProperty = eAttacker:getComponent(Com.property)
+	return comProperty.attDist
+end
+
+function moveTowardToTarget(eid, tid)
+	local entity = ecs.getEntity(eid)
+	local eTarget = ecs.getEntity(tid)
+
 	local comTrans_e = entity:getComponent(Com.logic.transform)
 	local comTrans_t = eTarget:getComponent(Com.logic.transform)
+
+	local speed = comTrans_e.speed
+	local attDist = getAttDist(entity)
 	comTrans_e.direction = (comTrans_t.position - comTrans_e.position):Normalize()
-	local distSq = (comTrans_t.position - comTrans_e.position):SqrMagnitude(0)
-	if distSq < distance^2 then
+	local distSq = (comTrans_t.position - comTrans_e.position):SqrMagnitude()
+	if distSq < attDist^2 then
 		return
 	else
-		local distSqrt = math.sqrt(distSq)
-		if distSqrt - distance > speed then
-			comTrans_e.position = comTrans_e.position + comTrans_e.direction * speed
-		else
-			comTrans_e.position = comTrans_e.position + comTrans_e.direction * (distSqrt - distance)
-		end
+		local offset = math.max(math.sqrt(distSq) - attDist, 0)
+		comTrans_e.position = comTrans_e.position + comTrans_e.direction * (offset > speed and speed or offset)
 	end
 end
 

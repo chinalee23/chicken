@@ -19,7 +19,7 @@ local function fixedUpdate( ... )
 			msgType = 'frame',
 			data = {
 				id = game.myid,
-				direction = {input.direction.x, input.direction.y},
+				direction = (input.direction.x ~= 0 or input.direction.y ~= 0) and {input.direction.x, input.direction.y} or nil,
 				attType = input.attType,
 				accelerate = input.accelerate,
 			},
@@ -108,7 +108,8 @@ local function onFrame(msg)
 		for _, v in ipairs(msg.frames) do
 			local eid = world.getPlayerEntityId(v.id)
 			inputs[eid] = {
-				direction = Vector2(v.direction[1], v.direction[2]),
+				-- direction = Vector2(v.direction[1], v.direction[2]),
+				direction = v.direction and Vector2(v.direction[1], v.direction[2]) or nil,
 				attType = v.attType,
 				accelerate = input.accelerate,
 			}

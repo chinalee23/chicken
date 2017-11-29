@@ -19,7 +19,7 @@ local function fixedUpdate( ... )
 	-- })
 	local eid = world.getPlayerEntityId(game.myid)
 	ecs.Single.inputs[eid] = {
-		direction = input.direction:Clone(),
+		direction = (input.direction.x ~= 0 or input.direction.y ~= 0) and input.direction:Clone() or nil,
 		attType = input.attType,
 		accelerate = input.accelerate,
 	}

@@ -2,6 +2,7 @@ local util = {
 	'log',
 	'ut_string',
 	'ut_table',
+	'ut_math',
 	'async',
 	'class',
 	'module',
@@ -18,3 +19,9 @@ Time = UnityEngine.Time
 require 'ecs.ecs'
 
 require 'restrict_global'
+
+
+-- protobuf
+local protobuf = require 'protobuf.protobuf'
+local buff = LuaInterface.LoadProto()
+protobuf.register(buff)

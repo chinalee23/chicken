@@ -1,0 +1,2951 @@
+
+õ√
+MG_Sanguo.protopp2".
+PairValueStr2Str
+key (	
+value (	".
+PairValueInt2Int
+key (
+value (".
+PairValueStr2Int
+key (	
+value ("/
+PairValueStr2Bool
+key (	
+value ("/
+PairValueInt2Bool
+key (
+value ("b
+ResourceReward
+	player_id (
+reward_group (
+	reward_id (
+reward_count ("
+point2	
+x (	
+z ("ü
+NCSLogin
+uid (
+aid (
+strMac (	
+reqid (
+serverid (
+vesionid (
+strAID (	
+strSesionID (	
+	jsonParam	 (	"ù
+NSCLogin
+result (
+uid (
+aid (
+reqid (
+playerid (
+serverid (
+strMac (	
+	accountID (	
+	jsonParam	 (	"õ
+
+NEnterGame
+uid (
+playerid (
+bDebug (
+serverid (
+	accountID (	
+	jsonParam (	
+
+playerInfo (	
+
+uabVersion ("3
+CSLogout
+	prototype (
+sizetooshort ("8
+SSMultiCastMessage
+	player_id (
+byteMSG ("a
+SCViewPositionDiffData
+playerid (
+destposx (
+destposz (
+	zhanLevel ("*
+SCViewPlayerRemoveList
+playerid ("]
+RemotePlayerInfo
+playerid (
+	zhanLevel (
+avatarid (
+
+playername (	"«
+SCRemotePlayerDetailedInfo
+iRemotePlayerID (
+strRemotePlayerName (	
+
+iZhanValue (
+iZhanLvl (
+	iArenaLvl ( 
+
+kTroopInfo
+ (2.pp2.OneCard
+challengeDisable ("ô
+SCViewObject
+gameObjectType (
+
+objectGUID (
+posX (
+posY (
+posZ (
+
+playerName (	
+avatarid (
+npcID ("7
+SCViewObjectList#
+viewList (2.pp2.SCViewObject"A
+SCViewPlayerAddList*
+changedlist (2.pp2.RemotePlayerInfo"W
+CSMove
+posx (
+posz (
+destposx (
+destposz (
+mapid ("≤
+CSBattle
+
+battleType (
+
+entryNpcID (
+battleNpcID (
+questID (
+entryNpcGUID (
+levelID (
+side (
+
+difficulty (
+card_id	 ("|
+CSBuzhenReq
+battle_type (
+
+troop_type (
+troop_index (
+is_3v3 (
+side (
+	mask_prop ("„
+
+SCDataUser
+	prototype (
+uiUID (
+
+uiPlayerID (
+avatarmodel (
+
+playername (	
+exp (
+level (
+zhanliLevel (
+create_char_time	 (
+double_exp_passive
+ (
+kingdom ("∑
+FiefOneTroop
+commandercardguid (
+xianfengcardguid (
+junshicardguid (
+fujiangcardguid (
+shinvcardguid (
+
+fx (
+
+fy (
+zhanfa (
+parasite	 (
+
+fparasitex
+ (
+
+fparasitey (
+bing_num (
+commander_csv_id (
+level (
+index ("G
+	TroopCard
+index (
+is_commander_csv (
+	role_guid ("Y
+
+SCOneTroop
+
+troop_type (
+troop_index ("
+
+troop_card (2.pp2.TroopCard"-
+
+SCAllTroop
+troops (2.pp2.SCOneTroop"ç
+OneCard
+csvID (
+guid ("
+	baseAttrs (2.pp2.ValueGroup
+featureAttrs (+
+soldier_equip_info (2.pp2.ValueGroup"S
+SCDataCards
+capacity (
+cards (2.pp2.OneCard
+collect_flags ("t
+LotteryInfo
+
+lottery_id (
+lottery_type (
+
+start_time (
+end_time (
+lottery_times (""
+CSLotteryList
+	player_id ("Z
+SCLotteryList
+	player_id (&
+lottery_list (2.pp2.LotteryInfo
+result ("1
+CSLotteryCard
+	lotteryID (
+times ("7
+NTLotteryInfo&
+lottery_info (2.pp2.LotteryInfo"G
+SCLotteryCard
+realcardguid (
+lieCard (
+godcard ("'
+	ValuePair
+key (
+value (",
+
+ValueGroup
+values (2.pp2.ValuePair":
+EquipmentPair
+key (
+value (
+scope ("4
+EquipmentGroup"
+values (2.pp2.EquipmentPair"–
+OneItem
+csvID (
+guid ("
+	baseAttrs (2.pp2.ValueGroup'
+mainProperties (2.pp2.ValueGroup)
+secondProperties (2.pp2.ValueGroup0
+equipmentProperties (2.pp2.EquipmentGroup"7
+ItemBag
+bagType (
+items (2.pp2.OneItem";
+ItemData
+bagCapacity (
+bags (2.pp2.ItemBag"G
+
+ItemUpdate
+bagType (
+guid (
+item (2.pp2.OneItem"N
+ItemMove
+fromBag (
+fromGuid (
+tarBag (
+tarGuid ("B
+CSMultiItemUse
+GUID (
+iBagType (
+selectID (";
+	CSItemUse
+GUID (
+iCount (
+iBagType ("f
+CSItemHandIn
+GUID (
+	questType (
+
+filterType (
+count (
+
+rewardType ("É
+	SCTopItem
+rank (
+playerID (
+
+playername (	
+score (
+	maxZhanli (
+param1 (
+avatarID ("{
+	SCTopList
+topCsvID (
+changed (
+
+updateDate (
+nextResetDate ( 
+topItems (2.pp2.SCTopItem"f
+FiefBuzhenWarrior
+shangzhen_index (
+type (
+posx (
+posy (
+zhanfa ("V
+CSFiefTroopsBuzhenInfo(
+warriors (2.pp2.FiefBuzhenWarrior
+
+plan_index ("U
+BuzhenWarrior
+troop_card_index (
+posx (
+posy (
+zhanfa ("â
+CSTroopsBuzhenInfo
+
+troop_type (
+troop_index (
+is_3v3 ($
+warriors (2.pp2.BuzhenWarrior
+battle_scene ("Ç
+CSTroopsRoleChanged
+
+troop_type (
+troop_index (
+troop_card_index (
+	role_type (
+new_card_guid ("3
+CSHeartBeat
+	prototype (
+	somewords (	""
+SCHeartBeat
+server_time ("8
+OneResource
+
+resourceID (
+ResourceValue ("7
+ResourceGroup&
+resourceList (2.pp2.OneResource"U
+CommonCD
+time (
+type (
+value (
+param1 (
+param2 ("H
+ResourceNode
+group (
+
+resourceID (
+ResourceValue ("€
+SCDataMyAssets)
+resourceGroup (2.pp2.ResourceGroup
+	intValues (
+cds (2.pp2.CommonCD
+limitValues (
+systemOpenFlag (
+widget_open_flag ((
+resource_list (2.pp2.ResourceNode"?
+CSCreateChar
+	prototype (
+avatar (
+name (	"7
+SCCreateCharResult
+	prototype (
+result (""
+CSReqSetKingdom
+kingdom ("
+SCSetKingdom
+kingdom ("7
+CSPickFirstCard
+	prototype (
+	cardcsvid ("E
+CSReqShopBuy
+	prototype (
+	goodstype (
+goodsid (	"í
+SCShopCardData
+
+cardStatus (
+goodsid (
+guid (
+cardID (
+	cardLevel (
+cardAdvLevel (
+consumeCount ("Z
+SCRechargeReward
+	prototype (
+rspType ("
+cards (2.pp2.SCShopCardData"~
+	GameEvent
+	eventtype (
+intparam (
+strparam (	
+
+int64param (
+	uintparam (
+uint64param ("ê
+WarriorDesc
+
+id (
+morale (
+militype (
+posx (
+posy (
+nation (
+csvid (
+troop_card_index	 (
+adv_lvl
+ (
+up_lvl (
+gender ($
+props (2.pp2.PairValueInt2Int
+buffs (
+skills (
+zhanfa (
+
+affect_win (
+auto_seek_enemy (
+is_wall (
+
+tech_level (
+passive_skills (
+zhanli ("÷
+BattleTroop
+pid (
+sid (
+name (	
+head (
+zhanli (
+side (
+troop_id (
+group (
+control	 (
+extra_morale
+ ("
+warriors (2.pp2.WarriorDesc 
+master (2.pp2.WarriorDesc
+tech_levels (
+auto_cast_morale (
+skill_sequence (
+script_file (	
+ready (
+col (
+row (
+	is_online (
+fief_troop_id (
+
+troop_type (
+troop_index (
+level ("B
+ClientOperation
+frame (
+	operation (
+param ("B
+SyncOperations
+frame (!
+ops (2.pp2.ClientOperation"M
+BattleUnitKill
+	player_id (
+total (
+kill (
+die ("«
+BattleResult
+win_side (
+frame (
+red_troop_star (
+red_hp_star (
+blue_troop_star (
+blue_hp_star (
+chain_round ( 
+got (2.pp2.ResourceReward!
+lose	 (2.pp2.ResourceReward"
+kills
+ (2.pp2.BattleUnitKill
+params (,
+troops (2.pp2.BattleClientResultTroop"í
+BattleClientResultTroop
+troop_id (
+max_bing (
+	left_bing (
+total_damage (*
+cards (2.pp2.BattleClientResultCard"r
+BattleClientResultCard
+unit_id (
+
+card_index (
+max_bing (
+	left_bing (
+damage ("0
+BattleExceptionUnit
+
+id (
+props ("K
+BattleExceptionFrame
+
+id ('
+units (2.pp2.BattleExceptionUnit"Y
+BattleException
+
+id (	
+key_map (	)
+frames (2.pp2.BattleExceptionFrame"@
+BattleUserData
+param1 (
+param2 (
+param3 ("ú
+
+BattleInfo
+
+id (	
+type (
+time (
+limit_frame (
+rand_num ( 
+troops (2.pp2.BattleTroop(
+
+record_ops (2.pp2.ClientOperation!
+result (2.pp2.BattleResult
+stage	 (
+
+stage_time
+ (
+is_multi_troop (
+is_multi_player (
+is_replay_mode (
+is_buzhen_config (%
+extras (2.pp2.PairValueInt2Int
+is_demon (
+timeout_win_side (
+
+scene_type (
+blocks (
+start_frame (
+reconnect_frame (
+has_wall (
+has_exception (
+is_chain_battle (
+red_chain_loop_count (
+blue_chain_loop_count (&
+chain_troops (2.pp2.BattleTroop"A
+CSBattleSyncOperation
+bid (	
+
+op (
+op_data ("õ
+CSReqBuyGoods
+iGoodsId (
+iGoodsCount (
+iPlatformMoney (
+iPlatformType (
+iZoneID (
+strNote (	
+
+iGiftBagId ("z
+SCRltBuyGoods
+iGoodsId (
+iGoodsCount (
+iPlatformMoney (
+strNote (	
+strCooOrderSerial (	"
+	GMCommand
+
+strCommand (	">
+OneAttachment
+iType (
+iCount (
+iParam ("¡
+MailForm
+
+iFormIndex (
+iType (
+iTextID (
+iCount (
+strTitle (
+strText (
+strFromName ('
+attachments (2.pp2.OneAttachment
+scontent	 (	"â
+OneMailAsset
+iMailID (
+iToPlayerID (
+iFromPlayerID (
+
+ulSendTime (
+
+iFormIndex (
+
+iExtraInfo (
+	iReadFlag (
+	iGainFlag (
+sContent	 (
+mailForm
+ (2.pp2.MailForm'
+attachments (2.pp2.OneAttachment".
+
+MailAssets 
+mails (2.pp2.OneMailAsset"\
+MailRewards
+mailID (
+error (
+index (
+mail (2.pp2.OneMailAsset"Ç
+
+FriendNode
+	player_id (
+name (	
+avatar (
+level (
+zhanli (
+	is_online (
+	server_id ("|
+FriendDetail+
+player_simple_info (2.pp2.FriendNode
+team_member_count (
+guild_id (
+
+guild_name (	"*
+CSReqFriendDetailInfo
+	player_id ("C
+SCFriendDetailInfo-
+player_detail_info (2.pp2.FriendDetail"M
+SCAllFriendInfo
+friend_limit ($
+friend_list (2.pp2.FriendNode"#
+CSReqAddFriend
+	player_id (":
+SCAddFriend+
+player_simple_info (2.pp2.FriendNode"&
+CSReqRemoveFriend
+	friend_id ("+
+SCRemoveFriend
+removed_friend_id ("&
+CSReqSearchPlayer
+	friend_id ("=
+SCSearchPlayer+
+player_simple_info (2.pp2.FriendNode"<
+SCRecommendFriend'
+recommend_list (2.pp2.FriendNode"H
+CSReqChatMsg
+	chat_type (
+to_player_id (
+content (	"X
+SCNotifyChatMsg
+	chat_type (!
+src_info (2.pp2.FriendNode
+content (	"k
+SSReqChatMsg
+	chat_type (!
+src_info (2.pp2.FriendNode
+to_player_id (
+content (	">
+PlayerSimpleOnlineNode
+	player_id (
+	is_online (",
+CSReqPlayerOnlineInfo
+player_list ("M
+SCPlayerOnlineInfo7
+player_online_list (2.pp2.PlayerSimpleOnlineNode"P
+SCNearContacts*
+near_contact_list (2.pp2.FriendNode
+
+version_id ("o
+
+FriendData
+	player_id (
+name (	
+avatar (
+level (
+zhanli (
+	is_online ("J
+FriendAsset%
+kFriendAsset (2.pp2.FriendData
+iFriendLimit ("8
+FriendReqList'
+kFriendReqList (2.pp2.FriendData"@
+SearchFriendResult*
+friend_candidates (2.pp2.FriendData"C
+RecommendFriendResult*
+friend_candidates (2.pp2.FriendData"<
+InviteAesst
+iInvitePlayerID (
+iInviteState ("ﬁ
+
+ClientInfo
+deviceUniqueIdentifier (	
+iChannelType (
+deviceModel (	
+
+deviceName (	
+operatingSystem (	
+processorCount (
+processorType (	"
+supportedRenderTargetCount (
+systemMemorySize	 (
+sdkuid
+ (	
+sdkuname (	
+sdkipv4 (	
+network (	
+QualityLevel (	
+	deviceIFA (	":
+ClientIdentifyInfo
+	deviceMac (	
+	deviceIfa (	"C
+IdentifyInfo
+iFlag (
+	deviceMac (	
+	deviceIfa (	")
+	GMRequest
+command (	
+seq ("G
+GMLoginRequest
+username (	
+password (	
+	signature (	"*
+	GMCharSet
+head (	
+charSet (	"â
+GMLoginResult
+result (
+
+dsignature (
+	signature (	
+charSetCount (
+isignatureIndex (
+
+permission (	"u
+GMClientUpdateRequest
+
+destServer (
+	srcClient (
+	signature (	
+intparam (
+strparam (	"N
+GMServerUpdateResult
+
+destClient (
+intparam (
+strparam (	")
+GameConnectGMRequest
+	signature (	"P
+GMMailFileCreate
+nOperationID (
+	nClientID (
+strFileName (	"M
+GMMailFileData
+nOperationID (
+	nClientID (
+
+strContent (	"L
+GMMailFileEnd
+nOperationID (
+	nClientID (
+
+nPackCount ("x
+GMDealResult
+nOperationID (
+	nClientID (
+nStatus (
+nTotal (
+nLeft (
+nFailed (")
+GMPlayerDiamondQuery
+	nPlayerID ("†
+GMPlayerDiamondQueryResult
+	nPlayerID (R
+kResultList (2=.pp2.GMPlayerDiamondQueryResult.GMOnePlayerDiamondQueryResultö
+GMOnePlayerDiamondQueryResult
+	nServerID (
+strActionType (	
+nUseDiamond (
+nGotDiamond (
+nRemainDiamond (
+nTime ("o
+CSCharActive
+	strSdkUid (	
+	iPlayerId (
+
+strSdkIpv4 (	
+strSdkUname (	
+strIsNew (	"7
+SCPositionAsset
+iMapID (	
+x (	
+y ("z
+
+SCOneQuest
+quest_id (
+quest_accepttime (
+quest_state (
+quest_progress (
+quest_count ("«
+
+SCQuestSet
+set_id (
+set_accepttime (
+set_subindex (
+	set_subid (
+set_chainid (
+	set_state (
+set_substate (
+set_subprogress (
+	set_count	 ("ë
+SCQuestChain
+chain_id (
+chain_accepttime (
+chain_subindex (
+chain_subid (
+chain_state (
+chain_count ("º
+SCQuestAsset
+finished_main (
+finished_extra (%
+quest_assets (2.pp2.SCOneQuest(
+questset_assets (2.pp2.SCQuestSet,
+questchain_assets (2.pp2.SCQuestChain"%
+SCAcceptableQuest
+quest_id ("|
+SCDailyQuestInfo
+refresh_time (
+active_value (
+finish_state (
+reward_state (
+progress ("l
+
+SCTechInfo+
+techs (2.pp2.SCTechInfo.TechInfoNode1
+TechInfoNode
+level (
+
+attr_level ("#
+CSReqTechClean
+	tech_type ("8
+CSReqTechUpgrade
+	tech_type (
+	attr_type ("E
+SCActivityItem
+
+activityid (
+count (
+opentime ("a
+SCActivityInfo*
+activityitems (2.pp2.SCActivityItem
+activevalue (
+reward (")
+SCSoldierUpgradeResult
+success ("™
+
+MyArmyData
+nID (
+arrCardGUID (
+nGUIDJianjun (
+nGUIDJunjijiu (
+nGUIDXianfeng (
+
+nQiangSNum (
+nQiSNum (
+	nGongSNum ("V
+UnitWildFiefInfo
+total_produce (
+current_procuce (
+
+owner_name (	"Õ
+UnitPosInfo
+nID (
+nType (
+nMapID (
+nPosX (
+nPosy (
+nTargetMapID (
+nTargetPosX (
+nTargetPosy (
+nName	 (	
+nParam1
+ (
+
+start_time (
+finish_time (
+avatar (
+level (
+	follow_id (
+dead (
+owner_id (
+
+owner_name (	
+
+unit_state (
+zhanliLevel (
+	fRotation (
+is_test (
+action_state (
+kingdom (
+	area_size ("†
+SCArmyAsset$
+arrArmyData (2.pp2.MyArmyData"
+FielInfo (2.pp2.UnitPosInfo
+spy_target_id (
+spy_finish_time (
+spy_target_name (	"1
+MapUnitInfo"
+FielInfo (2.pp2.UnitPosInfo"˙
+GroupMoveData
+
+id (
+map_id (
+
+start_time (
+finish_time (
+action_state (
+name (	
+unit_type_src (
+unit_csv_id_src (
+	pos_src_x	 (
+	pos_src_y
+ (
+guild_id_src (
+unit_type_tar (
+unit_csv_id_tar (
+	pos_tar_x (
+	pos_tar_y (
+guild_id_tar (
+unit_id_src (
+unit_id_tar ("1
+GroupMoveInfo 
+info (2.pp2.GroupMoveData"U
+FiefResUnit
+group_id (
+res_type (
+count (
+extra_value ("O
+OneResValue
+group_id (
+res_type (
+count (
+value ("¡
+FiefSubBuildingInfo
+sub_idx (
+level (
+upgrade_complete_time (
+produce_complete_time ('
+unharvest_res (2.pp2.FiefResUnit&
+combined_res (2.pp2.FiefResUnit$
+profits (2.pp2.FiefProfitNode)
+extra_data_list (2.pp2.FiefResUnit*
+extra_attr_list	 (2.pp2.FiefAttrNode"›
+FiefBuildingSimpleNode
+type (
+level ('
+unharvest_res (2.pp2.FiefResUnit
+upgrade_complete_time (
+produce_complete_time (&
+combined_res (2.pp2.FiefResUnit/
+sub_buildings (2.pp2.FiefSubBuildingInfo$
+profits (2.pp2.FiefProfitNode
+max_card_count	 (
+open_card_count
+ (
+pos_idx ("W
+FiefWaitingListNode
+type (
+expire_time (
+upgrade_complete_time ("<
+FiefAttrNode
+type (
+value (
+percent ("v
+FiefProfitNode
+	profit_id (
+complete_time (
+factor (*
+extra_attr_list (2.pp2.FiefAttrNode"√
+SCFiefGlobalInfo"
+fief_res (2.pp2.FiefResUnit.
+waiting_list (2.pp2.FiefWaitingListNode.
+	buildings (2.pp2.FiefBuildingSimpleNode+
+global_profits (2.pp2.FiefProfitNode"%
+CSReqFiefBuildingInfo
+type ("H
+SCFiefBuildingInfo2
+building_info (2.pp2.FiefBuildingSimpleNode"9
+CSReqFiefSubBuildingInfo
+type (
+sub_idx ("U
+SCFiefSubBuildingInfo
+type (.
+sub_building (2.pp2.FiefSubBuildingInfo"J
+CSReqFiefBuildingUpgrade
+type (
+sub_idx (
+pos_idx ("}
+CSReqFiefJiaSu
+type (
+sub_idx (
+target_type (
+item_id (
+
+item_count (
+
+super_plag ("W
+CSReqFiefHarvest
+type (
+sub_idx ($
+
+target_res (2.pp2.FiefResUnit"k
+CSReqFiefCombine
+type (
+sub_idx ($
+
+target_res (2.pp2.FiefResUnit
+
+extra_flag ("Z
+CSReqFiefTiSuProduce
+type (
+sub_idx (
+item_id (
+
+item_count ("K
+CSReqFiefAddProfit
+type (
+sub_idx (
+profit_item_id ("B
+CSReqFiefLueDuo
+target_player_id (
+soldier_count ("H
+SCFiefLueDuo"
+res_list (2.pp2.FiefResUnit
+left_soldier ("B
+CSReqFiefQiyuantaiBuyCount$
+
+target_res (2.pp2.FiefResUnit"5
+CSReqFiefRepaireFire
+type (
+sub_idx ("L
+CSReqEquipHeroToBuilding
+type (
+	card_guid (
+lay_pos ("?
+ClientCardInfo
+nCSVID (
+nGUID (
+nLevel ("Œ
+ClientArmyInfo
+nID (
+nOwnerID (
+nState (
+nMapID (
+nPosX (
+nPosy (
+nTargetMapID (
+nTargetPosX (
+nTargetPosy	 (
+nParamJianjun
+ (
+nParamJunJijiu (
+nParamXianfeng (
+nZhanliQiang (
+nMoulueQiang (
+nTongbingQiang (
+	nZhanliQi (
+	nMoulueQi (
+nTongbingQi (
+nZhanliGong (
+nMoulueGong (
+nTongbingGong (
+nParamLoadValue (
+fParamSpeedValue (
+
+nSNumQiang (
+nSNumQi (
+	nSNumGong ((
+arrCardInfo (2.pp2.ClientCardInfo-
+cardInfoXianfeng (2.pp2.ClientCardInfo,
+cardInfoJianjun (2.pp2.ClientCardInfo-
+cardInfoJunjijiu (2.pp2.ClientCardInfo
+name (	
+name_target  (	
+
+time_start! (
+time_finish" (
+	target_id# (
+unite_leader_pid$ (":
+ClientArmyList(
+arrCardInfo (2.pp2.ClientArmyInfo"{
+ClientUniteArmyList(
+arrCardInfo (2.pp2.ClientArmyInfo
+	target_id (
+name_target (	
+
+request_id ("t
+FiefBattleOneDmg
+attack_soldier_type (
+defend_soldier_type (
+
+attack_dmg (
+
+defend_dmg ("g
+FiefBattleSoldierLeft
+soldier_left_qi (
+soldier_left_qiang (
+soldier_left_gong ("≥
+FiefBattleOneRoundMsg
+round_id (&
+arr_dmg (2.pp2.FiefBattleOneDmg/
+attack_left (2.pp2.FiefBattleSoldierLeft/
+defend_left (2.pp2.FiefBattleSoldierLeft"í
+DetailBattleInfo.
+arr_defend_career (2.pp2.ClientCardInfo
+arr_defend_param_career (+
+arr_defend_top (2.pp2.ClientCardInfo
+defend_equipment_type (
+defend_equipment_level (
+attack_equimp_dmg (
+defend_equimp_dmg (-
+	arr_round (2.pp2.FiefBattleOneRoundMsg
+attack_gong_dmg	 (
+defend_gong_dmg
+ (
+attack_raw_bing (
+defend_raw_bing (
+attack_left_bing (
+defend_left_bing (
+defend_name (	
+defend_army_id (
+defend_owner_id ("¸
+ClientArmyBattleInfo
+guid_battle (
+
+attack_pid (
+
+defend_pid (
+
+winner_pid (
+attack_name (	
+defend_name (	.
+arr_attack_career (2.pp2.ClientCardInfo+
+arr_attack_top	 (2.pp2.ClientCardInfo
+arr_attack_param_career (
+attact_equipment_type
+ (
+attact_equipment_level (!
+get_res (2.pp2.FiefResUnit)
+
+battleInfo (2.pp2.DetailBattleInfo
+attack_char_type (
+defend_char_type (
+attack_level (
+defend_level ("É
+ClientArmyMemberBattleInfoNew
+
+player_pid (
+army_id ('
+
+arr_career (2.pp2.ClientCardInfo$
+arr_top (2.pp2.ClientCardInfo
+arr_param_career (!
+get_res (2.pp2.FiefResUnit
+name (	
+raw_bing (
+	left_bing	 ("í
+DetailBattleInfoNew
+attack_equimp_dmg (
+defend_equimp_dmg (
+attack_gong_dmg (
+defend_gong_dmg (
+attack_raw_bing (
+defend_raw_bing (
+attack_left_bing (
+defend_left_bing (-
+	arr_round	 (2.pp2.FiefBattleOneRoundMsg"Ï
+ClientArmyBattleInfoNew
+guid_battle (
+
+attack_pid (
+
+defend_pid (
+
+winner_pid (
+attack_name (	
+defend_name (	
+attact_equipment_type (
+attact_equipment_level (
+defend_equipment_type	 (
+defend_equipment_level
+ (
+attack_char_type (
+defend_char_type (
+attack_level (
+defend_level (,
+
+battleInfo (2.pp2.DetailBattleInfoNew
+battle_type (7
+attack_info (2".pp2.ClientArmyMemberBattleInfoNew7
+defend_info (2".pp2.ClientArmyMemberBattleInfoNew
+location_type (
+map_id (
+pos_x (
+pos_y ("
+FiefMsg
+msg_guid (
+msg_type (
+msg_time (
+	msg_param (
+msg_param_string (	
+	msg_state ("-
+FiefMsgList
+msg_list (2.pp2.FiefMsg"Ã
+NewArmyMsg_ATTACK
+
+attack_pid (
+
+defend_pid (
+winnner_pid (
+attack_kill (
+defend_kill (
+target_type (
+	is_attack (
+attack_name (	
+defend_name	 (	"õ
+NewArmyMsg_ATTACK_UNIT
+
+attack_pid (
+unit_csv_id (
+
+attack_win (
+	unit_type (
+attack_name (	
+pos_x (
+pos_y ("ú
+NewArmyMsg_DEFEND_UNIT
+
+defend_pid (
+unit_csv_id (
+adefend_win (
+	unit_type (
+defend_name (	
+pos_x (
+pos_y ("]
+NewArmyMsg_SPY
+spy_pid (
+target_type (
+spy_name (	
+be_spy_name (	"Q
+NewArmyMsg_RESOURCE_GAIN
+
+build_type (
+	player_id (
+pos_id ("ﬁ
+
+NewArmyMsg
+msg_guid (
+msg_type (
+msg_time (
+	msg_state (/
+msg_attack_fief (2.pp2.NewArmyMsg_ATTACK$
+msg_spy (2.pp2.NewArmyMsg_SPY3
+msg_res_gain (2.pp2.NewArmyMsg_RESOURCE_GAIN
+msg_pid (4
+msg_attack_unit	 (2.pp2.NewArmyMsg_ATTACK_UNIT4
+msg_defend_unit
+ (2.pp2.NewArmyMsg_DEFEND_UNIT"3
+NewArmyMsgList!
+msg_list (2.pp2.NewArmyMsg"ñ
+FiefResourcePointGain
+msg_guid (
+type (
+time (
+map_id (
+pos_x (
+pos_y (!
+get_res (2.pp2.FiefResUnit"‘
+FiefSpyInfo
+msg_guid (
+fief_owner_id (
+fief_owner_level (
+fief_owner_name (	
+fief_map_id (
+
+fief_pos_x (
+
+fief_pos_y (
+fief_spy_time (
+equipment_type	 (
+equipment_level
+ ('
+
+arr_career (2.pp2.ClientCardInfo$
+arr_top (2.pp2.ClientCardInfo
+arr_soldier_count (
+	fief_wood (
+	fief_food (
+fief_ore (
+fief_fur (
+tiejiangpu_weight (
+zhipisuo_weight (
+	char_type (
+arr_troop_count (
+target_type (
+self_map_id (
+
+self_pos_x (
+
+self_pos_y ("5
+FiefSpyInfoList"
+msg_list (2.pp2.FiefSpyInfo"`
+SCWildFiefCollectInfo
+csv_id ("
+left_res (2.pp2.FiefResUnit
+reward_rate ("S
+CSTeamBuzhenMove
+team_id (
+
+warrior_id (
+posx (
+posy ("R
+CSTeamCastSkill
+team_id (
+
+warrior_id (
+posx (
+posy ("(
+CSAdventureAfkRequest
+cur_map ("*
+SCAdventureArchive
+adventure_id ("<
+CSAdventureComplete
+adventure_id (
+cur_map ("@
+SMarketItem
+good_id (
+	buy_count (
+price ("æ
+SMarketInfo
+csv_id (
+goods (2.pp2.SMarketItem
+hand_refresh_count (
+refresh_money (
+next_refresh_date (
+super_goods_id (
+daily_first_open ("π
+TeamRoomMemberInfo
+	player_id (
+name (	
+level (
+fighting (
+avatar (
+master (
+troops (
+pos (
+state	 (
+prepare_state
+ ("◊
+SCTeamRoomInfo
+room_id (
+	master_id (
+task_id (
+param1 (
+param2 ((
+members (2.pp2.TeamRoomMemberInfo!
+applicants_last_view_time (#
+applicants_last_update_time ("B
+SCTeamRoomApplyInfo+
+
+applicants (2.pp2.TeamRoomMemberInfo"Æ
+TeamRoomSimpleInfo
+room_id (
+master_name (	
+member_count (
+task_id (
+param1 (
+param2 (
+master_avatar (
+master_level ("8
+SCTeamRoomList&
+rooms (2.pp2.TeamRoomSimpleInfo"*
+CSReqApplyAddToTeamRoom
+room_id ("-
+CSReqPassApplyToTeamRoom
+	player_id ("-
+CSReqKickOffFromTeamRoom
+	kicked_id ("+
+CSReqInviteToTeamRoom
+
+invitee_id ("-
+CSReqAnswerToEnterTeamRoom
+room_id ("?
+CSReqRejectEnterTeamRoom
+room_id (
+
+extra_data ("2
+CSReqChangeMasterTeamRoom
+new_master_id ("@
+CSReqChangeMemberPosTeamRoom
+from_pos (
+to_pos ("M
+CSReqSetTeamRoomTarget
+target_task (
+param1 (
+param2 ("E
+CSBattlTeamOP
+team_id (
+	player_id (
+intparam ("0
+CSReqSetTeamRoomMemberState
+	new_state ("%
+CSReqTeamChallenge
+team_id ("-
+CSReqRejectSuggestInvite
+	player_id ("-
+CSReqApplyRoomByPlayerID
+	player_id ("!
+SCDataGuide
+
+nGuideData ("#
+CSFinishGuide
+
+eGuideType ("6
+CSGuideDebug
+
+debug_type (
+
+guide_type ("d
+ResourcePointOneArmy
+player_name (	
+	player_id (	
+res_gain (
+
+max_weight ("û
+SCFiefResourcePointInfo
+guid (
+npcID (
+
+owner_name (	
+res_left (
+pid_list (
+owner_id (
+cur_troop_gain (
+max_troop_gain (
+	left_time	 (
+tech_factor_produce
+ (
+
+guild_name (	
+owner_avtar (
+reward_rate ("S
+
+SCFiefInfo
+guid ("
+left_res (2.pp2.FiefResUnit
+reward_rate ("l
+SCEliteMonsterInfo
+guid (
+csv_id ("
+left_res (2.pp2.FiefResUnit
+left_soldier (";
+SCLevelInfo,
+normal_chapters (2.pp2.ValiantChapter"S
+
+SCSignInfo
+sign_done_count (
+resign_left_count (
+	done_data ("O
+
+TeamFilter
+room_id (
+quest_id (
+param1 (
+param2 ("C
+CSReqTeamRoomList
+filter (2.pp2.TeamFilter
+force ("E
+CSReqTeamPlayerList
+filter (2.pp2.TeamFilter
+force ("2
+CSReqCreateRoom
+filter (2.pp2.TeamFilter"1
+CSReqAutoMatch
+filter (2.pp2.TeamFilter"h
+TeamPlayerSimpleInfo
+	player_id (
+name (	
+avatar (
+level (
+fighting (">
+SCTeamPlayerList*
+players (2.pp2.TeamPlayerSimpleInfo"
+SCTeamMatchInfo
+in_match (
+cur_masters (
+cur_members (
+quest_id (
+param1 (
+param2 ("Ü
+HotTargetNode
+target_act_type (
+target_act_value (
+player_act_value (
+reward_flag (
+reward_data ("H
+PlayerHotViewNode
+csv_id (#
+targets (2.pp2.HotTargetNode"6
+	SCHotView)
+	hot_views (2.pp2.PlayerHotViewNode"4
+CSReqHotReward
+csv_id (
+
+target_idx ("√
+ArmyNewTroopData
+troop_id (!
+troops (2.pp2.FiefOneTroop
+owner_id (
+
+owner_name (	
+group_id (
+group_owner_id (
+
+group_name (	
+zhanli (
+state	 (
+skill_priorty
+ (
+max_load_value (
+max_soldier_num (
+cur_load_value (
+cur_soldier_num ("⁄
+SCArmyGroupData
+group_id (
+group_owner_id (
+
+group_type (
+zhanli_limit (
+state ()
+
+troop_list (2.pp2.ArmyNewTroopData%
+group_items (2.pp2.OneResValue-
+battle_info (2.pp2.ArmyBattleInfoTroop
+target_name	 (	
+target_type
+ (
+
+src_map_id (
+	src_pos_x (
+	src_pos_y (
+target_map_id (
+target_pos_x (
+target_pos_y (
+	target_id (
+
+time_start (
+time_finish (
+mass_group_id (
+delegation_player_id (
+delegation_group_id (.
+player_info (2.pp2.TeamPlayerSimpleInfo"£
+SCNewArmyGroupData
+group_id (
+group_owner_id (
+
+group_type (
+zhanli_limit (
+state ()
+
+troop_list (2.pp2.ArmyNewTroopData%
+group_items (2.pp2.OneResValue
+target_name (	
+target_type	 (
+
+src_map_id
+ (
+	src_pos_x (
+	src_pos_y (
+target_map_id (
+target_pos_x (
+target_pos_y (
+	target_id (
+
+time_start (
+time_finish (
+main_group_id (
+sub_group_id (
+target_char_type (
+owner_char_type (
+target_csv_id ("A
+SCNewArmyGroupList+
+
+group_list (2.pp2.SCNewArmyGroupData"·
+SaveGroupData
+
+id (
+
+captain_id (
+group_state (
+
+group_type (
+zhanli_limit (
+target_type (
+	target_id (
+target_map_id (
+target_pos_x	 (
+target_pos_y
+ (
+main_group_id (
+src_type (
+src_id (
+
+src_map_id (
+	src_pos_x (
+	src_pos_y (
+
+time_start (
+time_finish (,
+
+troop_info (2.pp2.ArmyBattleInfoTroop
+	time_save (
+battle_guid (
+sub_group_id (";
+SCArmyGroupList(
+
+group_list (2.pp2.SCArmyGroupData"k
+SCArmyUniteQuestList
+group_id (
+group_owner_id ()
+
+troop_list (2.pp2.ArmyNewTroopData"ç
+CSArmyGroupCreateData
+group_id (
+group_owner_id (
+
+group_name (	
+
+group_type (
+	troop_ids (
+zhanli_limit (%
+group_items (2.pp2.OneResValue
+target_type (
+	target_id	 (
+group_id_main
+ (
+select_time ("˙
+FiefSpyInfoNew
+msg_guid (
+spy_time (
+	be_spy_id (
+be_spy_level (
+be_spy_zhanli_level (
+be_spy_name (	
+target_type (
+be_spy_char_type (
+spy_char_type	 (
+spy_name
+ (	
+be_spy_map_id (
+be_spy_pos_x (
+be_spy_pos_y (
+
+spy_map_id (
+	spy_pos_x (
+	spy_pos_y (
+equipment_type (
+equipment_level (
+soldier_level (
+soldier_num ()
+
+troop_list (2.pp2.ArmyNewTroopData
+	fief_wood (
+fief_ore (
+fief_fur (
+	fief_food (
+npc_id (
+spy_id ("
+res_list (2.pp2.FiefResUnit"Ä
+ArmyBattleInfoTroop
+owner_id (
+troop_id (
+dead_soldier (!
+get_res (2.pp2.FiefResUnit
+type ("≠
+ArmyNewBattleInfo
+guid_battle (
+
+attack_pid (
+
+defend_pid (
+
+winner_pid (
+attack_name (	
+defend_name (	
+attack_type (
+defend_type (
+attack_char_type	 (
+defend_char_type
+ (
+attack_level (
+defend_level (
+attack_zhanli_level (
+defend_zhanli_level (
+attact_equipment_type (
+attact_equipment_level (
+defend_equipment_type (
+defend_equipment_level (#
+
+battleInfo (2.pp2.BattleInfo
+battle_type (*
+attack_group (2.pp2.SCArmyGroupData*
+defend_group (2.pp2.SCArmyGroupData
+location_type (
+map_id (
+pos_x (
+pos_y (
+attack_map_id (
+attack_pos_x (
+attack_pos_y (
+defend_map_id (
+defend_pos_x (
+defend_pos_y  ("·
+ArmyBattleCompanyInfo)
+
+troop_list (2.pp2.ArmyNewTroopData
+owner_id (
+
+owner_type (
+
+owner_name (	
+dead_num (
+kill_num (
+zhan_li (
+	char_type (
+
+id	 (
+raw_num
+ ("∫
+ArmyBattlePlayerInfo
+owner_id (
+	side_type (
+dead_soldier (!
+get_res (2.pp2.FiefResUnit
+type (
+
+owner_name (	
+
+guild_name (	
+zhanli ("ï
+ArmyBattleInfoV2
+guid_battle (
+
+attack_pid (
+
+defend_pid (
+
+winner_pid (
+attack_name (	
+defend_name (	
+attack_type (
+defend_type (
+attack_char_type	 (
+defend_char_type
+ (
+attack_level (
+defend_level (
+attack_zhanli_level (
+defend_zhanli_level (
+attact_equipment_type (
+attact_equipment_level (
+defend_equipment_type (
+defend_equipment_level ($
+battle_info (2.pp2.BattleInfo
+battle_type (0
+attack_group (2.pp2.ArmyBattleCompanyInfo0
+defend_group (2.pp2.ArmyBattleCompanyInfo
+location_type (
+map_id (
+pos_x (
+pos_y (
+attack_map_id (
+attack_pos_x (
+attack_pos_y (
+defend_map_id (
+defend_pos_x (
+defend_pos_y  (/
+player_group! (2.pp2.ArmyBattlePlayerInfo+
+attack_effect_list" (2.pp2.EffectItem+
+defend_effect_list# (2.pp2.EffectItem
+defend_wall_lose$ (
+defend_wall_left% (
+fief_activity_point& ("∫
+PlayerShowInfo
+	player_id (
+	avatar_id (
+player_name (	
+player_level (
+player_country (
+zhanli (
+
+free_fight (
+troops (2.pp2.OneCard
+equips	 (2.pp2.ItemBag
+tech_lev
+ (
+guild_id (
+
+guild_name (	
+
+guild_rank (
+guild_title ("ƒ
+SCWildCityInfo
+	guid_city (
+npc_id (
+guild_id (
+
+guild_name (	
+guild_master_name (	
+
+guild_flag (
+guild_profile (	
+nation (
+wild_city_state	 (
+guild_city_state
+ (
+state_finish_time (5
+defend_player_list (2.pp2.ArmyBattlePlayerInfo
+res_left (2
+res_player_list (2.pp2.ArmyBattlePlayerInfo
+occupy_nation (
+state_start_time (
+occupy_guild_id ("o
+CampWarStageInfo
+stage (
+stage_end_time (
+
+chapter_id (
+part_id (
+win_rlt ("Q
+CampWarPartInfoNode
+part_id (
+player_count (
+total_score ("0
+CampWarHeroUnit
+hero_id (
+type ("ä
+CampWarTroopHeroNode'
+	hero_unit (2.pp2.CampWarHeroUnit
+cur_hp (
+max_hp (
+encourage_flag (
+	dead_time ("j
+CampWarRankingNode
+rank (
+	player_id (
+player_name (	
+part_id (
+score ("ñ
+CampWarBattleFeed
+player_id_1 (
+player_name_1 (	
+	part_id_1 (
+op_type (
+player_id_2 (
+player_name_2 (	
+	part_id_2 (
+time (
+
+extra_data	 (
+extra_data_1
+ (
+extra_data_2 ($
+
+reward_res (2.pp2.FiefResUnit"h
+CampWarPlayerInfo
+
+self_state (
+	win_count (
+total_zhanli (
+reborn_cd_time ("Å
+SCCampWarGlobalInfo)
+
+stage_info (2.pp2.CampWarStageInfo+
+player_info (2.pp2.CampWarPlayerInfo0
+part_info_list (2.pp2.CampWarPartInfoNode.
+using_troop (2.pp2.CampWarTroopHeroNode,
+top_ranking (2.pp2.CampWarRankingNode-
+self_ranking (2.pp2.CampWarRankingNode)
+	new_feeds (2.pp2.CampWarBattleFeed(
+camp_war_items (2.pp2.FiefResUnit"0
+SCCampWarNotifyPLayerState
+
+self_state ("a
+CSReqCampWarUsingHero'
+	hero_unit (2.pp2.CampWarHeroUnit
+pos_id (
+op_type ("n
+CSReqCampWarUsingItem
+item_group_id (
+item_res_type ('
+	hero_unit (2.pp2.CampWarHeroUnit"§
+SCCampWarRefreshHeros)
+troop_units (2.pp2.CampWarHeroUnit2
+refreshed_heros (2.pp2.CampWarTroopHeroNode
+total_zhanli (
+reborn_cd_time ("w
+SCCampWarNotifyStageInfo)
+
+stage_info (2.pp2.CampWarStageInfo0
+part_info_list (2.pp2.CampWarPartInfoNode"E
+SCCampWarSyncLatestFeeds)
+	new_feeds (2.pp2.CampWarBattleFeed";
+CSReqCampWarBuyItem$
+
+target_res (2.pp2.FiefResUnit"A
+SCCampWarSyncItemInfo(
+camp_war_items (2.pp2.FiefResUnit"s
+CampWarTroopHeroDetailNode
+csv_id (
+cur_hp (
+max_hp (
+
+card_level (
+	adv_level ("∏
+CampWarMatchedPlayerInfo+
+player_simple_info (2.pp2.FriendNode
+part_id (
+camp_war_zhanli (
+con_win (4
+using_troop (2.pp2.CampWarTroopHeroDetailNode"^
+SCCampWarMatchingInfo0
+	pair_info (2.pp2.CampWarMatchedPlayerInfo
+buzhen_time ("D
+SCCampWarRankingList,
+top_ranking (2.pp2.CampWarRankingNode"9
+CSReqSendMsgToFriend
+to_player_id (
+msg (	"e
+SCSendMsgToFriend
+from_player_id (
+msg (	+
+player_simple_info (2.pp2.FriendNode"~
+SSReqSendMsgToFriend
+from_player_id (
+to_player_id (
+msg (	+
+player_simple_info (2.pp2.FriendNode"è
+ChatMsgDesc
+msg_type (
+	send_time (*
+text (2.pp2.ChatMsgDesc.TextContent,
+audio (2.pp2.ChatMsgDesc.AudioContent2
+envelope (2 .pp2.ChatMsgDesc.EnvelopeContent?
+envelope_record (2&.pp2.ChatMsgDesc.EnvelopeRecordContent5
+guild_for_help (2.pp2.ChatMsgDesc.GuildForHelp.
+
+guild_ride (2.pp2.ChatMsgDesc.GuildRide
+TextContent
+text (	9
+AudioContent
+text (	
+url (	
+length (+
+EnvelopeContent
+
+id (
+name (	ê
+EnvelopeRecordContent
+
+id (
+	send_name (	
+
+taker_name (	
+name (	
+	res_group (
+res_type (
+	res_count (d
+GuildForHelp
+	player_id (
+player_name (	
+map_id (
+pos_x (
+pos_y (¶
+	GuildRide
+src_player_id (
+src_player_name (	
+
+src_zhanli (
+target_player_id (
+target_player_name (	
+target_type (
+target_map_id (
+target_pos_x (
+target_pos_y	 (
+condition_zhanli_level
+ (
+group_id (
+building_type ("ª
+ChatMsg
+	iChatType (
+iSrcID (
+	iTargetID (
+
+strSrcName (	
+strTargetName (	
+
+strContent (
+iHeadCardID (
+iZhanliLevel (
+	iRankType	 (
+iRankNum
+ (
+	iServerID (
+	iZhangong (/
+team_room_info (2.pp2.TeamRoomSimpleInfo
+message_type ("$
+CSLoadNewsPaper
+	player_id ("t
+PageMetaInfo
+
+id (
+type (
+value (
+	player_id (
+player_name (	
+extra_value ("u
+GuildBattleInfo
+guild_1 (
+guild_2 (
+guild_1_name (	
+guild_2_name (	
+battle_times ("Ñ
+CampWarRankPlayerInfo
+	player_id (
+player_score (
+player_name (	
+player_win_times (
+player_rank ("„
+	NewsPaper
+paper_id (
+
+paper_type (
+
+start_time (
+issue ($
+	meta_info (2.pp2.PageMetaInfo/
+guild_battle_info (2.pp2.GuildBattleInfo6
+camp_war_rank_info (2.pp2.CampWarRankPlayerInfo"1
+SCLoadNewsPaper
+papers (2.pp2.NewsPaper"h
+PlayerPaperRankData
+	player_id (
+player_name (	
+
+rank_value (
+player_zhanli ("(
+CSLoadPaperRankData
+	rank_type ("{
+SCLoadPaperRankData
+
+start_time (
+end_time (
+	rank_type (+
+	rank_list (2.pp2.PlayerPaperRankData"•
+SCDungeonInfo
+guid (
+
+dungeon_id (
+state (
+
+difficulty (
+map_id (
+	open_time (
+
+close_time (
+refresh_time (
+players	 ("
+	quest_set
+ (2.pp2.SCQuestSet&
+quest_chain (2.pp2.SCQuestChain%
+event_quests (2.pp2.SCOneQuest"†
+HouseDeskInfo
+	desk_type (
+desk_id (,
+guests (2.pp2.HouseDeskInfo.GuestInfo
+task_id (,
+	GuestInfo
+
+id (
+toast_times ("(
+CSLoadHouseDeskInfo
+	desk_type ("Ö
+SCLoadHouseDeskInfo%
+	desk_info (2.pp2.HouseDeskInfo%
+	room_info (2.pp2.HouseDeskInfo
+house_filt_type (
+house_filt_value (
+next_desk_fresh_time (
+next_room_fresh_time (
+house_level (
+entertain_used_count ("l
+CSToastToHero
+	wine_type (
+toast_to (
+	desk_type (
+desk_id (
+
+wine_count ("î
+SCToastToHero
+result (
+toast_result (
+	desk_type (
+desk_id (
+toast_to (
+
+friendship (
+toast_times ("&
+CSLeafletForHouse
+	player_id ("L
+SCLeafletForHouse
+	player_id (
+cost_leaflet (
+result ("4
+HouseHeroInfo
+card_id (
+
+friendship ("(
+CSLoadHouseHeroList
+	player_id ("<
+SCLoadHouseHeroList%
+	hero_list (2.pp2.HouseHeroInfo"G
+CSSetHouseHeroType
+house_filt_type (
+house_filt_value ("W
+SCSetHouseHeroType
+result (
+house_filt_type (
+house_filt_value ("E
+CSHouseDeleteGuest
+	desk_type (
+
+id (
+guest_id ("U
+SCHouseDeleteGuest
+result (
+	desk_type (
+
+id (
+guest_id (":
+SCHouseQuestFinish
+guest_id (
+
+friendship ("&
+CSHouseUpgradge
+up_to_level ("6
+SCHouseUpgradge
+result (
+up_to_level ("|
+CSHouseEntertainReq
+	desk_type (
+use_leaflet (
+	use_money (
+entertain_letters (
+desk_id ("I
+SCHouseEntertainRsp
+result (
+	desk_type (
+desk_id ("W
+SevenLoginQuestInfo
+
+id (
+accept_time (
+progress (
+state ("*
+CSLoadSevenLoginQuest
+	player_id ("{
+SCLoadSevenLoginQuest
+result (
+
+start_time (
+end_time (,
+
+quest_list (2.pp2.SevenLoginQuestInfo"%
+CSCommitSevenLoginQuest
+
+id ("W
+SCCommitSevenLoginQuest
+result (,
+
+quest_info (2.pp2.SevenLoginQuestInfo"J
+SCUpdateSevenLoginQUestNtf,
+
+quest_info (2.pp2.SevenLoginQuestInfo"π
+
+SCRankItem
+rank (
+	player_id (
+player_avatar (
+player_name (	
+player_zhanli (
+player_level (
+
+guild_name (	
+score (
+param1	 ("}
+
+SCRankData
+	rank_type (
+version (
+refresh_time ("
+	rank_list (2.pp2.SCRankItem
+	self_rank ("â
+ValiantLevel
+level_id (
+	completed (
+stars (
+quickpass_times (
+reset_times (
+buy_reset_times ("x
+ValiantChapter
+
+chapter_id (
+reward_info (
+
+is_perfect ()
+valiant_levels (2.pp2.ValiantLevel"C
+SCValiantLevelInfo-
+valiant_chapters (2.pp2.ValiantChapter"C
+CSReqValiantChapterReward
+
+chatper_id (
+
+reward_idx ("B
+CSReqNormalChapterReward
+
+chatper_id (
+
+reward_idx ("r
+SCMsgshowItem
+type (
+iparam1 (
+iparam2 (
+iparam3 (
+
+arr_sparam (	
+time ("9
+SCMsgshowList(
+msgshow_list (2.pp2.SCMsgshowItem"™
+GuildApplicantInfo
+	player_id (
+name (	
+level (
+fighting (
+total_contribution (
+
+apply_time (
+
+fief_level (
+avatar ("g
+GuildStarInfo
+	player_id (
+name (	
+	star_type (
+
+star_value (
+avatar ("È
+GuildDetailInfo
+guild_id (
+name (	
+level (
+desc (	
+notice (	
+exp (
+money (
+	mem_count (
+master_player_id	 (
+total_fighting
+ (
+ranking (
+master_name (	
+recruit_state (
+
+city_count (
+flag (
+profile (	'
+guild_stars (2.pp2.GuildStarInfo
+kingdom ("·
+GuildSimpleInfo
+guild_id (
+name (	
+level (
+	mem_count (
+master_player_id (
+total_fighting (
+master_name (	
+recruit_state (
+flag	 (
+profile
+ (	
+kingdom ("–
+GuildMemberInfo
+	player_id (
+name (	
+avatar (
+guild_id (
+level (
+fighting (
+cur_contribution (
+title (
+last_online_time	 (
+today_donate_count
+ (
+totay_contribution (
+week_contribution (
+total_contribution (
+rank (
+first_enter_guild ("Ï
+GuildNewsInfo
+news_id (
+op_type (
+op_player_id (
+op_name (	
+char_player_id (
+	char_name (	
+op_time (
+	news_data (
+
+news_data1	 (
+extra_data_list
+ (
+extra_str_list (	"P
+SCGuildList)
+guild_infos (2.pp2.GuildSimpleInfo
+applied_guilds ("D
+CSReqCreateGuild
+
+guild_name (	
+pay_id (
+flag ("9
+SCCreateGuild(
+
+guild_info (2.pp2.GuildDetailInfo"4
+CSReqApplyGuild
+guild_id (
+op_type ("0
+SCApplyGuild
+guild_id (
+status ("&
+CSReqGuildBaseInfo
+guild_id ("d
+SCGuildBaseInfo(
+
+guild_info (2.pp2.GuildDetailInfo'
+	self_info (2.pp2.GuildMemberInfo"9
+CSReqGuildMemberList
+op_type (
+guild_id ("t
+SCGuildMemberList
+op_type (%
+members (2.pp2.GuildMemberInfo'
+guild_stars (2.pp2.GuildStarInfo"'
+CSReqDonateToGuild
+	donate_id ("π
+SCDonateToGuild
+cur_contribution (
+total_contribution (
+guild_money (
+	guild_exp (
+guild_level (
+today_guild_mem (
+today_donate_count ("
+SCQuitGuild
+guild_id ("(
+CSReqModifyGuildDesc
+new_desc (	"%
+SCModifyGuildDesc
+new_desc (	"&
+SCDismissGuild
+cur_guild_id ("G
+CSReqPassGuildApplicant
+applicant_player_id (
+op_type ("3
+SCPassGuildApplicant
+applicant_player_id ("3
+CSReqKickoffGuildMember
+member_player_id ("0
+SCKickoffGuildMember
+kicked_player_id ("C
+CSReqViceMasterTitleChange
+op_player_id (
+op_type ("B
+SCViceMasterTitleChange
+op_player_id (
+	new_title ("4
+SCGuildActivityInfo
+huangjin_active_value ("D
+SCGainRewardJubaopen
+basic_junling (
+extra_junling ("@
+SCGuildApplicants+
+
+applicants (2.pp2.GuildApplicantInfo"/
+SCGuildNews 
+news (2.pp2.GuildNewsInfo"P
+SCGuildNewsNotifyUpdate 
+news (2.pp2.GuildNewsInfo
+update_flag (">
+SCGuildMemberInfo)
+member_self (2.pp2.GuildMemberInfo"ë
+GuildMsgNode
+	player_id (
+player_name (	
+title (
+	send_time (
+msg_content (	
+avatar (
+
+guild_name (	"9
+CSReqAddGuildMsg
+guild_id (
+msg_content (	"%
+CSReqGuildMsgList
+guild_id ("G
+SCGuildMsgList#
+msg_list (2.pp2.GuildMsgNode
+guild_id ("8
+CSReqDelGuildMsg
+	player_id (
+	send_time (",
+CSReqModifyGuildNotice
+
+new_notice (	")
+SCModifyGuildNotice
+
+new_notice (	"(
+CSReqModifyGuildName
+new_name (	"'
+SCModifyGuildName
+
+guild_name (	"ò
+GuildHuangjinRankingNode
+ranking (
+guild_id (
+name (	
+level (
+flag (
+profile (	
+huangjin_active_value ("d
+SCGuildHuangjinRankingInfo/
+rankings (2.pp2.GuildHuangjinRankingNode
+self_guild_id ("Ö
+GuildHelpRequestNode
+help_id (
+from_player_id (
+avatar (
+name (	
+	help_type (
+building_type (
+sub_idx (
+building_level (
+tech_id	 (
+
+tech_level
+ (
+can_help_total (
+cur_help_count ("â
+SCGuildhelpInfo 
+help_contribution_taotal ( 
+gained_help_contribution (2
+guild_help_info (2.pp2.GuildHelpRequestNode"`
+CSReqSendGuildHelp
+	help_type (
+building_type (
+sub_idx (
+tech_id ("â
+SCSendGuildHelp
+	help_type (
+building_type (
+sub_idx (
+building_level (
+tech_id (
+
+tech_level ("/
+SCNotifyGuildHelpFlag
+can_help_count ("%
+CSReqGiveGuildHelp
+help_id (""
+SCGiveGuildHelp
+help_id ("5
+CSReqModifyGuildRecruitState
+recruit_state ("2
+SCModifyGuildRecruitState
+recruit_state ("*
+CSReqModifyGuildProfile
+profile (	"'
+SCModifyGuildProfile
+profile (	"$
+CSReqModifyGuildFlag
+flag ("!
+SCModifyGuildFlag
+flag ("‚
+GuildHopeNode
+hope_id (
+hope_csv_id (
+
+hope_count (
+hope_send_time (
+hope_player_id (
+hope_player_name (	
+hope_player_avatar (
+hope_player_title (
+help_player_id	 (
+help_player_name
+ (	
+help_player_avatar (
+help_player_title (
+hope_finish_time (
+daily_count (">
+SCGuildHopeList+
+guild_hope_list (2.pp2.GuildHopeNode":
+SCGuildHopeUpdate%
+	hope_info (2.pp2.GuildHopeNode":
+CSGuildHopeSend
+hope_csv_id (
+
+hope_count (""
+CSGuildHopeHelp
+hope_id ("T
+CSReqGuildArmyHelp
+	help_type (
+army_group_id (
+zhanli_level ("≤
+GuildEnvelopeItem
+
+id (
+type (
+csv_type_id (
+state (
+get_time (
+use_time (
+finish_time (
+	player_id (
+player_name	 (	
+total_res_value
+ (
+total_count (
+
+left_count (
+level_limit (
+guild_id (
+is_self_taken ("B
+GuildEnvelopeList-
+envelope_list (2.pp2.GuildEnvelopeItem"µ
+GuildEnvelopeMsg
+
+id (
+res_type (
+	res_value (
+send_pid (
+	taker_pid (
+	send_name (	
+
+taker_name (	
+	res_group (
+	avatar_id	 ("?
+GuildEnvelopeMsgList'
+msg_list (2.pp2.GuildEnvelopeMsg"É
+GuildEnvelopeTakeInfo
+
+id (
+res_type (
+	res_value (
+send_pid (
+	send_name (	'
+msg_list (2.pp2.GuildEnvelopeMsg
+total_count (
+
+left_count (
+total_res_value	 (
+left_res_value
+ (
+	res_group ("ã
+GuildGiftItem
+
+id (
+csv_type_id (
+state (
+get_time (
+use_time (
+	hold_time (
+player_name (	"7
+GuildNotifyFlag
+	flag_type (
+	flag_data ("B
+SCUpdateGuildNotifyFlag'
+	flag_list (2.pp2.GuildNotifyFlag"6
+GuildGiftList%
+	gift_list (2.pp2.GuildGiftItem"
+CSRequestUseGift
+
+id ("2
+CSRequestDeleteGift
+
+id (
+id_list ("É
+HeroChallengeRefreshItem
+card_id_list (
+refresh_times_remained (
+refresh_times_used (
+refresh_event ("2
+HeroChallengeSoulItem
+
+id (
+count ("Ô
+SCHeroChallengeInfo
+challenge_id (
+difficulty_id (
+refresh_time (-
+	soul_list (2.pp2.HeroChallengeSoulItem3
+refresh_item (2.pp2.HeroChallengeRefreshItem
+record_difficulty (
+record_card_id ("d
+SCHeroChallengeRefresh3
+refresh_item (2.pp2.HeroChallengeRefreshItem
+difficulty_id ("ê
+SCHeroChallengeUpdate
+difficulty_id (-
+	soul_list (2.pp2.HeroChallengeSoulItem
+record_difficulty (
+record_card_id ("W
+SCHeroChallengeRefreshTimesAdd
+refresh_times_remained (
+refresh_event ("1
+CSReqHeroChallengePlayerInfo
+	player_id ("[
+SCHeroChallengePlayerInfo
+	player_id (
+difficulty_id (
+card_id_list (" 
+SCTechAsset'
+tech (2.pp2.SCTechAsset.TechNode5
+researching (2 .pp2.SCTechAsset.TechResearching
+military_lvl_gong (
+military_lvl_qiang (
+military_lvl_qi (#
+TechNode
+
+id (
+lvl (f
+TechResearching
+
+id (
+finish_time (
+
+total_time (
+cost (2.pp2.FiefResUnit"I
+CSTechResearchReq
+tech_id (
+tech_lvl (
+	use_money ("ë
+SCTechResearchRsp
+err_code (
+tech_id (
+tech_lvl (
+finish_time (
+
+total_time (
+cost (2.pp2.FiefResUnit""
+CSTechCancelReq
+tech_id ("4
+SCTechCancelRsp
+err_code (
+tech_id ("9
+SCTechResearchFinish
+tech_id (
+tech_lvl ("w
+CSTechResearchAccelerateReq
+tech_id (
+use_free (
+	use_money ("
+use_item (2.pp2.FiefResUnit"U
+SCTechResearchAccelerateRsp
+err_code (
+tech_id (
+finish_time ("1
+CSTechDebug
+
+debug_type (
+params ("W
+GiftBagItem
+
+id (
+finish_time (
+origin (
+limitedBuyCount ("!
+CSConditionGiftBag
+ids ("C
+SCGiftBagList
+list (2.pp2.GiftBagItem
+
+notifyFlag ("6
+SCQuestionnaireInfo
+
+id (
+reward_flag ("8
+CSQuestionnaireUpload
+
+id (
+answer_list (	">
+FiefAchieveItem
+
+id (
+progress (
+state ("A
+SCRefreshOneAchieve*
+achieve_item (2.pp2.FiefAchieveItem"K
+SCRefreshRelatedAchieves/
+relative_achieves (2.pp2.FiefAchieveItem">
+SCAllAchieveData*
+achieve_list (2.pp2.FiefAchieveItem"5
+CSReqSetTeamAcceptInviteState
+can_accepted ("•
+SCFiefActivityInfo
+state (
+
+open_index (
+	open_time (
+
+close_time (
+daily_credit (
+total_credit (
+reward_index (
+daily_reward_flag (
+
+guild_rank	 (
+player_rank
+ (
+guild_rank_reward_flag (
+player_rank_reward_flag ("v
+SCFiefActivityRewardInfo
+daily_reward_flag (
+guild_rank_reward_flag (
+player_rank_reward_flag ("d
+SCFiefActivitySimpleInfo
+state (
+
+open_index (
+	open_time (
+
+close_time ("M
+SSPushMessageReq
+uid (
+title (	
+content (	
+sign (	"h
+SSDeltaTimeWarningReq
+	server_id (
+	step_time (
+
+delta_time (
+step_time_str (	"J
+CSArenaFightStartReq
+uid (
+	target_id (
+
+fight_type ("Z
+SCArenaFightStartRes
+uid (
+	target_id (
+
+fight_type (
+result ("H
+CSArenaFightEndReq
+uid (
+	target_id (
+
+fight_type ("X
+SCArenaFightEndRes
+uid (
+	target_id (
+
+fight_type (
+result ("!
+CSLoadArenaInfoReq
+uid ("y
+ArenaPlayerInfo
+	player_id (
+name (	
+	avatar_id (
+level (
+zhanli (
+dan_grading ("˙
+SCLoadArenaInfoRes
+uid (
+arena_id (
+dan_grading (
+total_win_times (
+max_continue_win_times (
+last_dan_grading (
+buff_id (
+score (
+
+daily_star	 (
+daily_relive_times
+ (
+rank (
+	dead_sign ($
+matchs (2.pp2.ArenaPlayerInfo
+daily_times (
+daily_reward_sign (
+max_win_zhanli ("'
+CSGetPlayerRankReq
+	player_id ("5
+SCGetPlayerRankRes
+	player_id (
+rank ("%
+CSArenaReliveReq
+	player_id ("8
+SCArenaReliveRes
+result (
+relive_times ("≤
+PlayerArenaInfoNtf
+uid (
+arena_id (
+dan_grading (
+total_win_times (
+max_continue_win_times (
+last_dan_grading (
+buff_id (
+score (
+
+daily_star	 (
+daily_relive_times
+ (
+rank (
+	dead_sign ($
+matchs (2.pp2.ArenaPlayerInfo"!
+CSLoadArenaRankReq
+uid ("Y
+SCLoadArenaRankRes
+uid ((
+
+arena_list (2.pp2.ArenaPlayerInfo
+rank ("7
+CSGetArenaRewardReq
+uid (
+reward_type ("G
+ArenaRewardInfo
+item_id (
+	item_type (
+item_num ("n
+SCGetArenaRewardRes
+uid (
+reward_type (%
+rewards (2.pp2.ArenaRewardInfo
+result (""
+CSLoadArenaMatchReq
+uid ("H
+SCLoadArenaMatchRes
+uid ($
+matchs (2.pp2.ArenaPlayerInfo"c
+WorldMapNpcInfo
+guid (
+csv_id (
+state (
+belong (
+occupy_lord (	"I
+SCWorldMapNpcInfo
+version (#
+infos (2.pp2.WorldMapNpcInfo"%
+CSGuildMemberPos
+	player_id ("a
+CSReqGroupAccelerate
+
+group_type (
+group_id (
+item_id (
+
+item_count ("c
+OneQuickPassResult
+times (
+exp (
+coin (#
+	item_list (2.pp2.FiefResUnit"a
+SCRespQuickPass
+level_id ((
+results (2.pp2.OneQuickPassResult
+
+used_times ("1
+CSReqQuickPass
+level_id (
+times ("@
+CSReqResetQuickPassTimes
+
+chatper_id (
+level_id ("z
+SCResetQuickPassTimes
+
+chatper_id (
+level_id (
+times (
+reset_times (
+buy_reset_times ("A
+CSReqBuyValiantResetTimes
+
+chatper_id (
+level_id ("{
+SCBuyValiantResetTimes
+
+chatper_id (
+level_id (
+times (
+reset_times (
+buy_reset_times ("1
+	CSSetting$
+kvps (2.pp2.PairValueInt2Bool"ç
+SCTrialInfo
+trial_id (
+state (
+
+buff_index (
+finished_id (
+map_guid (
+update_time (
+buffs ("/
+SCGuideLevelInfo
+rewarded_level_list ("*
+CSReqGuideLevelReward
+	req_level (",
+SCGuideLevelReward
+rewarded_level ("(
+KillInfoItem
+
+id (
+type ("+
+KillInfo
+data (2.pp2.KillInfoItem"'
+AttackAttentionItem
+group_id ("Z
+SCAttackAttentionList-
+attack_list (2.pp2.AttackAttentionItem
+
+version_id ("a
+MonthCardNode
+card_id (
+buy_time (
+expire_time (
+last_donate_time (">
+SCMonthCardList+
+month_card_list (2.pp2.MonthCardNode",
+CSReqMonthCardDailyReward
+card_id ("M
+
+EffectItem
+
+id (
+
+time_start (
+time_end (
+value ("-
+SCEffectInfo
+list (2.pp2.EffectItem"L
+ChainPVENode
+chain_id (
+	max_layer (
+min_finish_time ("H
+SCChainPVEInfo
+last_chain_id (
+list (2.pp2.ChainPVENode"7
+SCGiftBagShowList"
+res_list (2.pp2.FiefResUnit"5
+FiefStateFlag
+	flag_type (
+	flag_data (">
+SCUpdateFiefStateFlag%
+	flag_list (2.pp2.FiefStateFlag

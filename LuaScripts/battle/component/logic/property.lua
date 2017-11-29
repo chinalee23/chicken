@@ -1,5 +1,5 @@
 local com = ecs.newcom('property')
-function com:ctor(speed, attDist, att, def, hp)
+function com:ctor(speed, attDist, att, def, hp, warningRange)
 	self.speed = speed or 1
 
 	self.attDist = attDist or 0
@@ -13,5 +13,5 @@ function com:ctor(speed, attDist, att, def, hp)
 	self.totalFrame = 10
 	self.lengqueFrame = 5
 
-	self.warningRange = 10
+	self.warningRange = warningRange or 8
 end

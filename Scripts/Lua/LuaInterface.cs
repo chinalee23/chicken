@@ -50,6 +50,9 @@ public class LuaInterface {
 
     public static void SetParent(GameObject go, GameObject parent) {
         go.transform.SetParent(parent.transform);
+        go.transform.localPosition = Vector3.zero;
+        go.transform.localEulerAngles = Vector3.zero;
+        go.transform.localScale = Vector3.one;
     }
 
     public static void SetLocalPosition(GameObject go, float x, float y, float z) {
@@ -177,7 +180,7 @@ public class LuaInterface {
     #endregion
 
     #region animation
-    public static float PlayAnimation(GameObject go, string animName, float speed = 1, float startTime = -1) {
+    public static float PlayAnimation(GameObject go, string animName, float speed = 1, float startTime = 0) {
         if (go == null) {
             return -1;
         }
@@ -199,6 +202,11 @@ public class LuaInterface {
         }
     }
     #endregion
+
+    public static byte[] LoadProto() {
+        TextAsset text = Resources.Load("Proto/MG_Sanguo") as TextAsset;
+        return text.bytes;
+    }
 }
 
 public static class LuaCallUnity {
@@ -208,5 +216,6 @@ public static class LuaCallUnity {
         typeof(Transform),
         typeof(Vector3),
         typeof(Vector2),
+        typeof(EventTriggerType),
     };
 }

@@ -15,6 +15,9 @@ local tuple = {
 		Com.logic.transform,
 		Com.logic.animation,
 	},
+	attacker = {
+		Com.attacker,
+	},
 }
 local sys = ecs.newsys('move', tuple)
 
@@ -37,46 +40,69 @@ local function limitPos(pos)
 	pos.y = math.min(pos.y, 100)
 end
 
+-- if 将军 then
+--     if 玩家指令 then
+--         按照指令移动
+--     elseif 有警戒目标 then
+--         向警戒目标移动
+-- else
+--     if 玩家指令 or 没有警戒目标 then
+--         移动到阵型指定的点
+--     else 有警戒目标 then
+--         向警戒目标移动
+
+function sys:getTarget(entity)
+	if not self:getEntity(entity.id, 'attacker') then return end
+	local comAttacker = entity:getComponent(Com.attacker)
+	return comAttacker.target
+	-- if comAttacker.status == 'warning' then
+	-- 	return comAttacker.target
+	-- end
+end
 
 function sys:move(eGeneral, direction, accelerate)
-	direction = direction or Vector2(0, 0)
-	local comTrans_g = eGeneral:getComponent(Com.logic.transform)
-	local comAnim_g = eGeneral:getComponent(Com.logic.animation)
+	self:moveGeneral(eGeneral, direction, accelerate)
+	self:moveRetinue(eGeneral, direction)
+end
+
+function sys:moveGeneral(eGeneral, direction, accelerate)
+	local comTrans = eGeneral:getComponent(Com.logic.transform)
+	local comAnim = eGeneral:getComponent(Com.logic.animation)
 	if accelerate then
-		log.info('move accelerate', accelerate)
-		if accelerate == 'on' then
-			comTrans_g.speed = maxSpeed
+		comTrans.speed = (accelerate == 'on' and maxSpeed or normalSpeed)
+	end
+	if direction then
+		comTrans.direction = direction:Clone()
+		comTrans.position = comTrans.position + direction * comTrans.speed
+		limitPos(comTrans.position)
+		setAnim(comAnim, 'run')
+	else
+		local target = self:getTarget(eGeneral)
+		if target then
+			util.moveTowardToTarget(eGeneral.id, target)
+			setAnim(comAnim, 'run')
 		else
-			comTrans_g.speed = normalSpeed
+			setAnim(comAnim, 'idle')
 		end
 	end
-	if direction.x ~= 0 or direction.y ~= 0 then
-		comTrans_g.direction = direction:Clone()
-		comTrans_g.position = comTrans_g.position + direction * comTrans_g.speed
-		limitPos(comTrans_g.position)
-		setAnim(comAnim_g, 'run')
-	else
-		setAnim(comAnim_g, 'idle')
-	end
 	util.updateMap(eGeneral)
-	local pos_g = comTrans_g.position
+end
 
-	local comGeneral = eGeneral:getComponent(Com.general)
+function sys:moveRetinue(eGeneral, direction)
+	local comTrans_g = eGeneral:getComponent(Com.logic.transform)
+	local pos_g = comTrans_g.position
 	local layer = 0
 	local sideLen = 0
 	local layerIndex = 0
 	local x, y
+	local comGeneral = eGeneral:getComponent(Com.general)
 	for i, v in ipairs(comGeneral.retinues) do
 		local eRetinue = self:getEntity(v, 'retinue')
 		local comTrans_r = eRetinue:getComponent(Com.logic.transform)
-		if accelerate then
-			if accelerate == 'on' then
-				comTrans_r.speed = maxSpeed
-			else
-				comTrans_r.speed = normalSpeed
-			end
-		end
 		local comAnim_r = eRetinue:getComponent(Com.logic.animation)
+
+		comTrans_r.speed = comTrans_g.speed
+
 		if i == 1 or layerIndex == 8*layer then
 			layer = layer + 1
 			sideLen = 2*layer+1
@@ -95,36 +121,51 @@ function sys:move(eGeneral, direction, accelerate)
 				x = x - retinueGap
 			end
 		end
-		local tarPos = Vector2(x, y)
-		local offset = tarPos - comTrans_r.position
-		local distSq = offset:SqrMagnitude()
-		if distSq > 0.0001 then
-			comTrans_r.direction = offset:Normalize()
-			local t = math.sqrt(distSq)/comTrans_r.speed
-			comTrans_r.position = Vector2.Lerp(comTrans_r.position, tarPos, 1/t)
-			limitPos(comTrans_r.position)
-			setAnim(comAnim_r, 'run')
-		elseif direction.x ~= 0 or direction.y ~= 0 then
-			comTrans_r.direction = direction:Clone()
-			comTrans_r.position = comTrans_r.position + comTrans_r.direction * comTrans_r.speed
-			limitPos(comTrans_r.position)
-			setAnim(comAnim_r, 'run')
+
+		local target = self:getTarget(eRetinue)
+		if direction or not target then
+			self:retinueMoveToQueue(comTrans_r, comAnim_r, Vector2(x, y))
 		else
-			setAnim(comAnim_r, 'idle')
+			util.moveTowardToTarget(eRetinue.id, target)
+			setAnim(comTrans_r, 'run')
 		end
 		util.updateMap(eRetinue)
 	end
 end
 
+function sys:retinueMoveToQueue(comTrans, comAnim, tarPos)
+	local offset = tarPos - comTrans.position
+	local distSq = offset:SqrMagnitude()
+	if distSq > 0.0001 then
+		comTrans.direction = offset:Normalize()
+		if distSq > comTrans.speed^2 then
+			comTrans.position = comTrans.position + comTrans.direction * comTrans.speed
+		else
+			comTrans.position = tarPos
+		end
+		limitPos(comTrans.position)
+		setAnim(comAnim, 'run')
+	else
+		setAnim(comAnim, 'idle')
+	end
+end
+
+-- 先计算有移动指令的，确保玩家指令的及时性
 function sys:_frameCalc( ... )
 	local generals = self:getEntities('general')
+	local tmp = {}
 	for k, v in pairs(generals) do
 		-- get input
 		local input = inputs[k]
-		if input then
+		if input and (input.direction or input.accelerate) then
 			self:move(v, input.direction, input.accelerate)
 		else
-			self:move(v)
+			table.insert(tmp, v)
+			-- self:move(v)
 		end
+	end
+
+	for _, v in ipairs(tmp) do
+		self:move(v)
 	end
 end

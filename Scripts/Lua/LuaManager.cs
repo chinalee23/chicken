@@ -32,6 +32,8 @@ public class LuaManager : Singleton<LuaManager> {
 
     public void Init() {
         luaEnv = new LuaEnv();
+
+        luaEnv.AddBuildin("protobuf.c", XLua.LuaDLL.Lua.LoadPbc);
         luaEnv.AddLoader(load);
 
         DoLua("init");
