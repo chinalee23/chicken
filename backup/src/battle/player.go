@@ -16,7 +16,6 @@ type protoRecv struct {
 type protoEnterRsp struct {
 	MsgType string `json:"msgType"`
 	Id      int    `json:"id"`
-	RoomId  int    `json:"roomId"`
 }
 
 //------------------------------------------------------
@@ -27,7 +26,6 @@ type stPlayer struct {
 	chMsg  chan *message.Message
 	status string
 	room   *stRoom
-	chexit chan bool
 }
 
 func newPlayer(id int, conn netdef.Connection, room *stRoom) *stPlayer {
@@ -35,9 +33,8 @@ func newPlayer(id int, conn netdef.Connection, room *stRoom) *stPlayer {
 		id:     id,
 		conn:   conn,
 		chMsg:  make(chan *message.Message),
-		status: "idle",
+		status: "waitEnter",
 		room:   room,
-		chexit: make(chan bool),
 	}
 }
 
@@ -45,36 +42,25 @@ func (p *stPlayer) start() {
 	p.conn.Start(p.chMsg)
 	go func() {
 		for {
-			select {
-			case <-p.chexit:
-				return
-			case msg := <-p.chMsg:
-				jd, err := p.decode(msg)
-				if err != nil {
-					continue
+			msg := <-p.chMsg
+			jd, err := p.decode(msg)
+			if err != nil {
+				continue
+			}
+			switch p.status {
+			case "waitEnter":
+				if jd.MsgType == "enter" {
+					p.onEnter()
+					p.room.playerEnter(p)
 				}
-				switch p.status {
-				case "idle":
-					if jd.MsgType == "enter" {
-						p.onEnter()
-						p.room.noticePlayerEnter()
-					}
-				case "entered":
-					if jd.MsgType == "start" {
-						fmt.Println("receive start...")
-						p.room.start()
-					}
-				case "waitReady":
-					if jd.MsgType == "ready" {
-						p.room.playerReady(p)
-					}
-				case "fight":
-					if jd.MsgType == "frame" {
-						p.room.playerFrame(p, jd.Data)
-					}
+			case "waitReady":
+				if jd.MsgType == "ready" {
+					p.room.playerReady(p)
 				}
-			default:
-				break
+			case "fight":
+				if jd.MsgType == "frame" {
+					p.room.playerFrame(p, jd.Data)
+				}
 			}
 		}
 	}()
@@ -95,7 +81,6 @@ func (p *stPlayer) onEnter() {
 	jd := protoEnterRsp{
 		MsgType: "enterRsp",
 		Id:      p.id,
-		RoomId:  p.room.roomid,
 	}
 	data, err := json.Marshal(jd)
 	if err != nil {
@@ -103,10 +88,4 @@ func (p *stPlayer) onEnter() {
 		return
 	}
 	p.conn.Write(1, data)
-	p.status = "entered"
-}
-
-func (p *stPlayer) close() {
-	p.conn.Close()
-	p.chexit <- true
 }

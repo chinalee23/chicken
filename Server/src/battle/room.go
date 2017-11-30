@@ -12,6 +12,11 @@ import (
 
 //----------------------- proto -------------------------
 
+type protoPlayerCount struct {
+	MsgType     string `json:"msgType"`
+	PlayerCount int    `json:"playerCount"`
+}
+
 type protoStart struct {
 	MsgType string `json:"msgType"`
 	Ids     []int  `json:"ids"`
@@ -21,6 +26,10 @@ type protoStart struct {
 
 	NX []int `json:"nx"`
 	NY []int `json:"ny"`
+
+	Ws []int `json:"ws"`
+	WX []int `json:"wx"`
+	WY []int `json:"wy"`
 }
 
 type protoFight struct {
@@ -32,75 +41,145 @@ type protoFrame struct {
 	Frames  []*json.RawMessage `json:"frames"`
 }
 
-var posConfig [2][2]int
-
 //------------------------ room ------------------------------
 
 type stRoom struct {
-	playerCount int
-	players     []*stPlayer
-
+	roomid  int
+	nextid  int
+	status  string
+	players *list.List
 	chFrame chan *json.RawMessage
 
-	mutex sync.Mutex
+	mutex  sync.Mutex
+	chexit chan bool
 }
 
-func newRoom(playerCount int) *stRoom {
-	posConfig = [2][2]int{
-		{0, 50},
-		{0, 50},
+func newRoom(id int) *stRoom {
+	room := &stRoom{
+		roomid:  id,
+		nextid:  0,
+		status:  "wait",
+		players: list.New(),
+		chFrame: make(chan *json.RawMessage, 1000),
+		chexit:  make(chan bool),
 	}
-	return &stRoom{
-		playerCount: playerCount,
-		players:     make([]*stPlayer, playerCount),
-		chFrame:     make(chan *json.RawMessage, 1000),
+	go room.update()
+	return room
+}
+
+func (p *stRoom) update() {
+	for {
+		p.mutex.Lock()
+		flag := false
+		var next *list.Element
+		for e := p.players.Front(); e != nil; e = next {
+			next = e.Next()
+			player := e.Value.(*stPlayer)
+			if player.conn.Disconnected() {
+				player.close()
+				flag = true
+				p.players.Remove(e)
+			}
+		}
+		p.mutex.Unlock()
+		if flag {
+			if p.status == "wait" {
+				p.noticePlayerEnter()
+			} else {
+				if p.players.Len() == 0 {
+					fmt.Println("close room")
+					p.chexit <- true
+					return
+				}
+			}
+		}
+		time.Sleep(50 * time.Millisecond)
 	}
 }
 
-func (p *stRoom) start(conns *list.List) {
-	i := 0
-	for e := conns.Front(); e != nil; e = e.Next() {
-		player := newPlayer(i, e.Value.(netdef.Connection), p)
-		p.players[i] = player
-		player.start()
-		i++
-	}
+func (p *stRoom) acceptConnection(conn netdef.Connection) {
+	playerId := p.nextid
+	p.nextid++
+	player := newPlayer(playerId, conn, p)
+	p.players.PushBack(player)
+	player.start()
 }
 
-func (p *stRoom) playerEnter(player *stPlayer) {
+func (p *stRoom) start() {
+	if p.status != "wait" {
+		return
+	}
+
 	defer p.mutex.Unlock()
 	p.mutex.Lock()
 
-	player.status = "waitReady"
-	for _, v := range p.players {
-		if v.status != "waitReady" {
-			return
+	var next *list.Element
+	for e := p.players.Front(); e != nil; e = next {
+		next = e.Next()
+
+		player := e.Value.(*stPlayer)
+		if player.status != "entered" {
+			player.close()
+			p.players.Remove(e)
+		} else {
+			player.status = "waitReady"
 		}
 	}
 
+	playerCount := p.players.Len()
+	fmt.Println("room start, player count:", playerCount)
 	seed := time.Now().Unix()
 	rand.Seed(seed)
+
+	npcCount := 100
+	weaponCount := 50
 	jd := protoStart{
 		MsgType: "start",
-		Ids:     make([]int, p.playerCount),
-		X:       make([]int, p.playerCount),
-		Y:       make([]int, p.playerCount),
-		NX:      make([]int, 100),
-		NY:      make([]int, 100),
+		Ids:     make([]int, playerCount),
+		X:       make([]int, playerCount),
+		Y:       make([]int, playerCount),
+		NX:      make([]int, npcCount),
+		NY:      make([]int, npcCount),
+		Ws:      make([]int, weaponCount),
+		WX:      make([]int, weaponCount),
+		WY:      make([]int, weaponCount),
 		Seed:    seed,
 	}
-	for i := 0; i < p.playerCount; i++ {
+	for i := 0; i < playerCount; i++ {
 		jd.Ids[i] = i
-		jd.X[i] = rand.Intn(100) - 50
-		jd.Y[i] = rand.Intn(100) - 50
+		jd.X[i] = rand.Intn(100)
+		jd.Y[i] = rand.Intn(100)
 	}
-	for i := 0; i < 100; i++ {
-		jd.NX[i] = rand.Intn(100) - 50
-		jd.NY[i] = rand.Intn(100) - 50
+	for i := 0; i < npcCount; i++ {
+		jd.NX[i] = rand.Intn(100)
+		jd.NY[i] = rand.Intn(100)
+	}
+	for i := 0; i < weaponCount; i++ {
+		jd.Ws[i] = rand.Intn(4) + 1
+		jd.WX[i] = rand.Intn(100)
+		jd.WY[i] = rand.Intn(100)
 	}
 	data, err := json.Marshal(jd)
 	if err != nil {
 		fmt.Println("marshal startRsp err:", err)
+		return
+	}
+	p.sendToAllPlayer(data)
+
+	p.status = "start"
+}
+
+func (p *stRoom) noticePlayerEnter() {
+	defer p.mutex.Unlock()
+	p.mutex.Lock()
+
+	jd := protoPlayerCount{
+		MsgType:     "playerCount",
+		PlayerCount: p.players.Len(),
+	}
+	data, err := json.Marshal(jd)
+	if err != nil {
+		fmt.Println("marshal playercount err:", err)
 		return
 	}
 	p.sendToAllPlayer(data)
@@ -111,8 +190,8 @@ func (p *stRoom) playerReady(player *stPlayer) {
 	p.mutex.Lock()
 
 	player.status = "fight"
-	for _, v := range p.players {
-		if v.status != "fight" {
+	for e := p.players.Front(); e != nil; e = e.Next() {
+		if e.Value.(*stPlayer).status != "fight" {
 			return
 		}
 	}
@@ -138,6 +217,12 @@ func (p *stRoom) playerFrame(player *stPlayer, frame *json.RawMessage) {
 
 func (p *stRoom) fight() {
 	for {
+		select {
+		case <-p.chexit:
+			return
+		default:
+			break
+		}
 		time.Sleep(100 * time.Millisecond)
 		frames := p.getFrames()
 		jd := protoFrame{
@@ -166,7 +251,7 @@ func (p *stRoom) getFrames() []*json.RawMessage {
 }
 
 func (p *stRoom) sendToAllPlayer(data []byte) {
-	for _, v := range p.players {
-		v.conn.Write(1, data)
+	for e := p.players.Front(); e != nil; e = e.Next() {
+		e.Value.(*stPlayer).conn.Write(1, data)
 	}
 }
