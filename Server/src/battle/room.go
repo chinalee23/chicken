@@ -2,53 +2,23 @@ package battle
 
 import (
 	"container/list"
-	"encoding/json"
 	"fmt"
 	"math/rand"
 	"network/netdef"
 	"sync"
 	"time"
+
+	"pb"
+
+	"github.com/golang/protobuf/proto"
 )
-
-//----------------------- proto -------------------------
-
-type protoPlayerCount struct {
-	MsgType     string `json:"msgType"`
-	PlayerCount int    `json:"playerCount"`
-}
-
-type protoStart struct {
-	MsgType string `json:"msgType"`
-	Ids     []int  `json:"ids"`
-	X       []int  `json:"x"`
-	Y       []int  `json:"y"`
-	Seed    int64  `json:"seed"`
-
-	NX []int `json:"nx"`
-	NY []int `json:"ny"`
-
-	Ws []int `json:"ws"`
-	WX []int `json:"wx"`
-	WY []int `json:"wy"`
-}
-
-type protoFight struct {
-	MsgType string `json:"msgType"`
-}
-
-type protoFrame struct {
-	MsgType string             `json:"msgType"`
-	Frames  []*json.RawMessage `json:"frames"`
-}
-
-//------------------------ room ------------------------------
 
 type stRoom struct {
 	roomid  int
 	nextid  int
 	status  string
 	players *list.List
-	chFrame chan *json.RawMessage
+	chFrame chan []byte
 
 	mutex  sync.Mutex
 	chexit chan bool
@@ -60,7 +30,7 @@ func newRoom(id int) *stRoom {
 		nextid:  0,
 		status:  "wait",
 		players: list.New(),
-		chFrame: make(chan *json.RawMessage, 1000),
+		chFrame: make(chan []byte, 1000),
 		chexit:  make(chan bool),
 	}
 	go room.update()
@@ -131,40 +101,48 @@ func (p *stRoom) start() {
 	seed := time.Now().Unix()
 	rand.Seed(seed)
 
-	npcCount := 100
-	weaponCount := 50
-	jd := protoStart{
-		MsgType: "start",
-		Ids:     make([]int, playerCount),
-		X:       make([]int, playerCount),
-		Y:       make([]int, playerCount),
-		NX:      make([]int, npcCount),
-		NY:      make([]int, npcCount),
-		Ws:      make([]int, weaponCount),
-		WX:      make([]int, weaponCount),
-		WY:      make([]int, weaponCount),
-		Seed:    seed,
+	pb := &pb_battle.BattleStart{
+		Players: make([]*pb_battle.PlayerInfo, 0),
+		Npcs:    make([]*pb_battle.NpcInfo, 0),
+		Weapons: make([]*pb_battle.WeaponInfo, 0),
+		Seed:    proto.Int64(seed),
 	}
 	for i := 0; i < playerCount; i++ {
-		jd.Ids[i] = i
-		jd.X[i] = rand.Intn(100)
-		jd.Y[i] = rand.Intn(100)
+		pbPlayer := &pb_battle.PlayerInfo{
+			Id: proto.Int(i),
+			Pos: &pb_battle.Vector2{
+				X: proto.Float32(float32(rand.Intn(100))),
+				Y: proto.Float32(float32(rand.Intn(100))),
+			},
+		}
+		pb.Players = append(pb.Players, pbPlayer)
 	}
-	for i := 0; i < npcCount; i++ {
-		jd.NX[i] = rand.Intn(100)
-		jd.NY[i] = rand.Intn(100)
+	for i := 0; i < 100; i++ {
+		pbNpc := &pb_battle.NpcInfo{
+			Id: proto.Int(i),
+			Pos: &pb_battle.Vector2{
+				X: proto.Float32(float32(rand.Intn(100))),
+				Y: proto.Float32(float32(rand.Intn(100))),
+			},
+		}
+		pb.Npcs = append(pb.Npcs, pbNpc)
 	}
-	for i := 0; i < weaponCount; i++ {
-		jd.Ws[i] = rand.Intn(4) + 1
-		jd.WX[i] = rand.Intn(100)
-		jd.WY[i] = rand.Intn(100)
+	for i := 0; i < 50; i++ {
+		pbWeapon := &pb_battle.WeaponInfo{
+			Id: proto.Int(rand.Intn(4) + 1),
+			Pos: &pb_battle.Vector2{
+				X: proto.Float32(float32(rand.Intn(100))),
+				Y: proto.Float32(float32(rand.Intn(100))),
+			},
+		}
+		pb.Weapons = append(pb.Weapons, pbWeapon)
 	}
-	data, err := json.Marshal(jd)
+	data, err := proto.Marshal(pb)
 	if err != nil {
-		fmt.Println("marshal startRsp err:", err)
+		fmt.Println("marshal err:", err)
 		return
 	}
-	p.sendToAllPlayer(data)
+	p.sendToAllPlayer(int(pb_battle.MsgType_start), data)
 
 	p.status = "start"
 }
@@ -173,16 +151,15 @@ func (p *stRoom) noticePlayerEnter() {
 	defer p.mutex.Unlock()
 	p.mutex.Lock()
 
-	jd := protoPlayerCount{
-		MsgType:     "playerCount",
-		PlayerCount: p.players.Len(),
+	pb := &pb_battle.PlayerCount{
+		PlayerCount: proto.Int(p.players.Len()),
 	}
-	data, err := json.Marshal(jd)
+	data, err := proto.Marshal(pb)
 	if err != nil {
 		fmt.Println("marshal playercount err:", err)
 		return
 	}
-	p.sendToAllPlayer(data)
+	p.sendToAllPlayer(int(pb_battle.MsgType_playercount), data)
 }
 
 func (p *stRoom) playerReady(player *stPlayer) {
@@ -196,20 +173,12 @@ func (p *stRoom) playerReady(player *stPlayer) {
 		}
 	}
 
-	jd := protoFight{
-		MsgType: "fight",
-	}
-	data, err := json.Marshal(jd)
-	if err != nil {
-		fmt.Println("marshal fight err:", err)
-		return
-	}
-	p.sendToAllPlayer(data)
+	p.sendToAllPlayer(int(pb_battle.MsgType_fight), nil)
 
 	go p.fight()
 }
 
-func (p *stRoom) playerFrame(player *stPlayer, frame *json.RawMessage) {
+func (p *stRoom) playerFrame(player *stPlayer, frame []byte) {
 	defer p.mutex.Unlock()
 	p.mutex.Lock()
 	p.chFrame <- frame
@@ -225,21 +194,23 @@ func (p *stRoom) fight() {
 		}
 		time.Sleep(100 * time.Millisecond)
 		frames := p.getFrames()
-		jd := protoFrame{
-			MsgType: "frame",
-			Frames:  frames,
+		pb := &pb_battle.Frames{
+			Data: frames,
 		}
-		data, err := json.Marshal(jd)
+		data, err := proto.Marshal(pb)
 		if err != nil {
 			fmt.Println("marshal frames err:", err)
 			continue
 		}
-		p.sendToAllPlayer(data)
+		p.sendToAllPlayer(int(pb_battle.MsgType_frame), data)
 	}
 }
 
-func (p *stRoom) getFrames() []*json.RawMessage {
-	frames := make([]*json.RawMessage, 0)
+func (p *stRoom) getFrames() [][]byte {
+	defer p.mutex.Unlock()
+	p.mutex.Lock()
+
+	frames := make([][]byte, 0)
 	for {
 		select {
 		case frame := <-p.chFrame:
@@ -250,8 +221,8 @@ func (p *stRoom) getFrames() []*json.RawMessage {
 	}
 }
 
-func (p *stRoom) sendToAllPlayer(data []byte) {
+func (p *stRoom) sendToAllPlayer(msgType int, data []byte) {
 	for e := p.players.Front(); e != nil; e = e.Next() {
-		e.Value.(*stPlayer).conn.Write(1, data)
+		e.Value.(*stPlayer).conn.Write(msgType, data)
 	}
 }

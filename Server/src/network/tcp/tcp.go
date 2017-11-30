@@ -98,7 +98,12 @@ func (p *stTcp) send() {
 }
 
 func (p *stTcp) pack(msgType int, msg []byte) []byte {
-	sz := len(msg)
+	var sz int
+	if msg != nil {
+		sz = len(msg)
+	} else {
+		sz = 0
+	}
 	data := make([]byte, 0)
 	if sz > 127 {
 		data = append(data, byte(((sz>>8)&0x7f)|0x80))
@@ -107,7 +112,9 @@ func (p *stTcp) pack(msgType int, msg []byte) []byte {
 		data = append(data, byte(sz))
 	}
 	data = append(data, message.ToBytes(msgType)...)
-	data = append(data, msg...)
+	if msg != nil {
+		data = append(data, msg...)
+	}
 
 	return data
 }

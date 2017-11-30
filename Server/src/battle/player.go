@@ -1,25 +1,14 @@
 package battle
 
 import (
-	"encoding/json"
 	"fmt"
 	"network/message"
 	"network/netdef"
+
+	"pb"
+
+	"github.com/golang/protobuf/proto"
 )
-
-//--------------------- proto ----------------------
-type protoRecv struct {
-	MsgType string           `json:"msgType"`
-	Data    *json.RawMessage `json:"data"`
-}
-
-type protoEnterRsp struct {
-	MsgType string `json:"msgType"`
-	Id      int    `json:"id"`
-	RoomId  int    `json:"roomId"`
-}
-
-//------------------------------------------------------
 
 type stPlayer struct {
 	id     int
@@ -50,28 +39,24 @@ func (p *stPlayer) start() {
 				return
 			case msg := <-p.chMsg:
 				fmt.Println("msgType:", msg.MsgType)
-				jd, err := p.decode(msg)
-				if err != nil {
-					continue
-				}
 				switch p.status {
 				case "idle":
-					if jd.MsgType == "enter" {
+					if msg.MsgType == int(pb_battle.MsgType_enter) {
 						p.onEnter()
 						p.room.noticePlayerEnter()
 					}
 				case "entered":
-					if jd.MsgType == "start" {
+					if msg.MsgType == int(pb_battle.MsgType_start) {
 						fmt.Println("receive start...")
 						p.room.start()
 					}
 				case "waitReady":
-					if jd.MsgType == "ready" {
+					if msg.MsgType == int(pb_battle.MsgType_ready) {
 						p.room.playerReady(p)
 					}
 				case "fight":
-					if jd.MsgType == "frame" {
-						p.room.playerFrame(p, jd.Data)
+					if msg.MsgType == int(pb_battle.MsgType_frame) {
+						p.room.playerFrame(p, msg.Data)
 					}
 				}
 			default:
@@ -81,27 +66,14 @@ func (p *stPlayer) start() {
 	}()
 }
 
-func (p *stPlayer) decode(msg *message.Message) (protoRecv, error) {
-	var jd protoRecv
-	err := json.Unmarshal(msg.Data, &jd)
-	if err != nil {
-		fmt.Println("unmarshal err:", err)
-		return jd, err
-	} else {
-		return jd, nil
-	}
-}
-
 func (p *stPlayer) onEnter() {
-	jd := protoEnterRsp{
-		MsgType: "enterRsp",
-		Id:      p.id,
-		RoomId:  p.room.roomid,
+	pb := &pb_battle.Enter{
+		Playerid: proto.Int(p.id),
+		Roomid:   proto.Int(p.room.roomid),
 	}
-	data, err := json.Marshal(jd)
+	data, err := proto.Marshal(pb)
 	if err != nil {
 		fmt.Println("marshal err:", err)
-		return
 	}
 	p.conn.Write(1, data)
 	p.status = "entered"

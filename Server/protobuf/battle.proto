@@ -1,37 +1,57 @@
-package pb;
+package pb.battle;
 
 enum MsgType {
-	enter = 0;
+	enter 		= 0;
+	start 		= 1;
+	ready 		= 2;
+	fight 		= 3;
+	frame 		= 4;
+	playercount = 5;
 }
 
 message Enter {
-	optional int32 playerId = 1;
-	optional int32 roomId  	= 2;
+	optional int32 playerid = 1;
+	optional int32 roomid  	= 2;
 }
 
-message Position {
-	optional int32 x = 1;
-	optional int32 y = 2;
+message Vector2 {
+	optional float x = 1;
+	optional float y = 2;
 }
 
 message PlayerInfo {
 	optional int32 		id 	= 1;
-	optional Position 	pos = 2;
+	optional Vector2 	pos = 2;
 }
 
 message NpcInfo {
 	optional int32 		id 	= 1;
-	optional Position 	pos = 2;
+	optional Vector2 	pos = 2;
 }
 
 message WeaponInfo {
 	optional int32 		id 	= 1;
-	optional Position 	pos = 2;
+	optional Vector2 	pos = 2;
 }
 
 message BattleStart {
 	repeated PlayerInfo players = 1;
 	repeated NpcInfo 	npcs 	= 2;
 	repeated WeaponInfo weapons = 3;
-	optional int32 		seed 	= 4;
+	optional int64 		seed 	= 4;
+}
+
+message PlayerCount {
+	optional int32 player_count = 1;
+}
+
+message Frame {
+	optional int32 		playerid 	= 1;
+	optional Vector2 	direction 	= 2;
+	optional string		attType 	= 3;
+	optional string 	accelerate 	= 4;
+}
+
+message Frames {
+	repeated bytes data = 1;
 }
