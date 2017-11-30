@@ -126,7 +126,7 @@ local function onBattleMonoPrepared( ... )
 end
 
 function start( ... )
-	net.connect('192.168.10.238', 12345, onConnect)
+	net.connect('192.168.10.231', 12345, onConnect)
 end
 
 function roomStart( ... )

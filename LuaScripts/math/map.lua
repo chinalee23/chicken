@@ -12,10 +12,12 @@ local classMap = class()
 
 -- width, height: 地图长宽
 -- sideLen: 切割后的正方形边长
-function classMap:ctor(width, height, sideLen)
+function classMap:ctor(width, height, sideLen, offsetX, offsetY)
 	self.width = width
 	self.height = height
 	self.sideLen = sideLen
+	self.offsetX = offsetX or 0
+	self.offsetY = offsetY or 0
 
 	local maxX = math.ceil(width/sideLen + 1)
 	local maxY = math.ceil(height/sideLen + 1)
@@ -31,8 +33,9 @@ function classMap:ctor(width, height, sideLen)
 end
 
 function classMap:calcGrid(pos)
-	local x = math.floor(pos.x/self.sideLen) + 1
-	local y = math.floor(pos.y/self.sideLen) + 1
+	local p = Vector2(pos.x - self.offsetX, pos.y - self.offsetY)
+	local x = math.floor(p.x/self.sideLen) + 1
+	local y = math.floor(p.y/self.sideLen) + 1
 	return self.grids[x][y]
 end
 
@@ -58,20 +61,11 @@ function classMap:modify(key, pos)
 	self:insert(key, pos)
 end
 
-function classMap:getKey(key)
-	if not self.cache[key] then
-		log.info('map no key', key)
-		return
-	end
-	log.info('pos', self.cache[key].datas[key])
-	log.info('grid', self.cache[key].x, self.cahce[key].y)
-end
-
 -- 查找范围内的格子
 -- 返回左下角和右上角的格子
 function classMap:findGridsInRangeByPos(pos, radius)
-	local dot1 = Vector2(math.max(pos.x-radius, 0), math.max(pos.y-radius, 0))
-	local dot2 = Vector2(math.min(pos.x+radius, self.width), math.min(pos.y+radius, self.height))
+	local dot1 = Vector2(math.max(pos.x-radius, self.offsetX), math.max(pos.y-radius, self.offsetY))
+	local dot2 = Vector2(math.min(pos.x+radius, self.width + self.offsetX), math.min(pos.y+radius, self.height + self.offsetY))
 	return self:calcGrid(dot1), self:calcGrid(dot2)
 end
 function classMap:findGridsInRangeByKey(key, radius)

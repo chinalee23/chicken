@@ -125,7 +125,7 @@ function sys:enterQianyao(eAttacker)
 	comAttacker.status = 'qianyao'
 
 	local comAnim = eAttacker:getComponent(Com.logic.animation)
-	comAnim.anim = 'skill1'
+	comAnim.anim = comAnim.skillName
 end
 
 function sys:qianyao(eAttacker)

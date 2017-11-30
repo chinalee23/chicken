@@ -7,18 +7,18 @@ local Sys = ecs.Sys
 local _M = module()
 
 local prefabConfig = {
-	'Prefab/Characters/16034011_Diffuse_Prefab',
-	'Prefab/Characters/16111001_Diffuse_Prefab',
-	'Prefab/Characters/16112001_Diffuse_Prefab',
-	'Prefab/Characters/16113001_Diffuse_Prefab',
-	'Prefab/Characters/16114001_Diffuse_Prefab',
-	'Prefab/Characters/16134011_Diffuse_Prefab',
-	'Prefab/Characters/16034011_Diffuse_Prefab',
-	'Prefab/Characters/16111001_Diffuse_Prefab',
-	'Prefab/Characters/16112001_Diffuse_Prefab',
-	'Prefab/Characters/16113001_Diffuse_Prefab',
-	'Prefab/Characters/16114001_Diffuse_Prefab',
-	'Prefab/Characters/16134011_Diffuse_Prefab',
+	'Characters/16034011_Diffuse_Prefab',
+	'Characters/16111001_Diffuse_Prefab',
+	'Characters/16112001_Diffuse_Prefab',
+	'Characters/16113001_Diffuse_Prefab',
+	'Characters/16114001_Diffuse_Prefab',
+	'Characters/16134011_Diffuse_Prefab',
+	'Characters/16034011_Diffuse_Prefab',
+	'Characters/16111001_Diffuse_Prefab',
+	'Characters/16112001_Diffuse_Prefab',
+	'Characters/16113001_Diffuse_Prefab',
+	'Characters/16114001_Diffuse_Prefab',
+	'Characters/16134011_Diffuse_Prefab',
 }
 
 local playerEntities = {}
@@ -74,7 +74,7 @@ local function createEntities(data, root)
 
 		e:addComponent(Com.property, 2, 2, 50, 2, 1000, 2)
 		e:addComponent(Com.logic.transform, v.pos)
-		e:addComponent(Com.logic.animation, 'idle')
+		e:addComponent(Com.logic.animation, 'idle', 'idle', 'run', 'skill1')
 		e:addComponent(Com.general)
 		e:addComponent(Com.team, e.id)
 		e:addComponent(Com.attacker)
@@ -98,12 +98,12 @@ local function createEntities(data, root)
 		
 		e:addComponent(Com.property, 2, 2, 20, 2, 300)
 		e:addComponent(Com.logic.transform, {data.npcs[i].pos[1], data.npcs[i].pos[2]})
-		e:addComponent(Com.logic.animation, 'idle')
+		e:addComponent(Com.logic.animation, 'idle', 'idle_1', 'run_1', 'attack_1')
 		e:addComponent(Com.npc)
 
-		local go = LuaInterface.LoadPrefab('Prefab/Characters/16011001_Diffuse_Prefab', scene.rootNpc)
+		local go = LuaInterface.LoadPrefab('Characters/Fatguy', scene.rootNpc)
 		go.name = e.id
-		e:addComponent(Com.behavior.transform, go)
+		e:addComponent(Com.behavior.transform, go, 0.5)
 		e:addComponent(Com.behavior.animation, go)
 	end
 

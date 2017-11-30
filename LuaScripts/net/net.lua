@@ -18,8 +18,9 @@ function processMsg(msg)
 	end
 end
 
-function send(msg)
-	LuaInterface.Send(1, msg)
+function send(msg, msgType)
+	msgType = msgType or 0
+	LuaInterface.Send(msgType, msg)
 end
 
 function addListener(msgType, cb)

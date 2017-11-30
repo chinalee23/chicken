@@ -28,16 +28,20 @@ local retinueGap = 1
 
 
 local function setAnim(comAnim, anim)
-	if not comAnim.anim or comAnim.anim ~= 'skill1' then
-		comAnim.anim = anim
+	if not comAnim.anim or comAnim.anim ~= comAnim.skillName then
+		if anim == 'idle' then
+			comAnim.anim = comAnim.idleName
+		elseif anim == 'run' then
+			comAnim.anim = comAnim.runName
+		end
 	end
 end
 
 local function limitPos(pos)
-	pos.x = math.max(pos.x, 0)
-	pos.x = math.min(pos.x, 100)
-	pos.y = math.max(pos.y, 0)
-	pos.y = math.min(pos.y, 100)
+	pos.x = math.max(pos.x, -43)
+	pos.x = math.min(pos.x, 57)
+	pos.y = math.max(pos.y, -66)
+	pos.y = math.min(pos.y, 34)
 end
 
 -- if 将军 then

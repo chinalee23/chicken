@@ -22,6 +22,6 @@ require 'restrict_global'
 
 
 -- protobuf
-local protobuf = require 'protobuf.protobuf'
+local pb = require 'protobuf.protobuf'
 local buff = LuaInterface.LoadProto()
-protobuf.register(buff)
+pb.register(buff)
