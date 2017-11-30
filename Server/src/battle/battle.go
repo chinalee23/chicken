@@ -21,7 +21,7 @@ func eh(err error) {
 func initBattle() {
 	chConnection = make(chan netdef.Connection, 1000)
 
-	svr, err := network.NewTcpServer("192.168.10.238:12345", eh)
+	svr, err := network.NewTcpServer("192.168.10.231:12345", eh)
 	if err != nil {
 		return
 	}

@@ -49,6 +49,7 @@ func (p *stPlayer) start() {
 			case <-p.chexit:
 				return
 			case msg := <-p.chMsg:
+				fmt.Println("msgType:", msg.MsgType)
 				jd, err := p.decode(msg)
 				if err != nil {
 					continue

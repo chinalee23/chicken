@@ -1,0 +1,37 @@
+package pb;
+
+enum MsgType {
+	enter = 0;
+}
+
+message Enter {
+	optional int32 playerId = 1;
+	optional int32 roomId  	= 2;
+}
+
+message Position {
+	optional int32 x = 1;
+	optional int32 y = 2;
+}
+
+message PlayerInfo {
+	optional int32 		id 	= 1;
+	optional Position 	pos = 2;
+}
+
+message NpcInfo {
+	optional int32 		id 	= 1;
+	optional Position 	pos = 2;
+}
+
+message WeaponInfo {
+	optional int32 		id 	= 1;
+	optional Position 	pos = 2;
+}
+
+message BattleStart {
+	repeated PlayerInfo players = 1;
+	repeated NpcInfo 	npcs 	= 2;
+	repeated WeaponInfo weapons = 3;
+	optional int32 		seed 	= 4;
+}
