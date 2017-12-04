@@ -1,13 +1,15 @@
 package battle
 
 import (
+	"config"
 	"fmt"
 	"network"
 	"network/netdef"
 )
 
 type stBattleConfig struct {
-	PlayerCount int `json:"playerCount"`
+	Ip   string `json:"ip"`
+	Port int    `json:"port"`
 }
 
 var chConnection chan netdef.Connection
@@ -19,9 +21,13 @@ func eh(err error) {
 }
 
 func initBattle() {
+	bcfg := &stBattleConfig{}
+	config.LoadBattle("config/battle_config", bcfg)
+
 	chConnection = make(chan netdef.Connection, 1000)
 
-	svr, err := network.NewTcpServer("192.168.10.231:12345", eh)
+	// svr, err := network.NewTcpServer("192.168.10.231:12345", eh)
+	svr, err := network.NewTcpServer(fmt.Sprintf("%s:%d", bcfg.Ip, bcfg.Port), eh)
 	if err != nil {
 		return
 	}

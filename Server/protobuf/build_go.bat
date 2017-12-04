@@ -1,2 +1,2 @@
-protoc --go_out=../src/pb battle.proto
+protoc --go_out=../src/sgio battle.proto
 pause

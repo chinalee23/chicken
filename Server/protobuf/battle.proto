@@ -1,4 +1,4 @@
-package pb.battle;
+package sgio.battle;
 
 enum MsgType {
 	enter 		= 0;
@@ -42,7 +42,7 @@ message BattleStart {
 }
 
 message PlayerCount {
-	optional int32 player_count = 1;
+	optional int32 count = 1;
 }
 
 message Frame {
@@ -53,5 +53,5 @@ message Frame {
 }
 
 message Frames {
-	repeated bytes data = 1;
+	repeated Frame frames = 1;
 }

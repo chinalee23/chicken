@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"pb"
+	"sgio"
 
 	"github.com/golang/protobuf/proto"
 )
@@ -18,7 +18,7 @@ type stRoom struct {
 	nextid  int
 	status  string
 	players *list.List
-	chFrame chan []byte
+	chFrame chan *sgio_battle.Frame
 
 	mutex  sync.Mutex
 	chexit chan bool
@@ -30,7 +30,7 @@ func newRoom(id int) *stRoom {
 		nextid:  0,
 		status:  "wait",
 		players: list.New(),
-		chFrame: make(chan []byte, 1000),
+		chFrame: make(chan *sgio_battle.Frame, 1000),
 		chexit:  make(chan bool),
 	}
 	go room.update()
@@ -101,48 +101,48 @@ func (p *stRoom) start() {
 	seed := time.Now().Unix()
 	rand.Seed(seed)
 
-	pb := &pb_battle.BattleStart{
-		Players: make([]*pb_battle.PlayerInfo, 0),
-		Npcs:    make([]*pb_battle.NpcInfo, 0),
-		Weapons: make([]*pb_battle.WeaponInfo, 0),
+	pb := &sgio_battle.BattleStart{
+		Players: make([]*sgio_battle.PlayerInfo, 0),
+		Npcs:    make([]*sgio_battle.NpcInfo, 0),
+		Weapons: make([]*sgio_battle.WeaponInfo, 0),
 		Seed:    proto.Int64(seed),
 	}
 	for i := 0; i < playerCount; i++ {
-		pbPlayer := &pb_battle.PlayerInfo{
+		pbPlayer := &sgio_battle.PlayerInfo{
 			Id: proto.Int(i),
-			Pos: &pb_battle.Vector2{
-				X: proto.Float32(float32(rand.Intn(100))),
-				Y: proto.Float32(float32(rand.Intn(100))),
+			Pos: &sgio_battle.Vector2{
+				X: proto.Float32(float32(rand.Intn(100) - 43)),
+				Y: proto.Float32(float32(rand.Intn(100) - 66)),
 			},
 		}
 		pb.Players = append(pb.Players, pbPlayer)
 	}
 	for i := 0; i < 100; i++ {
-		pbNpc := &pb_battle.NpcInfo{
+		pbNpc := &sgio_battle.NpcInfo{
 			Id: proto.Int(i),
-			Pos: &pb_battle.Vector2{
-				X: proto.Float32(float32(rand.Intn(100))),
-				Y: proto.Float32(float32(rand.Intn(100))),
+			Pos: &sgio_battle.Vector2{
+				X: proto.Float32(float32(rand.Intn(100) - 43)),
+				Y: proto.Float32(float32(rand.Intn(100) - 66)),
 			},
 		}
 		pb.Npcs = append(pb.Npcs, pbNpc)
 	}
-	for i := 0; i < 50; i++ {
-		pbWeapon := &pb_battle.WeaponInfo{
-			Id: proto.Int(rand.Intn(4) + 1),
-			Pos: &pb_battle.Vector2{
-				X: proto.Float32(float32(rand.Intn(100))),
-				Y: proto.Float32(float32(rand.Intn(100))),
-			},
-		}
-		pb.Weapons = append(pb.Weapons, pbWeapon)
-	}
+	// for i := 0; i < 50; i++ {
+	// 	pbWeapon := &sgio_battle.WeaponInfo{
+	// 		Id: proto.Int(rand.Intn(4) + 1),
+	// 		Pos: &sgio_battle.Vector2{
+	// 			X: proto.Float32(float32(rand.Intn(100) - 43)),
+	// 			Y: proto.Float32(float32(rand.Intn(100) - 66)),
+	// 		},
+	// 	}
+	// 	pb.Weapons = append(pb.Weapons, pbWeapon)
+	// }
 	data, err := proto.Marshal(pb)
 	if err != nil {
 		fmt.Println("marshal err:", err)
 		return
 	}
-	p.sendToAllPlayer(int(pb_battle.MsgType_start), data)
+	p.sendToAllPlayer(int(sgio_battle.MsgType_start), data)
 
 	p.status = "start"
 }
@@ -151,15 +151,15 @@ func (p *stRoom) noticePlayerEnter() {
 	defer p.mutex.Unlock()
 	p.mutex.Lock()
 
-	pb := &pb_battle.PlayerCount{
-		PlayerCount: proto.Int(p.players.Len()),
+	pb := &sgio_battle.PlayerCount{
+		Count: proto.Int(p.players.Len()),
 	}
 	data, err := proto.Marshal(pb)
 	if err != nil {
 		fmt.Println("marshal playercount err:", err)
 		return
 	}
-	p.sendToAllPlayer(int(pb_battle.MsgType_playercount), data)
+	p.sendToAllPlayer(int(sgio_battle.MsgType_playercount), data)
 }
 
 func (p *stRoom) playerReady(player *stPlayer) {
@@ -173,12 +173,12 @@ func (p *stRoom) playerReady(player *stPlayer) {
 		}
 	}
 
-	p.sendToAllPlayer(int(pb_battle.MsgType_fight), nil)
+	p.sendToAllPlayer(int(sgio_battle.MsgType_fight), nil)
 
 	go p.fight()
 }
 
-func (p *stRoom) playerFrame(player *stPlayer, frame []byte) {
+func (p *stRoom) playerFrame(player *stPlayer, frame *sgio_battle.Frame) {
 	defer p.mutex.Unlock()
 	p.mutex.Lock()
 	p.chFrame <- frame
@@ -194,23 +194,23 @@ func (p *stRoom) fight() {
 		}
 		time.Sleep(100 * time.Millisecond)
 		frames := p.getFrames()
-		pb := &pb_battle.Frames{
-			Data: frames,
+		pb := &sgio_battle.Frames{
+			Frames: frames,
 		}
 		data, err := proto.Marshal(pb)
 		if err != nil {
 			fmt.Println("marshal frames err:", err)
 			continue
 		}
-		p.sendToAllPlayer(int(pb_battle.MsgType_frame), data)
+		p.sendToAllPlayer(int(sgio_battle.MsgType_frame), data)
 	}
 }
 
-func (p *stRoom) getFrames() [][]byte {
+func (p *stRoom) getFrames() []*sgio_battle.Frame {
 	defer p.mutex.Unlock()
 	p.mutex.Lock()
 
-	frames := make([][]byte, 0)
+	frames := make([]*sgio_battle.Frame, 0)
 	for {
 		select {
 		case frame := <-p.chFrame:

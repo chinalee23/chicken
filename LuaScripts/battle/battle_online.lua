@@ -1,9 +1,10 @@
 local Vector2 = require 'math.Vector2'
+local pb = require 'protobuf.protobuf'
+local cfgSvr = require 'config.server'
 
 local _M = module()
 
 local net = require 'net.net'
-local json = require 'util.dkjson'
 local game = require 'game'
 local world = require 'battle.world'
 local input = require 'battle.input'
@@ -15,17 +16,25 @@ local roomid = 0
 local function fixedUpdate( ... )
 	if not started then return end
 
-	local jd = json.encode({
-			msgType = 'frame',
-			data = {
-				id = game.myid,
-				direction = (input.direction.x ~= 0 or input.direction.y ~= 0) and {input.direction.x, input.direction.y} or nil,
-				attType = input.attType,
-				accelerate = input.accelerate,
-			},
-		})
-	input.reset()
-	net.send(jd)
+	local flag = false
+	local t = {}
+	if input.direction.x ~= 0 or input.direction.y ~= 0 then
+		flag = true
+		t.direction = {x = input.direction.x, y = input.direction.y}
+	end
+	if input.attType then
+		flag = true
+		t.attType = input.attType
+	end
+	if input.accelerate then
+		flag = true
+		t.accelerate = input.accelerate
+	end
+	if flag then
+		local msg = pb.encode('sgio.battle.Frame', t)
+		net.send('frame', msg)
+		input.reset()
+	end
 end
 
 local function update( ... )
@@ -39,48 +48,44 @@ local function onConnect(status)
 		return
 	end
 
-	log.info('connect success')
-	local jd = json.encode({
-			msgType = 'enter',
-		})
-	net.send(jd)
+	net.send('enter')
 end
 
 local function onEnterRsp(msg)
-	log.info('id', msg.id)
-	game.myid = msg.id
-	roomid = msg.roomId
+	log.info('id', msg.playerid, 'room', msg.roomid)
+	game.myid = msg.playerid
+	roomid = msg.roomid
 end
 
 local function onPlayerCount(msg)
-	log.info('onPlayerCount', msg.playerCount)
-	playerCount = msg.playerCount
+	log.info('onPlayerCount', msg.count)
+	playerCount = msg.count
 end
 
 local function onStart(msg)
+	log.info('start...')
 	local data = {
 		characters = {},
 		seed = msg.seed,
 		npcs = {},
 		weapons = {},
 	}
-	for i = 1, #msg.ids do
-		local t = {id = msg.ids[i], pos = {msg.x[i], msg.y[i]}}
+	for i = 1, #msg.players do
+		local t = {id = msg.players[i].id, pos = {msg.players[i].pos.x, msg.players[i].pos.y}}
 		table.insert(data.characters, t)
 	end
-	for i = 1, #msg.nx do
-		local t = {pos = {msg.nx[i], msg.ny[i]}}
+	for i = 1, #msg.npcs do
+		local t = {pos = {msg.npcs[i].pos.x, msg.npcs[i].pos.y}}
 		table.insert(data.npcs, t)
 	end
-	for i = 1, #msg.ws do
-		local id = msg.ws[i]
-		local pos = {msg.wx[i], msg.wy[i]}
-		table.insert(data.weapons, {id = id, pos = pos})
+	for i = 1, #msg.weapons do
+		local t = {id = msg.weapons[i].id, pos = {msg.weapons[i].pos.x, msg.weapons[i].pos.y}}
+		table.insert(data.weapons, t)
 	end
 	game.battleData = data
 
 	world.init()
-	LuaInterface.LoadScene('01battlefield_grass_ad_1v1')
+	LuaInterface.LoadScene('set_5v5')
 end
 
 local function onFight(msg)
@@ -89,7 +94,7 @@ local function onFight(msg)
 end
 
 local lastFrameTime = 0
-local function onFrame(msg)
+local function onFrames(msg)
 	local now = Time.realtimeSinceStartup
 	if lastFrameTime == 0 then
 		lastFrameTime = now
@@ -104,37 +109,34 @@ local function onFrame(msg)
 	
 	
 	local inputs = ecs.Single.inputs
-	if msg.frames then
-		for _, v in ipairs(msg.frames) do
-			local eid = world.getPlayerEntityId(v.id)
-			inputs[eid] = {
-				-- direction = Vector2(v.direction[1], v.direction[2]),
-				direction = v.direction and Vector2(v.direction[1], v.direction[2]) or nil,
-				attType = v.attType,
-				accelerate = input.accelerate,
-			}
+	for _, v in ipairs(msg.frames) do
+		local eid = world.getPlayerEntityId(v.playerid)
+		inputs[eid] = {}
+		if not math.approximate(v.direction.x, 0) or not math.approximate(v.direction.y, 0) then
+			inputs[eid].direction = Vector2(v.direction.x, v.direction.y)
+		end
+		if v.attType ~= '' then
+			inputs[eid].attType = v.attType
+		end
+		if v.accelerate ~= '' then
+			inputs[eid].accelerate = v.accelerate
 		end
 	end
 	world.frameCalc()
 end
 
 local function onBattleMonoPrepared( ... )
-	local jd = json.encode({
-			msgType = 'ready',
-		})
-	net.send(jd)
+	net.send('ready')
 end
 
 function start( ... )
-	net.connect('192.168.10.231', 12345, onConnect)
+	log.info(cfgSvr.ip .. ':' .. cfgSvr.port)
+	net.connect(cfgSvr.ip, cfgSvr.port, onConnect)
 end
 
 function roomStart( ... )
 	log.info('room start')
-	local jd = json.encode({
-			msgType = 'start',
-		})
-	net.send(jd)
+	net.send('start')
 end
 
 function getPlayerCount( ... )
@@ -149,10 +151,10 @@ events.update.addListener(update)
 events.fixedUpdate.addListener(fixedUpdate)
 events.battleMonoPrepared.addListener(onBattleMonoPrepared)
 
-net.addListener('enterRsp', onEnterRsp)
-net.addListener('start', onStart)
-net.addListener('fight', onFight)
-net.addListener('frame', onFrame)
-net.addListener('playerCount', onPlayerCount)
+net.addListener('enter', onEnterRsp, 'sgio.battle.Enter')
+net.addListener('start', onStart, 'sgio.battle.BattleStart')
+net.addListener('fight', onFight, 'sgio.battle.BattleStart')
+net.addListener('frame', onFrames, 'sgio.battle.Frames')
+net.addListener('playercount', onPlayerCount, 'sgio.battle.PlayerCount')
 
 return _M

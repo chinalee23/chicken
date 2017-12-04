@@ -21,10 +21,9 @@ local tuple = {
 }
 local sys = ecs.newsys('move', tuple)
 
-local inputs = ecs.Single.inputs
 local normalSpeed = 0.7
 local maxSpeed = 1.2
-local retinueGap = 1
+local retinueGap = 2
 
 
 local function setAnim(comAnim, anim)
@@ -77,9 +76,11 @@ function sys:moveGeneral(eGeneral, direction, accelerate)
 	end
 	if direction then
 		comTrans.direction = direction:Clone()
-		comTrans.position = comTrans.position + direction * comTrans.speed
+		-- comTrans.position = comTrans.position + direction * comTrans.speed
 		limitPos(comTrans.position)
 		setAnim(comAnim, 'run')
+
+		comTrans.velocity = direction * comTrans.speed
 	else
 		local target = self:getTarget(eGeneral)
 		if target then
@@ -87,6 +88,8 @@ function sys:moveGeneral(eGeneral, direction, accelerate)
 			setAnim(comAnim, 'run')
 		else
 			setAnim(comAnim, 'idle')
+
+			comTrans.velocity = Vector2(0, 0)
 		end
 	end
 	util.updateMap(eGeneral)
@@ -128,7 +131,8 @@ function sys:moveRetinue(eGeneral, direction)
 
 		local target = self:getTarget(eRetinue)
 		if direction or not target then
-			self:retinueMoveToQueue(comTrans_r, comAnim_r, Vector2(x, y))
+			-- self:retinueMoveToQueue(comTrans_r, comAnim_r, Vector2(x, y))
+			self:retinueMoveToQueue(comTrans_r, direction, Vector2(x, y))
 		else
 			util.moveTowardToTarget(eRetinue.id, target)
 			setAnim(comTrans_r, 'run')
@@ -137,20 +141,44 @@ function sys:moveRetinue(eGeneral, direction)
 	end
 end
 
-function sys:retinueMoveToQueue(comTrans, comAnim, tarPos)
+function sys:retinueMoveToQueue(comTrans, direction, tarPos)
+	if direction then
+		comTrans.direction = direction:Clone()
+		comTrans.velocity = direction * comTrans.speed
+	else
+		local offset = tarPos - comTrans.position
+		local distSq = offset:SqrMagnitude()
+		if distSq > math.NE then
+			log.info('not in position')
+			comTrans.direction = offset:Normalize()
+			if distSq > comTrans.speed^2 then
+				comTrans.velocity = comTrans.direction * comTrans.speed
+			else
+				comTrans.velocity = comTrans.direction * math.sqrt(distSq)
+			end
+		else
+			comTrans.velocity:Set(0, 0)
+		end
+	end
+end
+
+function sys:_retinueMoveToQueue(comTrans, comAnim, tarPos)
 	local offset = tarPos - comTrans.position
 	local distSq = offset:SqrMagnitude()
 	if distSq > 0.0001 then
 		comTrans.direction = offset:Normalize()
 		if distSq > comTrans.speed^2 then
-			comTrans.position = comTrans.position + comTrans.direction * comTrans.speed
+			-- comTrans.position = comTrans.position + comTrans.direction * comTrans.speed
+			comTrans.velocity = comTrans.direction * comTrans.speed
 		else
-			comTrans.position = tarPos
+			-- comTrans.position = tarPos
+			comTrans.velocity = comTrans.direction * math.sqrt(distSq)
 		end
 		limitPos(comTrans.position)
 		setAnim(comAnim, 'run')
 	else
 		setAnim(comAnim, 'idle')
+		comTrans.velocity:Set(0, 0)
 	end
 end
 
@@ -160,7 +188,7 @@ function sys:_frameCalc( ... )
 	local tmp = {}
 	for k, v in pairs(generals) do
 		-- get input
-		local input = inputs[k]
+		local input = ecs.Single.inputs[k]
 		if input and (input.direction or input.accelerate) then
 			self:move(v, input.direction, input.accelerate)
 		else

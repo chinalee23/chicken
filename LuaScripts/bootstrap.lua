@@ -10,8 +10,8 @@ function fixedUpdate( ... )
 	events.fixedUpdate()
 end
 
-function processMsg(msg)
-	net.processMsg(msg)
+function processMsg(msgType, data)
+	net.processMsg(msgType, data)
 end
 
 return _M

@@ -8,16 +8,19 @@ local function startOffline( ... )
 	myid = 1
 
 	local addnpc = function( ... )
-		for i = 1, 100 do
-			table.insert(_M.battleData.npcs, {pos = {math.random(-43, 57), math.random(-66, 34)}})
-		end
-		-- table.insert(_M.battleData.npcs, {pos = {50, 55}})
+		-- for i = 1, 100 do
+		-- 	table.insert(_M.battleData.npcs, {pos = {math.random(-43, 57), math.random(-66, 34)}})
+		-- end
+		table.insert(_M.battleData.npcs, {pos = {5, 5}})
 	end
 
 	local addweapon = function( ... )
 		for i = 1, 30 do
 			table.insert(_M.battleData.weapons, {id = math.random(1, 4), pos = {math.random(-43, 57), math.random(-66, 34)}})
 		end
+		-- table.insert(_M.battleData.weapons, {id = 1, pos = {-10, -10}})
+		-- table.insert(_M.battleData.weapons, {id = 2, pos = {5, 5}})
+		-- table.insert(_M.battleData.weapons, {id = 3, pos = {10, 10}})
 	end
 
 	_M.battleData = {
@@ -31,7 +34,7 @@ local function startOffline( ... )
 		weapons = {},
 	}
 	addnpc()
-	-- addweapon()
+	addweapon()
 
 	local battle = require 'battle.battle_offline'
 	battle.start()
@@ -48,6 +51,10 @@ function start(online)
 	else
 		startOffline()
 	end
+end
+
+function loadMapData( ... )
+	
 end
 
 

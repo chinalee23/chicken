@@ -42,6 +42,7 @@ local function loadComponents( ... )
 	require 'battle.component.logic.die'
 	require 'battle.component.logic.dismiss'
 	require 'battle.component.logic.weapon'
+	require 'battle.component.logic.rvo'
 	
 	require 'battle.component.behavior.transform'
 	require 'battle.component.behavior.animation'
@@ -57,6 +58,7 @@ local function loadSystems( ... )
 	require 'battle.system.logic.die'
 	require 'battle.system.logic.dismiss'
 	require 'battle.system.logic.pickup'
+	require 'battle.system.logic.rvo'
 
 	require 'battle.system.behavior.transform'
 	require 'battle.system.behavior.animation'
@@ -80,6 +82,8 @@ local function createEntities(data, root)
 		e:addComponent(Com.attacker)
 		e:addComponent(Com.attackee)
 
+		e:addComponent(Com.rvo)
+
 		local go = LuaInterface.LoadPrefab(prefabConfig[e.id], scene.rootPlayer)
 		go.name = e.id
 		e:addComponent(Com.behavior.transform, go, 1.5)
@@ -90,6 +94,7 @@ local function createEntities(data, root)
 		end
 
 		playerEntities[v.id] = e.id
+		log.info('player', v.id, 'entity', e.id)
 	end
 
 	scene.rootNpc = LuaInterface.Find(root, 'RootNpc')
@@ -140,6 +145,7 @@ function frameCalc( ... )
 	frameStartTime = Time.time
 
 	Sys.move:frameCalc()
+	Sys.rvo:frameCalc()
 	Sys.recruit:frameCalc()
 	Sys.pickup:frameCalc()
 	Sys.attacker:frameCalc()
@@ -150,7 +156,7 @@ function frameCalc( ... )
 	Sys.behavior.transform:frameCalc()
 	Sys.behavior.animation:frameCalc()
 
-	ecs.Single.inputs.direction = nil
+	ecs.Single.inputs = {}
 end
 
 function update( ... )

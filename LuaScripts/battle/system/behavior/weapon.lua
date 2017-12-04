@@ -50,6 +50,9 @@ function sys:update( ... )
 			if not comWeapon_b.equipped then
 				local comTrans = eChar:getComponent(Com.behavior.transform)
 				local mountPoint = LuaInterface.Find(comTrans.gameObject, 'weapon_prefab_r')
+				if not mountPoint then
+					mountPoint = LuaInterface.Find(comTrans.gameObject, 'Bip001/Bip001 Pelvis/Bip001 Spine/Bip001 Spine1/Bip001 Neck/Bip001 L Clavicle/Bip001 L UpperArm/Bip001 L Forearm/Bip001 L Hand/weapon')
+				end
 				LuaInterface.SetParent(comWeapon_b.gameObject, mountPoint)
 				comWeapon_b.equipped = true
 			end

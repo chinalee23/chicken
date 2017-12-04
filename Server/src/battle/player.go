@@ -5,7 +5,7 @@ import (
 	"network/message"
 	"network/netdef"
 
-	"pb"
+	"sgio"
 
 	"github.com/golang/protobuf/proto"
 )
@@ -38,25 +38,30 @@ func (p *stPlayer) start() {
 			case <-p.chexit:
 				return
 			case msg := <-p.chMsg:
-				fmt.Println("msgType:", msg.MsgType)
 				switch p.status {
 				case "idle":
-					if msg.MsgType == int(pb_battle.MsgType_enter) {
+					if msg.MsgType == int(sgio_battle.MsgType_enter) {
 						p.onEnter()
 						p.room.noticePlayerEnter()
 					}
 				case "entered":
-					if msg.MsgType == int(pb_battle.MsgType_start) {
+					if msg.MsgType == int(sgio_battle.MsgType_start) {
 						fmt.Println("receive start...")
 						p.room.start()
 					}
 				case "waitReady":
-					if msg.MsgType == int(pb_battle.MsgType_ready) {
+					if msg.MsgType == int(sgio_battle.MsgType_ready) {
 						p.room.playerReady(p)
 					}
 				case "fight":
-					if msg.MsgType == int(pb_battle.MsgType_frame) {
-						p.room.playerFrame(p, msg.Data)
+					if msg.MsgType == int(sgio_battle.MsgType_frame) {
+						frame := &sgio_battle.Frame{}
+						err := proto.Unmarshal(msg.Data, frame)
+						if err != nil {
+							fmt.Println("unmarshal err:", err)
+						} else {
+							p.room.playerFrame(p, frame)
+						}
 					}
 				}
 			default:
@@ -67,7 +72,8 @@ func (p *stPlayer) start() {
 }
 
 func (p *stPlayer) onEnter() {
-	pb := &pb_battle.Enter{
+	fmt.Println("player enter")
+	pb := &sgio_battle.Enter{
 		Playerid: proto.Int(p.id),
 		Roomid:   proto.Int(p.room.roomid),
 	}
@@ -75,7 +81,7 @@ func (p *stPlayer) onEnter() {
 	if err != nil {
 		fmt.Println("marshal err:", err)
 	}
-	p.conn.Write(1, data)
+	p.conn.Write(int(sgio_battle.MsgType_enter), data)
 	p.status = "entered"
 }
 

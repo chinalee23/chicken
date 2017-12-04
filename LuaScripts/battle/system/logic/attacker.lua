@@ -23,7 +23,6 @@ local tuple = {
 }
 local sys = ecs.newsys('attacker', tuple)
 
-local inputs = ecs.Single.inputs
 local map = ecs.Single.map
 
 
@@ -33,7 +32,7 @@ function sys:checkTargetInAttRange(eAttacker, eTarget)
 	local attDist = util.getAttDist(eAttacker)
 	local distSq = (pos_t - pos_a):SqrMagnitude()
 	local attDistSq = attDist^2
-	return distSq < attDistSq or math.equal(distSq, attDistSq)
+	return distSq < attDistSq or math.approximate(distSq, attDistSq)
 end
 
 function sys:checkTargetInWarningRange(eAttacker, eTarget)
@@ -42,7 +41,7 @@ function sys:checkTargetInWarningRange(eAttacker, eTarget)
 	local comProperty = eAttacker:getComponent(Com.property)
 	local distSq = (pos_t - pos_a):SqrMagnitude()
 	local rangeSq = comProperty.warningRange^2
-	return distSq < rangeSq or math.equal(distSq, rangeSq)
+	return distSq < rangeSq or math.approximate(distSq, rangeSq)
 end
 
 function sys:checkTargetInTeamMaxRange(eAttacker, eTarget)
@@ -58,7 +57,7 @@ function sys:checkTargetInTeamMaxRange(eAttacker, eTarget)
 	local pos_t = eTarget:getComponent(Com.logic.transform).position
 	local distSq = (pos_t - pos_g):SqrMagnitude()
 	local rangeSq = maxRange^2
-	return distSq < rangeSq or math.equal(distSq, rangeSq)
+	return distSq < rangeSq or math.approximate(distSq, rangeSq)
 end
 
 function sys:findTarget(eAttacker, range)
@@ -209,7 +208,7 @@ end
 function sys:_frameCalc( ... )
 	local generals = self:getEntities('general')
 	for k, v in pairs(generals) do
-		local input = inputs[k]
+		local input = ecs.Single.inputs[k]
 		if input and input.attType then
 			self:executeChangeAttType(v, input.attType)
 		end

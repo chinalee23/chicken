@@ -33,6 +33,7 @@ function sys:recruit(npc, eid)
 	local comGeneral = eGeneral:getComponent(Com.general)
 	table.insert(comGeneral.retinues, npc.id)
 
+	npc:addComponent(Com.rvo)
 	npc:addComponent(Com.retinue, eGeneral.id)
 	npc:addComponent(Com.team, eGeneral.id)
 	npc:addComponent(Com.attackee)

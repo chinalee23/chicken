@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"getp",
+				"getPlayerEntityId\t(world.lua)"
+			],
+			[
+				"getPlayer",
+				"getPlayerEntityId\t(world.lua)"
+			],
+			[
+				"enum",
+				"enum_id\t(protobuf.lua)"
+			],
+			[
 				"check",
 				"checkTargetInTeamMaxRange"
 			],
@@ -502,23 +514,103 @@
 			[
 				"LO",
 				"LOCATION.Jinzhan\t(test_data.lua)"
-			],
-			[
-				"LOCA",
-				"LOCATION.FaShi"
-			],
-			[
-				"change",
-				"changeMana\t(character.lua)"
-			],
-			[
-				"DAMAGE_",
-				"DAMAGE_TYPE.Dot\t(character.lua)"
 			]
 		]
 	},
 	"buffers":
 	[
+		{
+			"file": "config/server.lua",
+			"settings":
+			{
+				"buffer_size": 49,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"contents": "-- id                       int              ID\n-- npcId                    int              NpcId\n-- x                        int              坐标 x\n-- y                        int              坐标 y\n\nreturn {\n\t[1] = {\n\t\tnpcId = 1,\n\t\tx = 10,\n\t\ty = 10,\n\t},\n\t[2] = {\n\t\tnpcId = 1,\n\t\tx = 20,\n\t\ty = 20,\n\t},\n\t[3] = {\n\t\tnpcId = 1,\n\t\tx = 30,\n\t\ty = 30,\n\t},\n}\n\n",
+			"file": "/E/SanguoIO/Client/Assets/I18N/Dev/LogicData/Npc.txt",
+			"file_size": 381,
+			"file_write_time": 131565973852496940,
+			"settings":
+			{
+				"buffer_size": 350,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "config/config.lua",
+			"settings":
+			{
+				"buffer_size": 171,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "init.lua",
+			"settings":
+			{
+				"buffer_size": 494,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "battle/system/behavior/weapon.lua",
+			"settings":
+			{
+				"buffer_size": 2484,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "battle/battle_offline.lua",
+			"settings":
+			{
+				"buffer_size": 1169,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "battle/world.lua",
+			"settings":
+			{
+				"buffer_size": 4748,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "battle/battle_online.lua",
+			"settings":
+			{
+				"buffer_size": 3612,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "game.lua",
+			"settings":
+			{
+				"buffer_size": 1192,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "battle/system/logic/attacker.lua",
+			"settings":
+			{
+				"buffer_size": 6836,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -557,10 +649,42 @@
 	},
 	"expanded_folders":
 	[
-		"/E/SanguoIO/Client/LuaScripts"
+		"/E/SanguoIO/Client/LuaScripts",
+		"/E/SanguoIO/Client/LuaScripts/config",
+		"/E/SanguoIO/Client/Assets/I18N/Dev/LogicData"
 	],
 	"file_history":
 	[
+		"/E/SanguoIO/Client/I18N/Dev/LogicData/Npc.txt",
+		"/E/SanguoIO/Client/LuaScripts/protobuf/protobuf.lua",
+		"/E/SanguoIO/Client/LuaScripts/config/weapon.lua",
+		"/E/SanguoIO/Servers/config/battle_config",
+		"/E/SanguoIO/Client/LuaScripts/battle/system/logic/move.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/world.lua",
+		"/E/SanguoIO/Client/LuaScripts/init.lua",
+		"/E/SanguoIO/Client/LuaScripts/net/net.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/battle_offline.lua",
+		"/E/SanguoIO/Client/LuaScripts/util/ut_math.lua",
+		"/E/SanguoIO/Client/LuaScripts/bootstrap.lua",
+		"/D/workspace/git/chicken/Server/build_run_window.bat",
+		"/E/SanguoIO/Client/LuaScripts/ui/ui_start.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/singleton/map.lua",
+		"/E/SanguoIO/Client/LuaScripts/game.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/system/behavior/weapon.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/system/logic/attacker.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/singleton/input.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/input.lua",
+		"/E/SanguoIO/Client/LuaScripts/ui/ui_battle.lua",
+		"/E/SanguoIO/Client/LuaScripts/math/map.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/component/logic/property.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/component/behavior/weapon.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/system/behavior/transform.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/system/behavior/animation.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/component/logic/animation.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/system/behavior/hpbar.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/component/logic/attacker.lua",
+		"/E/SanguoIO/Client/LuaScripts/battle/battle_mono.lua",
+		"/E/SanguoIO/Client/LuaScripts/test.lua",
 		"/D/workspace/Unity/Chicken/Assets/LuaScripts/init.lua",
 		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/battle_online.lua",
 		"/D/workspace/Unity/Chicken/Assets/LuaScripts/protobuf/protobuf.lua",
@@ -658,37 +782,7 @@
 		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/attack/die.lua",
 		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/attack/houyao.lua",
 		"/D/workspace/Unity/Chicken/Assets/LuaScripts/ecs/ecs.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/attack/dismiss.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/attack/die.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/skill/skillnormal.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/skill/skillnormal.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/skill/skilldecision.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/skill/skill.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/playercamera.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/move.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/general.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/attack/dismiss.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/recruit.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/attack/idle.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/rvo.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/blink.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/util/ut_table.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/ui/hpbar.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/ui.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/attack.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/animation.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/troop.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/troop.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/Singleton/ui.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/property.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/util/event.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/battle_mono.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/ui/hp_bar.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/attack/qianyao.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/attack/lengque.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/Singleton/input.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/ui/main.lua",
-		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/component/ui/main.lua"
+		"/D/workspace/Unity/Chicken/Assets/LuaScripts/battle/system/attack/dismiss.lua"
 	],
 	"find":
 	{
@@ -712,6 +806,35 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"inputs",
+			"math.equal",
+			"onStart",
+			"sgio.battle.MsgType",
+			"io",
+			"onFrame",
+			"pb.battle",
+			"json",
+			"_reader",
+			"pbc_rmessage_integer",
+			"findGridsInRangeByKey",
+			"findGridsInRangeByPos",
+			"getKey",
+			"pos",
+			"findGridsInRangeByPos",
+			"calcGrid",
+			"SetPosition",
+			"unit",
+			"SetPosition",
+			"SetLocalPosition",
+			"classMap",
+			"loadComponents",
+			"skill1",
+			"run",
+			"idle",
+			"rocker",
+			"Prefab/",
+			"Prefab",
+			"battleData",
 			"encode",
 			"game",
 			"team",
@@ -810,36 +933,7 @@
 			"findGridsInRangeByKey",
 			"findGridsInRangeByPos",
 			"findGridsInRange",
-			"findGridInRange",
-			"findGridsInRange",
-			"eTroop",
-			"threshold",
-			"target",
-			"property",
-			"animation",
-			"transform",
-			"face",
-			"USE_RVO",
-			"retinues",
-			"remove",
-			"_onEntityDestory",
-			"setup",
-			"Com.general",
-			"retinues",
-			"Com.general",
-			"treebuf",
-			"onEntityDestroy",
-			"initCamera",
-			"world.build",
-			"UI Camera",
-			"hpbar",
-			"world.build",
-			"hpbar",
-			"ecs.Single",
-			"concern_2",
-			"LookAt",
-			"updateFace",
-			"setAnim"
+			"findGridInRange"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -847,6 +941,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"math.approximate",
 			"comAttacker",
 			"attacker",
 			"Vector2",
@@ -886,8 +981,303 @@
 	"groups":
 	[
 		{
+			"selected": 2,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "config/server.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 49,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								49,
+								49
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/E/SanguoIO/Client/Assets/I18N/Dev/LogicData/Npc.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 350,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "config/config.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 171,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								155,
+								155
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "init.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 494,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								493,
+								493
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "battle/system/behavior/weapon.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2484,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2195,
+								2195
+							]
+						],
+						"settings":
+						{
+							"history_list_is_closing": true,
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 966.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "battle/battle_offline.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1169,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								302,
+								302
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "battle/world.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4748,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1635.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 7,
+					"file": "battle/battle_online.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3612,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2823,
+								2823
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1522.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "game.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1192,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								20,
+								20
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "battle/system/logic/attacker.lua",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6836,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6120,
+								6120
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Lua/Lua.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2689.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -908,11 +1298,18 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.461815528527,
 			1.0
 		],
 		"rows":
@@ -944,20 +1341,144 @@
 		"selected_items":
 		[
 			[
-				"battleonline",
-				"battle\\battle_online.lua"
+				"protobuf",
+				"LuaScripts\\protobuf\\protobuf.lua"
 			],
 			[
 				"init.lua",
-				"init.lua"
+				"LuaScripts\\init.lua"
 			],
 			[
-				"protobuf.lua",
-				"protobuf\\protobuf.lua"
+				"npc.",
+				"LogicData\\Npc.txt"
+			],
+			[
+				"worl",
+				"battle\\world.lua"
+			],
+			[
+				"sys/atta",
+				"battle\\system\\logic\\attacker.lua"
+			],
+			[
+				"battleofflie",
+				"battle\\battle_offline.lua"
+			],
+			[
+				"config/we",
+				"config\\weapon.lua"
 			],
 			[
 				"game.lua",
 				"game.lua"
+			],
+			[
+				"sys/wea",
+				"battle\\system\\behavior\\weapon.lua"
+			],
+			[
+				"world",
+				"battle\\world.lua"
+			],
+			[
+				"move.lua",
+				"battle\\system\\logic\\move.lua"
+			],
+			[
+				"battleoffline",
+				"battle\\battle_offline.lua"
+			],
+			[
+				"utmath",
+				"util\\ut_math.lua"
+			],
+			[
+				"si/",
+				"battle\\singleton\\input.lua"
+			],
+			[
+				"world.lua",
+				"battle\\world.lua"
+			],
+			[
+				"input",
+				"battle\\input.lua"
+			],
+			[
+				"boo",
+				"bootstrap.lua"
+			],
+			[
+				"net",
+				"net\\net.lua"
+			],
+			[
+				"net.lua",
+				"net\\net.lua"
+			],
+			[
+				"uistart",
+				"ui\\ui_start.lua"
+			],
+			[
+				"uibatt",
+				"ui\\ui_battle.lua"
+			],
+			[
+				"battleonline.lua",
+				"battle\\battle_online.lua"
+			],
+			[
+				"com/pro",
+				"battle\\component\\logic\\property.lua"
+			],
+			[
+				"be/weapo",
+				"battle\\system\\behavior\\weapon.lua"
+			],
+			[
+				"be/wea",
+				"battle\\component\\behavior\\weapon.lua"
+			],
+			[
+				"map.lua",
+				"math\\map.lua"
+			],
+			[
+				"sysanima",
+				"battle\\system\\behavior\\animation.lua"
+			],
+			[
+				"attacker.lua",
+				"battle\\system\\logic\\attacker.lua"
+			],
+			[
+				"com/anim",
+				"battle\\component\\logic\\animation.lua"
+			],
+			[
+				"move",
+				"battle\\system\\logic\\move.lua"
+			],
+			[
+				"battleoffli",
+				"battle\\battle_offline.lua"
+			],
+			[
+				"wepan.lua",
+				"battle\\system\\behavior\\weapon.lua"
+			],
+			[
+				"weapn.lua",
+				"config\\weapon.lua"
+			],
+			[
+				"battleonline",
+				"battle\\battle_online.lua"
+			],
+			[
+				"protobuf.lua",
+				"protobuf\\protobuf.lua"
 			],
 			[
 				"boot",
@@ -966,10 +1487,6 @@
 			[
 				"recrui",
 				"battle\\system\\logic\\recruit.lua"
-			],
-			[
-				"world.lua",
-				"battle\\world.lua"
 			],
 			[
 				"com/team",
@@ -990,10 +1507,6 @@
 			[
 				"recruit.lua",
 				"battle\\system\\logic\\recruit.lua"
-			],
-			[
-				"battleoffli",
-				"battle\\battle_offline.lua"
 			],
 			[
 				"beha/transf",
@@ -1048,10 +1561,6 @@
 				"battle\\component\\logic\\general.lua"
 			],
 			[
-				"move.lua",
-				"battle\\system\\logic\\move.lua"
-			],
-			[
 				"uibattle",
 				"ui\\ui_battle.lua"
 			],
@@ -1070,10 +1579,6 @@
 			[
 				"battle/input",
 				"battle\\input.lua"
-			],
-			[
-				"battleoffline",
-				"battle\\battle_offline.lua"
 			],
 			[
 				"ui/btn",
@@ -1130,10 +1635,6 @@
 			[
 				"behav/transf",
 				"battle\\system\\behavior\\transform.lua"
-			],
-			[
-				"map.lua",
-				"math\\map.lua"
 			],
 			[
 				"recruit",
@@ -1194,10 +1695,6 @@
 			[
 				"game.",
 				"game.lua"
-			],
-			[
-				"worl",
-				"battle\\world.lua"
 			],
 			[
 				"uibattle.lua",
@@ -1328,20 +1825,12 @@
 				"battle\\battle_offline.lua"
 			],
 			[
-				"uistart",
-				"ui\\ui_start.lua"
-			],
-			[
 				"sys/hp",
 				"battle\\system\\ui\\hpbar.lua"
 			],
 			[
 				"rvo.lua",
 				"battle\\system\\rvo.lua"
-			],
-			[
-				"move",
-				"battle\\system\\move.lua"
 			],
 			[
 				"vec",
@@ -1362,98 +1851,6 @@
 			[
 				"entity",
 				"ecs\\entity.lua"
-			],
-			[
-				"sys/gen",
-				"battle\\system\\general.lua"
-			],
-			[
-				"system/die",
-				"battle\\system\\attack\\die.lua"
-			],
-			[
-				"view.lu",
-				"battle\\system\\view.lua"
-			],
-			[
-				"wor",
-				"battle\\world.lua"
-			],
-			[
-				"utta",
-				"util\\ut_table.lua"
-			],
-			[
-				"system",
-				"ecs\\system.lua"
-			],
-			[
-				"ecs/enti",
-				"ecs\\entity.lua"
-			],
-			[
-				"ecs/sys",
-				"ecs\\system.lua"
-			],
-			[
-				"com/troop",
-				"battle\\component\\troop.lua"
-			],
-			[
-				"die.lua",
-				"battle\\component\\attack\\die.lua"
-			],
-			[
-				"syste/view",
-				"battle\\system\\view.lua"
-			],
-			[
-				"system/view",
-				"battle\\system\\view.lua"
-			],
-			[
-				"event",
-				"util\\event.lua"
-			],
-			[
-				"ui/b",
-				"ui\\btn.lua"
-			],
-			[
-				"game",
-				"game.lua"
-			],
-			[
-				"world",
-				"battle\\world.lua"
-			],
-			[
-				"battleoffl",
-				"battle\\battle_offline.lua"
-			],
-			[
-				"ui/hpba",
-				"ui\\hpbar.lua"
-			],
-			[
-				"com/pro",
-				"battle\\component\\property.lua"
-			],
-			[
-				"com/lengque",
-				"battle\\component\\attack\\lengque.lua"
-			],
-			[
-				"com/houyao",
-				"battle\\component\\attack\\houyao.lua"
-			],
-			[
-				"com/qianyao",
-				"battle\\component\\attack\\qianyao.lua"
-			],
-			[
-				"com/idle",
-				"battle\\component\\attack\\idle.lua"
 			]
 		],
 		"width": 0.0
@@ -1486,6 +1883,12 @@
 				0,
 				1,
 				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
 			]
 		]
 	},
@@ -1493,7 +1896,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 283.0,
+	"side_bar_width": 214.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -1,5 +1,4 @@
 local c = require "protobuf.c"
-log.info(c._NAME)
 
 local setmetatable = setmetatable
 local type = type

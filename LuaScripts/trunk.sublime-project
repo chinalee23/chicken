@@ -3,6 +3,9 @@
 	[
 		{
 			"path": "."
+		},
+		{
+			"path": "E:\\SanguoIO\\Client\\Assets\\I18N\\Dev\\LogicData"
 		}
 	]
 }
