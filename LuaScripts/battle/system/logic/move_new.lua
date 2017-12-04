@@ -26,6 +26,66 @@ local maxSpeed = 1.2
 local retinueGap = 1
 
 
+local maxCacheCnt = 100
+function sys:calcQueuePosition_Circle( ... )
+	self.queue = {}
+	local d = 1
+	local r = 2
+
+	local cnt = 1
+	local i = 0
+	local n = math.floor(2*math.pi*r/d)
+	local rad = d/r
+	while cnt <= maxCacheCnt do
+		if i == n then
+			r = r*2
+			n = n*2
+			rad = rad/2
+			i = 0
+		end
+		local x = r*math.cos(i*rad)
+		local y = r*math.sin(i*rad)
+		table.insert(self.queue, Vector2(x, y))
+
+		i = i + 1
+		cnt = cnt + 1
+	end
+end
+
+function sys:calcQueuePosition_Rect( ... )
+	self.queue = {}
+	local r = 2
+	
+	local cnt = 1
+	local layer = 0
+	local i = 0
+	local sideLen = 0
+	local pos = Vector2(0, 0)
+	while cnt <= maxCacheCnt do
+		if i == layer*8 then
+			layer = layer + 1
+			i = 1
+			sideLen = 2*layer + 1
+			pos.x = -layer*r
+			pos.y = -layer*r
+			table.insert(self.queue, pos:Clone())
+		else
+			i = i + 1
+			if i >= 1 and i <= sideLen then
+				pos.y = pos.y + r
+			elseif i > sideLen and i <= 2*sideLen-1 then
+				pos.x = pos.x + r
+			elseif i >= 2*sideLen and i <= 3*sideLen-2 then
+				pos.y = pos.y - r
+			else
+				pos.x = pos.x - r
+			end
+			table.insert(self.queue, pos:Clone())
+		end
+	end
+end
+
+
 function sys:move(eGeneral, direction, accelerate)
 	self:moveGeneral(eGeneral, direction, accelerate)
 	self:moveRetinue(eGeneral, direction)
